@@ -29,6 +29,8 @@ jobs:
         run: remotes::install_deps(dependencies = TRUE)
       - name: Check
         run: devtools::check()
+      - name: Test Coverage
+        run: covr::codecov()
       - name: Build Package Website
         run: muggle::build_site2(new_process = FALSE)
       - name: Build Buildtime Image
