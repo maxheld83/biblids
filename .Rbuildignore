@@ -1,3 +1,10 @@
-^biblids\.Rproj$
+^.*\.Rproj$
 ^\.Rproj\.user$
-^LICENSE\.md$
+^codecov\.yml$
+^docs$
+^pkgdown$
+Dockerfile
+.dockerignore
+^\.github$
+.vscode
+LICENSE.md

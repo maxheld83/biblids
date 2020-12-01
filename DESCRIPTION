@@ -1,16 +1,34 @@
 Package: biblids
-Title: What the Package Does (One Line, Title Case)
+Title: Validating with bibliometric identifiers
 Version: 0.0.0.9000
 Authors@R: 
-    c(person(given = "Maximilian",
-             family = "Held",
-             role = c("aut", "cre"),
-             email = "info@maxheld.de",
-             comment = c(ORCID = "0000-0002-4703-5388")),
-      person(family = "Göttingen State and University Library"))
-Description: What the package does (one paragraph).
+    c(
+      person(
+        given = "Maximilian",
+        family = "Held",
+        role = c("aut", "cre"),
+        email = "info@maxheld.de",
+        comment = c(ORCID = "0000-0002-4703-5388")
+      ),
+      person(
+        given = "Göttingen State and University Library",
+        role = c("cph", "fnd")
+      )
+    )
+Description: 
+    Provides lightweight validation and normalisation for bibliometric identifiers such as DOIs.
+    Optionally (with `Suggests` dependencies) includes checkmate assertions, testthat expectations and shiny input modules.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+URL: https://subugoe.github.io/biblids, https://github.com/subugoe/biblids
+BugReports: https://github.com/subugoe/biblids/issues
+Suggests: 
+    testthat,
+    checkmate,
+    covr,
+    subugoetheme
+Remotes:
+  subugoe/subugoetheme@1.1.1
