@@ -27,8 +27,10 @@ URL: https://subugoe.github.io/biblids, https://github.com/subugoe/biblids
 BugReports: https://github.com/subugoe/biblids/issues
 Suggests: 
     testthat,
-    checkmate,
     covr,
     subugoetheme
 Remotes:
   subugoe/subugoetheme@1.1.1
+Imports: 
+    rlang (>= 0.4.9),
+    checkmate (>= 2.0.0)
