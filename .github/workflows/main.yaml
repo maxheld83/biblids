@@ -48,6 +48,40 @@ jobs:
           tags: ${{ github.sha }}
           add_git_labels: true
           push: ${{ github.event_name != 'pull_request' }}
+      - name: Build Runtime Image
+        uses: docker/build-push-action@v1
+        with:
+          repository: ${{ github.repository }}/${{ env.MUGGLE_PKG_NAME }}-runtime
+          target: runtime
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          # this will set "latest" if master as per https://github.com/docker/build-push-action
+          tag_with_ref: true
+          # we're relying on long shas only to keep things easy
+          tag_with_sha: false
+          tags: ${{ github.sha }}
+          add_git_labels: true
+          push: ${{ github.event_name != 'pull_request' }}
+      - name: Log in to Azure
+        uses: azure/login@v1.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deploy to Azure Webapps
+        run: |
+          shinycaas::az_webapp(
+            plan = "hoad",
+            deployment_container_image_name = paste0(
+              "docker.pkg.github.com/subugoe/biblids/biblids-runtime", 
+              ":",
+              Sys.getenv("GITHUB_SHA")
+            ),
+            docker_registry_server_url = "https://docker.pkg.github.com",
+            docker_registry_server_user = "maxheld83",
+            docker_registry_server_password = Sys.getenv("GH_PAT_PKG")
+          )
+        env:
+          GH_PAT_PKG: ${{ secrets.GH_PAT_PKG }}
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/master'
         uses: maxheld83/ghpages@github-token

@@ -1,0 +1,7 @@
+---
+title: "Shiny Showcase"
+---
+
+```{r echo=FALSE}
+shinycaas::include_app2("https://biblids.azurewebsites.net")
+```

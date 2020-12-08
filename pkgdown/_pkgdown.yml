@@ -12,3 +12,8 @@ reference:
   - has_concept("doi")
 template:
   package: subugoetheme
+navbar:
+  components:
+    showcase:
+      text: Showcase
+      href: articles/showcase.html

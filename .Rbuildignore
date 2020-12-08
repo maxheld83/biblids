@@ -8,3 +8,5 @@ Dockerfile
 ^\.github$
 .vscode
 LICENSE.md
+^vignettes/
+.azure
