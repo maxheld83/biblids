@@ -31,6 +31,9 @@ To resolve DOIs to the associated metadata, you can use the \href{https://www.cr
 is_doi("10.5281/zenodo.3892950") # TRUE
 is_doi("http://doi.org/10.5281/zenodo.3892951") # TRUE
 is_doi("lorem ipsum") # FALSE
-
+}
+\seealso{
+Other doi: 
+\code{\link{doiEntry}}
 }
 \concept{doi}

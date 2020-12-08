@@ -3,5 +3,12 @@ authors:
     href: https://www.maxheld.de
   Göttingen State and University Library:
     href: https://www.sub.uni-goettingen.de/
+reference:
+- title: Large Sets of PIDs
+  desc: Open-ended sets of persistent identifiers
+- subtitle: DOIs
+  desc: Digital Object Identifiers
+- contents:
+  - has_concept("doi")
 template:
   package: subugoetheme
