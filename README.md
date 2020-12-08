@@ -16,7 +16,6 @@ For example, you can validate a DOI by:
 ```r
 library(biblids)
 is_doi("10.5281/zenodo.3892950") # TRUE
-is_doi("http://doi.org/10.5281/zenodo.3892951") # TRUE
 is_doi("lorem ipsum") # FALSE
 ```
 
