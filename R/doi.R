@@ -43,7 +43,6 @@ is_doi <- function(x, type = c("cr-modern", "cr-jws", "regexpal")) {
 #' Shiny Module for DOI input
 #' 
 #' Accept, validate and return DOIs in a shiny app.
-#' @inheritParams shiny::NS
 #' @family doi
 #' @name doiEntry
 NULL
@@ -60,17 +59,27 @@ doiEntryApp <- function() {
 }
 
 #' @describeIn doiEntry Module UI
+#' @inheritParams shiny::NS
+#' @inheritDotParams shiny::textAreaInput
 #' @export
-doiEntryUI <- function(id) {
+doiEntryUI <- function(id, width = "100%", ...) {
   requireNamespace2("shiny")
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::textAreaInput(
       inputId = ns("entered"),
       label = "DOIs",
-      placeholder = "10.5281/zenodo.3892950"
+      placeholder = "Enter your DOIs here.",
+      width = width,
+      cols = 80L,
+      rows = 30L,
+      ...
     ),
-    shiny::actionButton(inputId = ns("submit"), label = "Submit DOIs"),
+    shiny::actionButton(
+      inputId = ns("validate"),
+      label = "Validate your DOIs",
+      width = width
+    ),
     shiny::verbatimTextOutput(
       outputId = ns("found"),
       placeholder = TRUE
@@ -85,7 +94,7 @@ doiEntryServer <- function(id) {
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
-      dois <- shiny::eventReactive(input$submit, {
+      dois <- shiny::eventReactive(input$validate, {
         input$entered
       })
       output$found <- shiny::renderText({
