@@ -26,12 +26,14 @@ RoxygenNote: 7.1.1
 URL: https://subugoe.github.io/biblids, https://github.com/subugoe/biblids
 BugReports: https://github.com/subugoe/biblids/issues
 Imports: 
-    rlang (>= 0.4.9),
+    rlang (>= 0.4.8),
     checkmate (>= 2.0.0)
 Suggests: 
     testthat,
     covr,
     subugoetheme,
-    shiny
+    shiny,
+    shinycaas
 Remotes:
-  subugoe/subugoetheme@1.1.1
+  subugoe/subugoetheme@1.1.1,
+  subugoe/shinycaas@1.0.0
