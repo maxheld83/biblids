@@ -3,4 +3,5 @@
 export(doiEntryApp)
 export(doiEntryServer)
 export(doiEntryUI)
+export(doi_patterns)
 export(is_doi)

@@ -1,11 +1,12 @@
-#' Validate a DOI
-#'
-#' Validates a [Digital Object Identifier (DOI)](http://doi.org)
-#'
+#' [Digital Object Identifiers (DOI)](http://doi.org)
+#' 
 #' To resolve DOIs to the associated metadata, you can use the [rcrossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/) R package.
-#'
-#' @param x a character string giving a DOI
-#'
+#' @family doi
+#' @name doi
+NULL
+
+#' @describeIn doi Choose a DOI validation pattern
+#' 
 #' @param type
 #' a character string giving the type of validation to run.
 #' Implemented as regular expressions (see source code).
@@ -14,27 +15,48 @@
 #'   - `"cr-modern"` currently used crossref DOIs.
 #'   - `"cr-jws"` for DOIs created by John Wiley & Sons
 #' - `"regexpal"` from [regexpal](https://www.regexpal.com/96948) (undocumented, not recommended)
+#' 
+#' @return a raw string with a regular expression
+#' 
+#' @export
+doi_patterns <- function(type = c("cr-modern", "cr-jws", "regexpal")) {
+  checkmate::assert_character(type)
+  type <- rlang::arg_match(type)
+  switch(
+    type,
+    "cr-modern" = r"(10.\d{4,9}/[-._;()/:A-Z0-9]+)",
+    "cr-jws" = r"(10.1002/[^\s]+)",
+    "regexpal" = r"(10[.][0-9]{4,}(?:[.][0-9]+)"
+  )
+}
+
+#' @describeIn doi Validate a DOI
+#'
+#' @param x a character string giving a DOI
+#' 
+#' @inheritDotParams doi_patterns
 #'
 #' @examples
 #' is_doi("10.5281/zenodo.3892950") # TRUE
 #' is_doi("http://doi.org/10.5281/zenodo.3892951") # TRUE
 #' is_doi("lorem ipsum") # FALSE
-#' @family doi
 #'
 #' @export
-is_doi <- function(x, type = c("cr-modern", "cr-jws", "regexpal")) {
+is_doi <- function(x, ...) {
   checkmate::assert_string(x)
-  checkmate::assert_character(type)
-  type <- rlang::arg_match(type)
+  grepl(pattern = doi_patterns(...), x = x, ignore.case = TRUE)
+}
 
-  pattern <- switch(
-    type,
-    "cr-modern" = r"(^10.\d{4,9}/[-._;()/:A-Z0-9]+$)",
-    "cr-jws" = r"(^10.1002/[^\s]+$)",
-    "regexpal" = r"(10[.][0-9]{4,}(?:[.][0-9]+)"
+#' @describeIn doi Extract all DOIs from a string
+#' @inheritParams stringr::str_extract_all
+#' @inheritDotParams doi_patterns
+str_extract_all_doi <- function(string, ...) {
+  requireNamespace2("stringr")
+  stringr::str_extract_all(
+    string = string,
+    pattern = stringr::regex(doi_patterns(...), ignore_case = TRUE),
+    simplify = TRUE
   )
-
-  grepl(pattern = pattern, x = x, ignore.case = TRUE)
 }
 
 
@@ -60,6 +82,7 @@ doiEntryApp <- function() {
 
 #' @describeIn doiEntry Module UI
 #' @inheritParams shiny::NS
+#' @inheritParams shiny::textAreaInput
 #' @inheritDotParams shiny::textAreaInput
 #' @export
 doiEntryUI <- function(id, width = "100%", ...) {
@@ -95,11 +118,12 @@ doiEntryServer <- function(id) {
     id,
     module = function(input, output, session) {
       dois <- shiny::eventReactive(input$validate, {
-        input$entered
+        tolower(as.vector(str_extract_all_doi(input$entered)))
       })
       output$found <- shiny::renderText({
         dois()
       })
+      dois
     }
   )
 }

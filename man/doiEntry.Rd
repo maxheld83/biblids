@@ -9,12 +9,39 @@
 \usage{
 doiEntryApp()
 
-doiEntryUI(id)
+doiEntryUI(id, width = "100\%", ...)
 
 doiEntryServer(id)
 }
 \arguments{
 \item{id}{The id string to be namespaced (optional).}
+
+\item{width}{The width of the input, e.g. \code{'400px'}, or \code{'100\%'};
+see \code{\link[shiny:reexports]{validateCssUnit()}}.}
+
+\item{...}{
+  Arguments passed on to \code{\link[shiny:textAreaInput]{shiny::textAreaInput}}
+  \describe{
+    \item{\code{inputId}}{The \code{input} slot that will be used to access the value.}
+    \item{\code{label}}{Display label for the control, or \code{NULL} for no label.}
+    \item{\code{value}}{Initial value.}
+    \item{\code{height}}{The height of the input, e.g. \code{'400px'}, or \code{'100\%'}; see
+\code{\link[shiny:reexports]{validateCssUnit()}}.}
+    \item{\code{cols}}{Value of the visible character columns of the input, e.g. \code{80}.
+This argument will only take effect if there is not a CSS \code{width} rule
+defined for this element; such a rule could come from the \code{width} argument
+of this function or from a containing page layout such as
+\code{\link[shiny:fluidPage]{fluidPage()}}.}
+    \item{\code{rows}}{The value of the visible character rows of the input, e.g. \code{6}.
+If the \code{height} argument is specified, \code{height} will take precedence in the
+browser's rendering.}
+    \item{\code{placeholder}}{A character string giving the user a hint as to what can
+be entered into the control. Internet Explorer 8 and 9 do not support this
+option.}
+    \item{\code{resize}}{Which directions the textarea box can be resized. Can be one of
+\code{"both"}, \code{"none"}, \code{"vertical"}, and \code{"horizontal"}. The default, \code{NULL},
+will use the client browser's default setting for resizing textareas.}
+  }}
 }
 \description{
 Accept, validate and return DOIs in a shiny app.
@@ -30,6 +57,6 @@ Accept, validate and return DOIs in a shiny app.
 
 \seealso{
 Other doi: 
-\code{\link{is_doi}()}
+\code{\link{doi}}
 }
 \concept{doi}
