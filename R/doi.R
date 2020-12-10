@@ -94,18 +94,18 @@ doiEntryUI <- function(id, width = "100%", ...) {
       label = "DOIs",
       placeholder = "Enter your DOIs here.",
       width = width,
-      cols = 80L,
-      rows = 30L,
-      ...
+      rows = 10L
     ),
     shiny::actionButton(
       inputId = ns("validate"),
       label = "Validate your DOIs",
       width = width
     ),
-    shiny::verbatimTextOutput(
-      outputId = ns("found"),
-      placeholder = TRUE
+    shiny::div(
+      shiny::p("Found these DOIs:")
+    ),
+    shiny::textOutput(
+      outputId = ns("found")
     )
   )
 }
