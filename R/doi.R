@@ -94,7 +94,7 @@ doiEntryUI <- function(id, width = "100%", ...) {
       label = "DOIs",
       placeholder = "Enter your DOIs here.",
       width = width,
-      rows = 10L
+      rows = 15L
     ),
     shiny::actionButton(
       inputId = ns("validate"),
@@ -102,10 +102,14 @@ doiEntryUI <- function(id, width = "100%", ...) {
       width = width
     ),
     shiny::div(
-      shiny::p("Found these DOIs:")
-    ),
-    shiny::textOutput(
-      outputId = ns("found")
+      shiny::p(
+        "Found ",
+        shiny::textOutput(
+         outputId = ns("found"),
+         inline = TRUE
+        ),
+        " DOIS."
+      )
     )
   )
 }
@@ -120,15 +124,24 @@ doiEntryServer <- function(id) {
       # input validation
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("entered", shinyvalidate::sv_required())
-      iv$add_rule("entered", ~ if (nchar(.) > 1000) "Too many DOIs.")
+      iv$add_rule("entered", ~ if (nchar(.) > 10000L) "Too many DOIs.")
       iv$enable()
 
-      # ingestion
+      # ingest
       dois <- shiny::eventReactive(input$validate, {
-        unique(tolower(as.vector(str_extract_all_doi(input$entered))))
+        if (iv$is_valid()) {
+          unique(tolower(as.vector(str_extract_all_doi(input$entered))))
+        } else {
+          shiny::showNotification(
+            "Please fix the errors in the form before continuing",
+            type = "warning"
+          )
+          NULL
+        }
       })
+
       output$found <- shiny::renderText({
-        dois()
+        length(dois())
       })
       dois
     }
