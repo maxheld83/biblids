@@ -117,6 +117,13 @@ doiEntryServer <- function(id) {
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
+      # input validation
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("entered", shinyvalidate::sv_required())
+      iv$add_rule("entered", ~ if (nchar(.) > 1000) "Too many DOIs.")
+      iv$enable()
+
+      # ingestion
       dois <- shiny::eventReactive(input$validate, {
         unique(tolower(as.vector(str_extract_all_doi(input$entered))))
       })
