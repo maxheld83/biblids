@@ -118,7 +118,7 @@ doiEntryServer <- function(id) {
     id,
     module = function(input, output, session) {
       dois <- shiny::eventReactive(input$validate, {
-        tolower(as.vector(str_extract_all_doi(input$entered)))
+        unique(tolower(as.vector(str_extract_all_doi(input$entered))))
       })
       output$found <- shiny::renderText({
         dois()
