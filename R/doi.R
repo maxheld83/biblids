@@ -147,3 +147,16 @@ doiEntryServer <- function(id) {
     }
   )
 }
+
+is_doi_on_cr <- function(x) {
+  res <- httr::HEAD(
+    url = paste0("https://api.crossref.org/works/", x)
+  )
+  if (res$status_code == 200) {
+    return(TRUE)
+  } else if (res$status_code == 404) {
+    return(FALSE)
+  } else {
+    httr::stop_for_status(res)
+  }
+}

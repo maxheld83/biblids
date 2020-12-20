@@ -26,3 +26,12 @@ test_that("DOIs are extracted", {
   )
   expect_snapshot(str_extract_all_doi(doimash))
 })
+
+test_that("crossref DOIs are identified", {
+  doi_cr <- "10.5194/wes-2019-70"
+  doi_not_cr <- "10.5194/wes-5-819-202"
+  doi_bad <- " create a url with spaces"
+  expect_true(is_doi_on_cr(doi_cr))
+  expect_false(is_doi_on_cr(doi_not_cr))
+  expect_error(is_doi_on_cr(doi_bad))
+})
