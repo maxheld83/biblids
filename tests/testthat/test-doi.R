@@ -1,3 +1,7 @@
+test_that("doi object is created", {
+  expect_snapshot(doi(prefix = "10.1038", suffix = "nphys1170"))
+})
+
 test_that("good crossref DOI is accepted", {
   # from https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/
   expect_true(is_doi("10.13003/5jchdy"))

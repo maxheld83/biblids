@@ -7,6 +7,8 @@
 \alias{str_extract_all_doi}
 \title{\href{http://doi.org}{Digital Object Identifiers (DOI)}}
 \usage{
+doi(prefix, suffix)
+
 doi_patterns(type = c("cr-modern", "cr-jws", "regexpal"))
 
 is_doi(x, ...)
@@ -14,6 +16,10 @@ is_doi(x, ...)
 str_extract_all_doi(string, ...)
 }
 \arguments{
+\item{prefix}{denoting a unique naming authority}
+
+\item{suffix}{unique string chosen by the registrant}
+
 \item{type}{a character string giving the type of validation to run.
 Implemented as regular expressions (see source code).
 Must be one these syntax specifications:
@@ -41,7 +47,7 @@ coercible to one.}
 a raw string with a regular expression
 }
 \description{
-To resolve DOIs to the associated metadata, you can use the \href{https://www.crossref.org/blog/dois-and-matching-regular-expressions/}{rcrossref} R package.
+Helper function to create DOIs.
 }
 \section{Functions}{
 \itemize{

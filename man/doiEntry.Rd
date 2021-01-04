@@ -57,6 +57,6 @@ Accept, validate and return DOIs in a shiny app.
 
 \seealso{
 Other doi: 
-\code{\link{doi}}
+\code{\link{doi}()}
 }
 \concept{doi}

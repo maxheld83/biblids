@@ -28,7 +28,8 @@ BugReports: https://github.com/subugoe/biblids/issues
 Imports: 
     rlang (>= 0.4.8),
     checkmate (>= 2.0.0),
-    httr (>= 1.4.2)
+    httr (>= 1.4.2),
+    vctrs (>= 0.3.6)
 Suggests: 
     testthat,
     covr,

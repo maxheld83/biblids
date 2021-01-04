@@ -1,9 +1,38 @@
 #' [Digital Object Identifiers (DOI)](http://doi.org)
 #' 
-#' To resolve DOIs to the associated metadata, you can use the [rcrossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/) R package.
+#' Helper function to create DOIs.
+#' 
+#' @param prefix denoting a unique naming authority
+#' @param suffix unique string chosen by the registrant
+#' @export
 #' @family doi
-#' @name doi
-NULL
+doi <- function(prefix, suffix) {
+  new_doi(prefix, suffix)
+}
+
+new_doi <- function(prefix = character(), suffix = character()) {
+  vctrs::vec_assert(prefix, ptype = character())
+  vctrs::vec_assert(suffix, ptype = character())
+  vctrs::new_rcrd(list(prefix = prefix, suffix = suffix), class = "biblids_doi")
+}
+
+#' @export
+format.biblids_doi <- function(x, ...) {
+  p <- vctrs::field(x, "prefix")
+  s <- vctrs::field(x, "suffix")
+  out <- paste0(p, "/", s)
+  out[is.na(p) | is.na(s)] <- NA
+  out
+}
+
+#' @export
+#' @importFrom vctrs vec_ptype_abbr
+vec_ptype_abbr.biblids_doi <- function(x, ...) "doi"
+
+#' @export
+#' @importFrom vctrs vec_ptype_full
+vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
+
 
 #' @describeIn doi Choose a DOI validation pattern
 #' 
