@@ -17,12 +17,19 @@ new_doi <- function(prefix = character(), suffix = character()) {
 }
 
 #' @export
-format.biblids_doi <- function(x, ...) {
+format.biblids_doi <- function(x, ..., formatter = slash_align) {
   p <- vctrs::field(x, "prefix")
   s <- vctrs::field(x, "suffix")
-  out <- paste0(p, "/", s)
-  out[is.na(p) | is.na(s)] <- NA
-  out
+  complete <- !is.na(p) & !is.na(s)
+  out <- rep(NA_character_, vctrs::vec_size(x))
+  out[complete] <- formatter(p[complete], s[complete])
+  format(out, justify = "left")
+}
+
+slash_align <- function(p, s) {
+  # these can, in theory have arbitrary lengths
+  p_longest <- max(nchar(p), na.rm = TRUE)
+  sprintf(paste0("%", p_longest, "s/%s"), p, s)
 }
 
 #' @export
@@ -33,6 +40,15 @@ vec_ptype_abbr.biblids_doi <- function(x, ...) "doi"
 #' @importFrom vctrs vec_ptype_full
 vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
 
+# exported in zzz.R if pillar is available
+pillar_shaft.biblids_doi <- function(x, ...) {
+  out <- format(x, formatter = pillar)
+  pillar::new_pillar_shaft_simple(out)
+}
+
+pillar <- function(p, s) {
+  paste0(p, pillar::style_subtle("/"), s)
+}
 
 #' @describeIn doi Choose a DOI validation pattern
 #' 

@@ -1,12 +1,13 @@
 test_that("doi helper creates doi records", {
   dois_resolveable <- doi(
     # example dois are from https://www.doi.org/demos.html
-    prefix = c("10.1038", "10.1002", NA),
-    suffix = c("nphys1170", "0470841559.ch1", "foobar")
+    prefix = c("10.1038", "10.1002", NA, "10.11467"),
+    suffix = c("nphys1170", "0470841559.ch1", "foobar", "isss2003.7.1_11")
   )
   testthat::expect_s3_class(dois_resolveable, class = "biblids_doi")
-  testthat::expect_length(dois_resolveable, 3)
+  testthat::expect_length(dois_resolveable, 4)
   testthat::expect_snapshot_output(dois_resolveable)
+  testthat::expect_snapshot_output(tibble::tibble(dois_resolveable))
 })
 
 test_that("doi helper errors on invalid inputs", {
