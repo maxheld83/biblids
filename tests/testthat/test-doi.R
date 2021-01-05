@@ -1,5 +1,16 @@
-test_that("doi object is created", {
-  expect_snapshot(doi(prefix = "10.1038", suffix = "nphys1170"))
+test_that("doi helper creates doi records", {
+  dois_resolveable <- doi(
+    # example dois are from https://www.doi.org/demos.html
+    prefix = c("10.1038", "10.1002", NA),
+    suffix = c("nphys1170", "0470841559.ch1", "foobar")
+  )
+  testthat::expect_s3_class(dois_resolveable, class = "biblids_doi")
+  testthat::expect_length(dois_resolveable, 3)
+  testthat::expect_snapshot_output(dois_resolveable)
+})
+
+test_that("doi helper errors on invalid inputs", {
+  expect_error(doi(prefix = 1L, suffix = 2.2))
 })
 
 test_that("good crossref DOI is accepted", {
