@@ -2,70 +2,83 @@
 % Please edit documentation in R/doi.R
 \name{doi}
 \alias{doi}
-\alias{doi_patterns}
-\alias{is_doi}
-\alias{str_extract_all_doi}
+\alias{as.character.biblids_doi}
+\alias{format.biblids_doi}
+\alias{pillar_shaft.biblids_doi}
+\alias{knit_print.biblids_doi}
 \title{\href{http://doi.org}{Digital Object Identifiers (DOI)}}
 \usage{
 doi(prefix, suffix)
 
-doi_patterns(type = c("cr-modern", "cr-jws", "regexpal"))
+\method{as.character}{biblids_doi}(x, ..., protocol = TRUE, subtle_slash = FALSE)
 
-is_doi(x, ...)
+\method{format}{biblids_doi}(x, ...)
 
-str_extract_all_doi(string, ...)
+pillar_shaft.biblids_doi(x, ...)
+
+\method{knit_print}{biblids_doi}(x, inline = FALSE, ...)
 }
 \arguments{
 \item{prefix}{denoting a unique naming authority}
 
 \item{suffix}{unique string chosen by the registrant}
 
-\item{type}{a character string giving the type of validation to run.
-Implemented as regular expressions (see source code).
-Must be one these syntax specifications:
-\itemize{
-\item from \href{https://www.crossref.org/blog/dois-and-matching-regular-expressions/}{crossref}
-\itemize{
-\item \code{"cr-modern"} currently used crossref DOIs.
-\item \code{"cr-jws"} for DOIs created by John Wiley & Sons
-}
-\item \code{"regexpal"} from \href{https://www.regexpal.com/96948}{regexpal} (undocumented, not recommended)
-}}
+\item{x}{An R object to be printed}
 
-\item{x}{a character string giving a DOI}
+\item{...}{Additional arguments passed to the S3 method. Currently ignored,
+except two optional arguments \code{options} and \code{inline}; see
+the references below.}
 
-\item{...}{
-  Arguments passed on to \code{\link[=doi_patterns]{doi_patterns}}, \code{\link[=doi_patterns]{doi_patterns}}
-  \describe{
-    \item{\code{}}{}
-  }}
+\item{protocol}{logical flag, whether to prepend \verb{doi:} handle protocol, as per the official \href{https://doi.org/doi_handbook/2_Numbering.html#2.6.1}{DOI Handbook}.
+Recommended unless protocol is already obvious from the context, such as in a column header.}
 
-\item{string}{Input vector. Either a character vector, or something
-coercible to one.}
-}
-\value{
-a raw string with a regular expression
+\item{subtle_slash}{logical flag, whether to use \link[pillar:style_subtle]{pillar::style_subtle} slash between prefix and suffix.
+Only for internal use, inside tibble printing.}
+
+\item{inline}{logical flag, giving whether to render DOIs as a chunk output or inline R.
+Usually set by knitr.}
 }
 \description{
-Helper function to create DOIs.
+S3 class for DOIs.
+DOIs are stored as records.
 }
-\section{Functions}{
+\section{Methods (by generic)}{
 \itemize{
-\item \code{doi_patterns}: Choose a DOI validation pattern
+\item \code{as.character}: convert to character vector
 
-\item \code{is_doi}: Validate a DOI
-
-\item \code{str_extract_all_doi}: Extract all DOIs from a string
+\item \code{format}: pretty printing in the R console.
 }}
 
-\examples{
-is_doi("10.5281/zenodo.3892950") # TRUE
-is_doi("http://doi.org/10.5281/zenodo.3892951") # TRUE
-is_doi("lorem ipsum") # FALSE
+\section{Optional knitr print method}{
 
+Inside knitr, bare DOIs are printed with the protocol and a link to the doi.org resolution.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
+doi_examples
+}\if{html}{\out{</div>}}
+\itemize{
+\item \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}
+\item \href{https://doi.org/10.1002/0470841559.ch1}{\verb{doi:10.1002/0470841559.ch1}}
+\item \href{https://doi.org/NA}{\code{NA}}
+\item \href{https://doi.org/10.11467/isss2003.7.1_11}{\code{doi:10.11467/isss2003.7.1_11}}
+}
+
+You can also include DOIs inline \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}, \href{https://doi.org/10.1002/0470841559.ch1}{\verb{doi:10.1002/0470841559.ch1}}, \href{https://doi.org/NA}{\code{NA}} and \href{https://doi.org/10.11467/isss2003.7.1_11}{\code{doi:10.11467/isss2003.7.1_11}}.
+}
+
+\examples{
+doi_examples <- doi(
+  # example dois are from https://www.doi.org/demos.html
+  prefix = c("10.1038", "10.1002", NA, "10.11467"),
+  suffix = c("nphys1170", "0470841559.ch1", "foobar", "isss2003.7.1_11")
+)
+# you can print bare dois
+doi_examples
+# there is extra pretty printing inside tibbles
+tibble::tibble(doi_examples)
 }
 \seealso{
 Other doi: 
-\code{\link{doiEntry}}
+\code{\link{doiEntry}},
+\code{\link{doi_examples}},
+\code{\link{doi_patterns}()}
 }
 \concept{doi}

@@ -39,7 +39,9 @@ Suggests:
     stringr,
     shinyvalidate,
     pillar (>= 1.4.7),
-    tibble (>= 3.0.4)
+    tibble (>= 3.0.4),
+    knitr (>= 1.30),
+    glue (>= 1.4.2)
 Remotes:
   subugoe/subugoetheme@1.1.1,
   subugoe/shinycaas@1.0.0,

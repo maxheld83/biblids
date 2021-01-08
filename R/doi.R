@@ -1,35 +1,49 @@
 #' [Digital Object Identifiers (DOI)](http://doi.org)
 #' 
-#' Helper function to create DOIs.
+#' S3 class for DOIs.
+#' DOIs are stored as records.
 #' 
 #' @param prefix denoting a unique naming authority
 #' @param suffix unique string chosen by the registrant
+#' 
+#' @example R/doi_examples.R
+#'
 #' @export
 #' @family doi
 doi <- function(prefix, suffix) {
   new_doi(prefix, suffix)
 }
 
+#' Constructor worker
+#' @inheritParams doi
+#' @noRd
 new_doi <- function(prefix = character(), suffix = character()) {
   vctrs::vec_assert(prefix, ptype = character())
   vctrs::vec_assert(suffix, ptype = character())
   vctrs::new_rcrd(list(prefix = prefix, suffix = suffix), class = "biblids_doi")
 }
 
+#' @describeIn doi convert to character vector
+#' @param protocol 
+#' logical flag, whether to prepend `doi:` handle protocol, as per the official [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
+#' Recommended unless protocol is already obvious from the context, such as in a column header.
+#' @param subtle_slash
+#' logical flag, whether to use [pillar::style_subtle] slash between prefix and suffix.
+#' Only for internal use, inside tibble printing.
 #' @export
-format.biblids_doi <- function(x, ..., formatter = slash_align) {
+as.character.biblids_doi <- function(x, ..., protocol = TRUE, subtle_slash = FALSE) {
+  checkmate::assert_flag(protocol)
   p <- vctrs::field(x, "prefix")
   s <- vctrs::field(x, "suffix")
   complete <- !is.na(p) & !is.na(s)
   out <- rep(NA_character_, vctrs::vec_size(x))
-  out[complete] <- formatter(p[complete], s[complete])
-  format(out, justify = "left")
-}
-
-slash_align <- function(p, s) {
-  # these can, in theory have arbitrary lengths
-  p_longest <- max(nchar(p), na.rm = TRUE)
-  sprintf(paste0("%", p_longest, "s/%s"), p, s)
+  out[complete] <- paste0(
+    if (protocol) "doi:",
+    p[complete],
+    ifelse(subtle_slash, pillar::style_subtle("/"), "/"),
+    s[complete]
+  )
+  out
 }
 
 #' @export
@@ -40,17 +54,60 @@ vec_ptype_abbr.biblids_doi <- function(x, ...) "doi"
 #' @importFrom vctrs vec_ptype_full
 vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
 
+
+#' @export
+#' @describeIn doi pretty printing in the R console.
+#' @examples 
+#' # you can print bare dois
+#' doi_examples
+format.biblids_doi <- function(x, ...) {
+  # vctrs print method always shows class so protocol is unecessary
+  format(as.character.biblids_doi(x, protocol = FALSE))
+}
+
 # exported in zzz.R if pillar is available
+#' @rdname doi
+#' @examples
+#' # there is extra pretty printing inside tibbles
+#' tibble::tibble(doi_examples)
 pillar_shaft.biblids_doi <- function(x, ...) {
-  out <- format(x, formatter = pillar)
+  out <- as.character.biblids_doi(x, protocol = FALSE, subtle_slash = TRUE)
   pillar::new_pillar_shaft_simple(out)
 }
 
-pillar <- function(p, s) {
-  paste0(p, pillar::style_subtle("/"), s)
+# exported in zzz if knitr is available
+#' @rdname doi
+# TODO @inheritParams inline arg from knitr, blocked by https://github.com/yihui/knitr/issues/1565
+#' @param inline 
+#' logical flag, giving whether to render DOIs as a chunk output or inline R.
+#' Usually set by knitr.
+#' @inheritParams knitr::knit_print
+#' @section Optional knitr print method:
+#' Inside knitr, bare DOIs are printed with the protocol and a link to the doi.org resolution.
+#' 
+#' ```{r}
+#' library(knitr)
+#' doi_examples
+#' ```
+#' 
+# TODO manual knit_print may be due to https://github.com/r-lib/roxygen2/issues/1179
+#' You can also include DOIs inline `r knitr::knit_print(doi_examples, inline = TRUE)`.
+knit_print.biblids_doi <- function(x, inline = FALSE, ...) {
+  # always add protocol because context is not guaranteed
+  with_url <- paste0(
+    "[`", as.character.biblids_doi(x, protocol = TRUE), "`]", # text
+    "(https://doi.org/", as.character.biblids_doi(x, protocol = FALSE), ")"
+  )
+  if (inline) {
+    requireNamespace2("glue")
+    out <- glue::glue_collapse(x = with_url, sep = ", ", last = " and ")
+  } else {
+    out <- paste0("- ", with_url, "\n")
+  }
+  knitr::asis_output(out)
 }
 
-#' @describeIn doi Choose a DOI validation pattern
+#' Choose a DOI validation pattern
 #' 
 #' @param type
 #' a character string giving the type of validation to run.
@@ -62,6 +119,8 @@ pillar <- function(p, s) {
 #' - `"regexpal"` from [regexpal](https://www.regexpal.com/96948) (undocumented, not recommended)
 #' 
 #' @return a raw string with a regular expression
+#' 
+#' @family doi
 #' 
 #' @export
 doi_patterns <- function(type = c("cr-modern", "cr-jws", "regexpal")) {
@@ -75,7 +134,7 @@ doi_patterns <- function(type = c("cr-modern", "cr-jws", "regexpal")) {
   )
 }
 
-#' @describeIn doi Validate a DOI
+#' @describeIn doi_patterns Validate a DOI
 #'
 #' @param x a character string giving a DOI
 #' 
@@ -92,7 +151,7 @@ is_doi <- function(x, ...) {
   grepl(pattern = doi_patterns(...), x = x, ignore.case = TRUE)
 }
 
-#' @describeIn doi Extract all DOIs from a string
+#' @describeIn doi_patterns Extract all DOIs from a string
 #' @inheritParams stringr::str_extract_all
 #' @inheritDotParams doi_patterns
 str_extract_all_doi <- function(string, ...) {
@@ -205,3 +264,11 @@ is_doi_on_cr <- function(x) {
     httr::stop_for_status(res)
   }
 }
+
+#' Some example dois
+#' @export
+#' @family doi
+#' @examples
+#' doi_examples
+#' @name doi_examples
+NULL

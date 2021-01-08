@@ -1,13 +1,13 @@
 # doi helper creates doi records
 
     <digital object identifier[4]>
-    [1]  10.1038/nphys1170        10.1002/0470841559.ch1  NA                      
+    [1] 10.1038/nphys1170        10.1002/0470841559.ch1   NA                      
     [4] 10.11467/isss2003.7.1_11
 
 ---
 
     # A tibble: 4 x 1
-      dois_resolveable        
+      doi_examples            
       <doi>                   
     1 10.1038/nphys1170       
     2 10.1002/0470841559.ch1  
