@@ -46,14 +46,15 @@ will use the client browser's default setting for resizing textareas.}
 \description{
 Accept, validate and return DOIs in a shiny app.
 }
-\section{Functions}{
+\section{Related Functions and Methods}{
+\subsection{Functions}{
 \itemize{
 \item \code{doiEntryApp}: Test app
-
 \item \code{doiEntryUI}: Module UI
-
 \item \code{doiEntryServer}: Module server
-}}
+}
+}
+}
 
 \seealso{
 Other doi: 

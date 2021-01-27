@@ -42,12 +42,14 @@ a raw string with a regular expression
 \description{
 Choose a DOI validation pattern
 }
-\section{Functions}{
+\section{Related Functions and Methods}{
+\subsection{Functions}{
 \itemize{
 \item \code{is_doi}: Validate a DOI
-
 \item \code{str_extract_all_doi}: Extract all DOIs from a string
-}}
+}
+}
+}
 
 \examples{
 is_doi("10.5281/zenodo.3892950") # TRUE

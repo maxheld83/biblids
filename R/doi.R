@@ -1,10 +1,9 @@
 #' [Digital Object Identifiers (DOI)](http://doi.org)
 #' 
-#' S3 class for DOIs.
-#' DOIs are stored as records.
+#' S3 record class for DOIs.
 #' 
-#' @param prefix denoting a unique naming authority
-#' @param suffix unique string chosen by the registrant
+#' @param prefix the naming authority.
+#' @param suffix the unique string chosen by the registrant
 #' 
 #' @example R/doi_examples.R
 #'
@@ -54,9 +53,8 @@ vec_ptype_abbr.biblids_doi <- function(x, ...) "doi"
 #' @importFrom vctrs vec_ptype_full
 vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
 
-
-#' @export
 #' @describeIn doi pretty printing in the R console.
+#' @export
 #' @examples 
 #' # you can print bare dois
 #' doi_examples
@@ -66,7 +64,8 @@ format.biblids_doi <- function(x, ...) {
 }
 
 # exported in zzz.R if pillar is available
-#' @rdname doi
+#' @describeIn doi pretty printing in [tibble::tibble()]
+#' @export
 #' @examples
 #' # there is extra pretty printing inside tibbles
 #' tibble::tibble(doi_examples)
@@ -76,22 +75,21 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 }
 
 # exported in zzz if knitr is available
-#' @rdname doi
-# TODO @inheritParams inline arg from knitr, blocked by https://github.com/yihui/knitr/issues/1565
-#' @param inline 
-#' logical flag, giving whether to render DOIs as a chunk output or inline R.
-#' Usually set by knitr.
-#' @inheritParams knitr::knit_print
-#' @section Optional knitr print method:
-#' Inside knitr, bare DOIs are printed with the protocol and a link to the doi.org resolution.
+#' @describeIn doi pretty printing in R markdown (when knitr is available);
+#' DOIs are printed with protocoll and a link to their doi.org resolution.
 #' 
 #' ```{r}
 #' library(knitr)
 #' doi_examples
 #' ```
 #' 
-# TODO manual knit_print may be due to https://github.com/r-lib/roxygen2/issues/1179
-#' You can also include DOIs inline `r knitr::knit_print(doi_examples, inline = TRUE)`.
+#' You can also include DOIs inline with `r doi_examples`.
+# TODO @inheritParams inline arg from knitr, blocked by https://github.com/yihui/knitr/issues/1565
+#' @param inline 
+#' logical flag, giving whether to render DOIs as a chunk output or inline R.
+#' Usually set by knitr.
+#' @exportS3Method knitr::knit_print
+#' @inheritParams knitr::knit_print
 knit_print.biblids_doi <- function(x, inline = FALSE, ...) {
   # always add protocol because context is not guaranteed
   with_url <- paste0(
