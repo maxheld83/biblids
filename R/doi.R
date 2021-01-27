@@ -91,6 +91,7 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 #' @exportS3Method knitr::knit_print
 #' @inheritParams knitr::knit_print
 knit_print.biblids_doi <- function(x, inline = FALSE, ...) {
+  requireNamespace2("knitr")
   # always add protocol because context is not guaranteed
   with_url <- paste0(
     "[`", as.character.biblids_doi(x, protocol = TRUE), "`]", # text
