@@ -65,7 +65,8 @@ format.biblids_doi <- function(x, ...) {
 
 # exported in zzz.R if pillar is available
 #' @describeIn doi pretty printing in [tibble::tibble()]
-#' @export
+#' @exportS3Method pillar::pillar_shaft
+#' @method pillar_shaft biblids_doi
 #' @examples
 #' # there is extra pretty printing inside tibbles
 #' tibble::tibble(doi_examples)
@@ -89,6 +90,7 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 #' logical flag, giving whether to render DOIs as a chunk output or inline R.
 #' Usually set by knitr.
 #' @exportS3Method knitr::knit_print
+#' @method knit_print biblids_doi
 #' @inheritParams knitr::knit_print
 knit_print.biblids_doi <- function(x, inline = FALSE, ...) {
   requireNamespace2("knitr")

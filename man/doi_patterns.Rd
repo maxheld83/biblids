@@ -46,10 +46,10 @@ Choose a DOI validation pattern
 \subsection{Functions}{
 \itemize{
 \item \code{is_doi}: Validate a DOI
+}
+\itemize{
 \item \code{str_extract_all_doi}: Extract all DOIs from a string
-}
-}
-}
+}}}
 
 \examples{
 is_doi("10.5281/zenodo.3892950") # TRUE

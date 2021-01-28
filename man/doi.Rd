@@ -14,7 +14,7 @@ doi(prefix, suffix)
 
 \method{format}{biblids_doi}(x, ...)
 
-pillar_shaft.biblids_doi(x, ...)
+\method{pillar_shaft}{biblids_doi}(x, ...)
 
 \method{knit_print}{biblids_doi}(x, inline = FALSE, ...)
 }
@@ -42,12 +42,18 @@ Usually set by knitr.}
 S3 record class for DOIs.
 }
 \section{Related Functions and Methods}{
-\subsection{Functions}{
+\subsection{Methods extending \code{biblids_doi} class (by generic):}{
 \itemize{
-\item \code{as.character.biblids_doi}: convert to character vector
-\item \code{format.biblids_doi}: pretty printing in the R console.
-\item \code{pillar_shaft.biblids_doi}: pretty printing in \code{\link[tibble:tibble]{tibble::tibble()}}
-\item \code{knit_print.biblids_doi}: pretty printing in R markdown (when knitr is available);
+\item \code{as.character}: convert to character vector
+}
+\itemize{
+\item \code{format}: pretty printing in the R console.
+}
+\itemize{
+\item \code{pillar_shaft}: pretty printing in \code{\link[tibble:tibble]{tibble::tibble()}}
+}
+\itemize{
+\item \code{knit_print}: pretty printing in R markdown (when knitr is available);
 DOIs are printed with protocoll and a link to their doi.org resolution.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
 doi_examples
 }\if{html}{\out{</div>}}
@@ -59,9 +65,7 @@ doi_examples
 }
 
 You can also include DOIs inline with \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}, \href{https://doi.org/10.1002/0470841559.ch1}{\verb{doi:10.1002/0470841559.ch1}}, \href{https://doi.org/NA}{\code{NA}} and \href{https://doi.org/10.11467/isss2003.7.1_11}{\code{doi:10.11467/isss2003.7.1_11}}.
-}
-}
-}
+}}}
 
 \examples{
 doi_examples <- doi(

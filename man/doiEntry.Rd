@@ -50,11 +50,13 @@ Accept, validate and return DOIs in a shiny app.
 \subsection{Functions}{
 \itemize{
 \item \code{doiEntryApp}: Test app
+}
+\itemize{
 \item \code{doiEntryUI}: Module UI
+}
+\itemize{
 \item \code{doiEntryServer}: Module server
-}
-}
-}
+}}}
 
 \seealso{
 Other doi: 
