@@ -9,6 +9,14 @@ test_that("doi helper errors on invalid inputs", {
   expect_error(doi(prefix = 1L, suffix = 2.2))
 })
 
+test_that("DOIs are printed and formatted", {
+  dois_2 <- doi_examples[1:2]
+  testthat::expect_snapshot(as.character(dois_2))
+  testthat::expect_snapshot(format(dois_2))
+  testthat::expect_snapshot(knitr::knit_print(dois_2))
+  testthat::expect_snapshot(knitr::knit_print(dois_2, inline = TRUE))
+})
+
 test_that("good crossref DOI is accepted", {
   # from https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/
   expect_true(is_doi("10.13003/5jchdy"))

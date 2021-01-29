@@ -14,6 +14,43 @@
     3 NA                      
     4 10.11467/isss2003.7.1_11
 
+# DOIs are printed and formatted
+
+    Code
+      as.character(dois_2)
+    Output
+      [1] "doi:10.1038/nphys1170"      "doi:10.1002/0470841559.ch1"
+
+---
+
+    Code
+      format(dois_2)
+    Output
+      [1] "10.1038/nphys1170     " "10.1002/0470841559.ch1"
+
+---
+
+    Code
+      knit_print(dois_2)
+    Output
+      [1] "- [`doi:10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n"          
+      [2] "- [`doi:10.1002/0470841559.ch1`](https://doi.org/10.1002/0470841559.ch1)\n"
+      attr(,"class")
+      [1] "knit_asis"
+      attr(,"knit_cacheable")
+      [1] NA
+
+---
+
+    Code
+      knit_print(dois_2, inline = TRUE)
+    Output
+      [1] "[`doi:10.1038/nphys1170`](https://doi.org/10.1038/nphys1170) and [`doi:10.1002/0470841559.ch1`](https://doi.org/10.1002/0470841559.ch1)"
+      attr(,"class")
+      [1] "knit_asis"
+      attr(,"knit_cacheable")
+      [1] NA
+
 # DOIs are extracted
 
     Code
