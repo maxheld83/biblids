@@ -4,7 +4,7 @@
 \name{biblids-package}
 \alias{biblids}
 \alias{biblids-package}
-\title{biblids: Validating with bibliometric identifiers}
+\title{biblids: Validating bibliometric identifiers}
 \description{
 Provides lightweight validation and normalisation for bibliometric identifiers such as DOIs.
     Optionally (with `Suggests` dependencies) includes checkmate assertions, testthat expectations and shiny input modules.

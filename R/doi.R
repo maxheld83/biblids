@@ -10,7 +10,8 @@
 #' @export
 #' @family doi
 doi <- function(prefix, suffix) {
-  new_doi(prefix, suffix)
+  x <- new_doi(prefix, suffix)
+  validate_doi(x)
 }
 
 #' Constructor worker
@@ -20,6 +21,12 @@ new_doi <- function(prefix = character(), suffix = character()) {
   vctrs::vec_assert(prefix, ptype = character())
   vctrs::vec_assert(suffix, ptype = character())
   vctrs::new_rcrd(list(prefix = prefix, suffix = suffix), class = "biblids_doi")
+}
+
+#' Validator worker
+#' @noRd
+validate_doi <- function(x) {
+  x
 }
 
 #' @describeIn doi convert to character vector
@@ -63,7 +70,6 @@ format.biblids_doi <- function(x, ...) {
   format(as.character.biblids_doi(x, protocol = FALSE))
 }
 
-# exported in zzz.R if pillar is available
 #' @describeIn doi pretty printing in [tibble::tibble()]
 #' @exportS3Method pillar::pillar_shaft
 #' @method pillar_shaft biblids_doi
@@ -75,7 +81,6 @@ pillar_shaft.biblids_doi <- function(x, ...) {
   pillar::new_pillar_shaft_simple(out)
 }
 
-# exported in zzz if knitr is available
 #' @describeIn doi pretty printing in R markdown (when knitr is available);
 #' DOIs are printed with protocoll and a link to their doi.org resolution.
 #' 
