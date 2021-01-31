@@ -31,7 +31,19 @@
 ---
 
     Code
-      knit_print(dois_2)
+      knitr::knit_print(dois_2)
+    Output
+      [1] "- [`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n"          
+      [2] "- [`https://doi.org/10.1002/0470841559.ch1`](https://doi.org/10.1002/0470841559.ch1)\n"
+      attr(,"class")
+      [1] "knit_asis"
+      attr(,"knit_cacheable")
+      [1] NA
+
+---
+
+    Code
+      knitr::knit_print(dois_2, display = "doi")
     Output
       [1] "- [`doi:10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n"          
       [2] "- [`doi:10.1002/0470841559.ch1`](https://doi.org/10.1002/0470841559.ch1)\n"
@@ -43,9 +55,9 @@
 ---
 
     Code
-      knit_print(dois_2, inline = TRUE)
+      knitr::knit_print(dois_2, inline = TRUE)
     Output
-      [1] "[`doi:10.1038/nphys1170`](https://doi.org/10.1038/nphys1170) and [`doi:10.1002/0470841559.ch1`](https://doi.org/10.1002/0470841559.ch1)"
+      [1] "[`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170) and [`https://doi.org/10.1002/0470841559.ch1`](https://doi.org/10.1002/0470841559.ch1)"
       attr(,"class")
       [1] "knit_asis"
       attr(,"knit_cacheable")

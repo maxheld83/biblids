@@ -16,7 +16,12 @@ doi(prefix, suffix)
 
 \method{pillar_shaft}{biblids_doi}(x, ...)
 
-\method{knit_print}{biblids_doi}(x, inline = FALSE, ...)
+\method{knit_print}{biblids_doi}(
+  x,
+  display = getOption("biblids.doi_display", default = "crossref"),
+  inline = FALSE,
+  ...
+)
 }
 \arguments{
 \item{prefix}{the naming authority.}
@@ -34,6 +39,14 @@ Recommended unless protocol is already obvious from the context, such as in a co
 
 \item{subtle_slash}{logical flag, whether to use \link[pillar:style_subtle]{pillar::style_subtle} slash between prefix and suffix.
 Only for internal use, inside tibble printing.}
+
+\item{display}{character scaling, giving how to display a DOI.
+Must be one of:
+\itemize{
+\item \code{"crossref"} (recommended) to apply their \href{https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/}{display guidelines}.
+Appears identical to the \href{https://support.datacite.org/docs/datacite-doi-display-guidelines}{DataCite display guidelines}.
+\item \code{"doi"}: to apply the DOI Foundation \href{https://www.doi.org/doi_handbook/2_Numbering.html#2.6}{presentation guidelines}.
+}}
 
 \item{inline}{logical flag, giving whether to render DOIs as a chunk output or inline R.
 Usually set by knitr.}
@@ -55,7 +68,16 @@ S3 record class for DOIs.
 \itemize{
 \item \code{knit_print}: pretty printing in R markdown (when knitr is available);
 DOIs are printed with protocoll and a link to their doi.org resolution.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
+# defaults to crossref style (recommended)
 doi_examples
+}\if{html}{\out{</div>}}
+\itemize{
+\item \url{https://doi.org/10.1038/nphys1170}
+\item \url{https://doi.org/10.1002/0470841559.ch1}
+\item \url{https://doi.org/NA}
+\item \url{https://doi.org/10.11467/isss2003.7.1_11}
+}\if{html}{\out{<div class="r">}}\preformatted{# or use doi style
+knitr::knit_print(doi_examples, display = "doi")
 }\if{html}{\out{</div>}}
 \itemize{
 \item \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}
@@ -64,7 +86,7 @@ doi_examples
 \item \href{https://doi.org/10.11467/isss2003.7.1_11}{\code{doi:10.11467/isss2003.7.1_11}}
 }
 
-You can also include DOIs inline with \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}, \href{https://doi.org/10.1002/0470841559.ch1}{\verb{doi:10.1002/0470841559.ch1}}, \href{https://doi.org/NA}{\code{NA}} and \href{https://doi.org/10.11467/isss2003.7.1_11}{\code{doi:10.11467/isss2003.7.1_11}}.
+You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \url{https://doi.org/10.1002/0470841559.ch1}, \url{https://doi.org/NA} and \url{https://doi.org/10.11467/isss2003.7.1_11}.
 }}}
 
 \examples{

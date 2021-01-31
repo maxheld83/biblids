@@ -14,6 +14,7 @@ test_that("DOIs are printed and formatted", {
   testthat::expect_snapshot(as.character(dois_2))
   testthat::expect_snapshot(format(dois_2))
   testthat::expect_snapshot(knitr::knit_print(dois_2))
+  testthat::expect_snapshot(knitr::knit_print(dois_2, display = "doi"))
   testthat::expect_snapshot(knitr::knit_print(dois_2, inline = TRUE))
 })
 

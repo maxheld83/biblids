@@ -86,10 +86,18 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 #' 
 #' ```{r}
 #' library(knitr)
+#' # defaults to crossref style (recommended)
 #' doi_examples
+#' # or use doi style
+#' knitr::knit_print(doi_examples, display = "doi")
 #' ```
 #' 
 #' You can also include DOIs inline with `r doi_examples`.
+#' @param display character scaling, giving how to display a DOI.
+#' Must be one of:
+#' - `"crossref"` (recommended) to apply their [display guidelines](https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/).
+#'    Appears identical to the [DataCite display guidelines](https://support.datacite.org/docs/datacite-doi-display-guidelines).
+#' - `"doi"`: to apply the DOI Foundation [presentation guidelines](https://www.doi.org/doi_handbook/2_Numbering.html#2.6).
 # TODO @inheritParams inline arg from knitr, blocked by https://github.com/yihui/knitr/issues/1565
 #' @param inline 
 #' logical flag, giving whether to render DOIs as a chunk output or inline R.
@@ -97,11 +105,21 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 #' @exportS3Method knitr::knit_print
 #' @method knit_print biblids_doi
 #' @inheritParams knitr::knit_print
-knit_print.biblids_doi <- function(x, inline = FALSE, ...) {
+knit_print.biblids_doi <- function(x, 
+                                  display = getOption("biblids.doi_display", default = "crossref"), 
+                                  inline = FALSE,
+                                  ...) {
   requireNamespace2("knitr")
-  # always add protocol because context is not guaranteed
+  display <- rlang::arg_match(
+    display, 
+    values = c("crossref", "doi")
+  )
+  link_text <- switch(display,
+    "crossref" = paste0("https://doi.org/", as.character(x, protocol = FALSE)),
+    "doi" = as.character(x, protocol = TRUE)
+  )
   with_url <- paste0(
-    "[`", as.character.biblids_doi(x, protocol = TRUE), "`]", # text
+    "[`", link_text, "`]", # text
     "(https://doi.org/", as.character.biblids_doi(x, protocol = FALSE), ")"
   )
   if (inline) {
