@@ -5,8 +5,13 @@ test_that("doi helper creates doi records", {
   testthat::expect_snapshot_output(tibble::tibble(doi_examples))
 })
 
-test_that("dois cannot have NA fields", {
-  testthat::expect_error(doi("10.1234", NA))
+test_that("dois are cast from more constrained types", {
+  testthat::expect_snapshot(doi(factor("10.13003"), factor("5jchdy")))
+})
+
+test_that("doi with one NA field become all NA", {
+  testthat::expect_true(is.na(doi(NA, "5jchdy")))
+  testthat::expect_snapshot(doi(c(NA, "10.13003"), c("5jchdy", "5jchdy")))
 })
 
 test_that("doi helper errors on invalid inputs", {

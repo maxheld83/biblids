@@ -10,6 +10,8 @@
 #' @export
 #' @family doi
 doi <- function(prefix = character(), suffix = character()) {
+  prefix <- vctrs::vec_cast(prefix, to = character())
+  suffix <- vctrs::vec_cast(suffix, to = character())
   x <- new_doi(prefix, suffix)
   validate_doi(x)
 }
@@ -50,6 +52,12 @@ as.character.biblids_doi <- function(x, ..., protocol = TRUE, subtle_slash = FAL
     s[complete]
   )
   out
+}
+
+#' @method is.na biblids_doi
+#' @export
+is.na.biblids_doi <- function(x, ...) {
+  is.na(vctrs::field(x, "prefix")) || is.na(vctrs::field(x, "suffix"))
 }
 
 #' @export

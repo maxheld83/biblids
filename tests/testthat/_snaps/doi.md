@@ -14,6 +14,22 @@
     3 NA                      
     4 10.11467/isss2003.7.1_11
 
+# dois are cast from more constrained types
+
+    Code
+      doi(factor("10.13003"), factor("5jchdy"))
+    Output
+      <digital object identifier[1]>
+      [1] 10.13003/5jchdy
+
+# doi with one NA field become all NA
+
+    Code
+      doi(c(NA, "10.13003"), c("5jchdy", "5jchdy"))
+    Output
+      <digital object identifier[2]>
+      [1] NA              10.13003/5jchdy
+
 # DOIs are printed and formatted
 
     Code

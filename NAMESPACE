@@ -2,6 +2,7 @@
 
 S3method(as.character,biblids_doi)
 S3method(format,biblids_doi)
+S3method(is.na,biblids_doi)
 S3method(knitr::knit_print,biblids_doi)
 S3method(pillar::pillar_shaft,biblids_doi)
 S3method(vec_ptype_abbr,biblids_doi)
