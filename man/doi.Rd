@@ -8,7 +8,7 @@
 \alias{knit_print.biblids_doi}
 \title{\href{http://doi.org}{Digital Object Identifiers (DOI)}}
 \usage{
-doi(prefix, suffix)
+doi(prefix = character(), suffix = character())
 
 \method{as.character}{biblids_doi}(x, ..., protocol = TRUE, subtle_slash = FALSE)
 

@@ -9,7 +9,7 @@
 #'
 #' @export
 #' @family doi
-doi <- function(prefix, suffix) {
+doi <- function(prefix = character(), suffix = character()) {
   x <- new_doi(prefix, suffix)
   validate_doi(x)
 }
