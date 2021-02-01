@@ -9,6 +9,13 @@ test_that("dois are cast from more constrained types", {
   testthat::expect_snapshot(doi(factor("10.13003"), factor("5jchdy")))
 })
 
+test_that("dois fields are recycled", {
+  testthat::expect_snapshot(doi(
+    "10.1371",
+    c("journal.pbio.0020449", "journal.pbio.0020449.g001")
+  ))
+})
+
 test_that("doi with one NA field become all NA", {
   testthat::expect_true(is.na(doi(NA, "5jchdy")))
   testthat::expect_snapshot(doi(c(NA, "10.13003"), c("5jchdy", "5jchdy")))

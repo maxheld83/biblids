@@ -10,9 +10,10 @@
 #' @export
 #' @family doi
 doi <- function(prefix = character(), suffix = character()) {
-  prefix <- vctrs::vec_cast(prefix, to = character())
-  suffix <- vctrs::vec_cast(suffix, to = character())
-  x <- new_doi(prefix, suffix)
+  l <- list(prefix = prefix, suffix = suffix)
+  l <- purrr::map(l, vctrs::vec_cast, to = character())
+  l <- rlang::exec(vctrs::vec_recycle_common, !!!l)
+  x <- rlang::exec(new_doi, !!!l)
   validate_doi(x)
 }
 

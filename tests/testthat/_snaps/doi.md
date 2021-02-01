@@ -22,6 +22,14 @@
       <digital object identifier[1]>
       [1] 10.13003/5jchdy
 
+# dois fields are recycled
+
+    Code
+      doi("10.1371", c("journal.pbio.0020449", "journal.pbio.0020449.g001"))
+    Output
+      <digital object identifier[2]>
+      [1] 10.1371/journal.pbio.0020449      10.1371/journal.pbio.0020449.g001
+
 # doi with one NA field become all NA
 
     Code
