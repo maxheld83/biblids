@@ -5,6 +5,10 @@ test_that("doi helper creates doi records", {
   testthat::expect_snapshot_output(tibble::tibble(doi_examples))
 })
 
+test_that("dois cannot have NA fields", {
+  testthat::expect_error(doi("10.1234", NA))
+})
+
 test_that("doi helper errors on invalid inputs", {
   expect_error(doi(prefix = 1L, suffix = 2.2))
 })
