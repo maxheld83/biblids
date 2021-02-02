@@ -1,11 +1,13 @@
-test_that("doi helper creates doi records", {
-  testthat::expect_s3_class(doi_examples, class = "biblids_doi")
-  testthat::expect_length(doi_examples, 4)
-  testthat::expect_snapshot_output(doi_examples)
-  testthat::expect_snapshot_output(tibble::tibble(doi_examples))
+# construction ====
+test_that("doi creates empty prototype", {
+  testthat::expect_length(doi(), 0L)
 })
 
-test_that("dois are cast from more constrained types", {
+test_that("doi helper creates doi records", {
+  testthat::expect_snapshot_output(doi_examples)
+})
+
+test_that("doi fields are cast from more constrained types", {
   testthat::expect_snapshot(doi(factor("10.13003"), factor("5jchdy")))
 })
 
@@ -16,31 +18,53 @@ test_that("dois fields are recycled", {
   ))
 })
 
+test_that("doi helper errors on invalid field inputs", {
+  testthat::expect_error(doi(prefix = 1L, suffix = 2.2))
+})
+
+# casting and coercion ====
+
+test_that("dois can be coerced", {
+  testthat::expect_snapshot(c(doi_examples[1], "10.1002/0470841559.ch1"))
+})
+
+test_that("dois can be cast to characters", {
+  testthat::expect_snapshot(as.character(doi_examples))
+})
+
+test_that("characters can be cast to dois", {
+  testthat::expect_snapshot(as_doi(c("10.1002/0470841559.ch1", "10.13003/5jchdy")))
+})
+
+# presentation methods ====
+
+test_that("DOIs are printed and formatted", {
+  testthat::expect_snapshot(format(doi_examples))
+  testthat::expect_snapshot(knitr::knit_print(doi_examples))
+  testthat::expect_snapshot(knitr::knit_print(doi_examples, display = "doi"))
+  testthat::expect_snapshot(knitr::knit_print(doi_examples, inline = TRUE))
+})
+
+test_that("DOIs make pretty tibble columns", {
+  testthat::expect_snapshot_output(tibble::tibble(doi_examples))
+})
+
+
+# other methods ====
+
 test_that("doi with one NA field become all NA", {
   testthat::expect_true(is.na(doi(NA, "5jchdy")))
   testthat::expect_snapshot(doi(c(NA, "10.13003"), c("5jchdy", "5jchdy")))
 })
 
-test_that("doi helper errors on invalid inputs", {
-  expect_error(doi(prefix = 1L, suffix = 2.2))
-})
-
-test_that("DOIs are printed and formatted", {
-  dois_2 <- doi_examples[1:2]
-  testthat::expect_snapshot(as.character(dois_2))
-  testthat::expect_snapshot(format(dois_2))
-  testthat::expect_snapshot(knitr::knit_print(dois_2))
-  testthat::expect_snapshot(knitr::knit_print(dois_2, display = "doi"))
-  testthat::expect_snapshot(knitr::knit_print(dois_2, inline = TRUE))
-})
 
 test_that("good crossref DOI is accepted", {
   # from https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/
-  expect_true(is_doi("10.13003/5jchdy"))
+  expect_true(is_doi2("10.13003/5jchdy"))
 })
 
 test_that("other strings are rejected", {
-  expect_false(is_doi("lorem ipsum"))
+  expect_false(is_doi2("lorem ipsum"))
 })
 
 test_that("DOIs are extracted", {

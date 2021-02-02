@@ -2,7 +2,8 @@
 % Please edit documentation in R/doi.R
 \name{doi}
 \alias{doi}
-\alias{as.character.biblids_doi}
+\alias{is_doi}
+\alias{as_doi}
 \alias{format.biblids_doi}
 \alias{pillar_shaft.biblids_doi}
 \alias{knit_print.biblids_doi}
@@ -10,9 +11,11 @@
 \usage{
 doi(prefix = character(), suffix = character())
 
-\method{as.character}{biblids_doi}(x, ..., protocol = TRUE, subtle_slash = FALSE)
+is_doi(x)
 
-\method{format}{biblids_doi}(x, ...)
+as_doi(x, ...)
+
+\method{format}{biblids_doi}(x, ..., protocol = FALSE)
 
 \method{pillar_shaft}{biblids_doi}(x, ...)
 
@@ -34,11 +37,7 @@ doi(prefix = character(), suffix = character())
 except two optional arguments \code{options} and \code{inline}; see
 the references below.}
 
-\item{protocol}{logical flag, whether to prepend \verb{doi:} handle protocol, as per the official \href{https://doi.org/doi_handbook/2_Numbering.html#2.6.1}{DOI Handbook}.
-Recommended unless protocol is already obvious from the context, such as in a column header.}
-
-\item{subtle_slash}{logical flag, whether to use \link[pillar:style_subtle]{pillar::style_subtle} slash between prefix and suffix.
-Only for internal use, inside tibble printing.}
+\item{protocol}{logical flag, whether to prepend \verb{doi:} handle protocol, as per the official \href{https://doi.org/doi_handbook/2_Numbering.html#2.6.1}{DOI Handbook}.}
 
 \item{display}{character scaling, giving how to display a DOI.
 Must be one of:
@@ -55,47 +54,54 @@ Usually set by knitr.}
 S3 record class for DOIs.
 }
 \section{Related Functions and Methods}{
-\subsection{Methods extending \code{biblids_doi} class (by generic):}{
+\subsection{Functions}{
 \itemize{
-\item \code{as.character}: convert to character vector
+\item \code{is_doi}: test for \code{biblids_doi} class
 }
 \itemize{
-\item \code{format}: pretty printing in the R console.
+\item \code{as_doi}: cast DOIs
+}}
+\subsection{Methods extending \code{biblids_doi} class (by generic):}{
+\itemize{
+\item \code{format}: display a doi
 }
 \itemize{
 \item \code{pillar_shaft}: pretty printing in \code{\link[tibble:tibble]{tibble::tibble()}}
 }
 \itemize{
-\item \code{knit_print}: pretty printing in R markdown (when knitr is available);
-DOIs are printed with protocoll and a link to their doi.org resolution.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
+\item \code{knit_print}: pretty printing in R markdown (when knitr is available):
+DOIs are hyperlined to the doi.org resolution service.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
 # defaults to crossref style (recommended)
 doi_examples
 }\if{html}{\out{</div>}}
 \itemize{
 \item \url{https://doi.org/10.1038/nphys1170}
-\item \url{https://doi.org/10.1002/0470841559.ch1}
-\item \url{https://doi.org/NA}
+\item \code{NA}
 \item \url{https://doi.org/10.11467/isss2003.7.1_11}
 }\if{html}{\out{<div class="r">}}\preformatted{# or use doi style
 knitr::knit_print(doi_examples, display = "doi")
 }\if{html}{\out{</div>}}
 \itemize{
 \item \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}
-\item \href{https://doi.org/10.1002/0470841559.ch1}{\verb{doi:10.1002/0470841559.ch1}}
-\item \href{https://doi.org/NA}{\code{NA}}
+\item \code{NA}
 \item \href{https://doi.org/10.11467/isss2003.7.1_11}{\code{doi:10.11467/isss2003.7.1_11}}
 }
 
-You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \url{https://doi.org/10.1002/0470841559.ch1}, \url{https://doi.org/NA} and \url{https://doi.org/10.11467/isss2003.7.1_11}.
+You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \code{NA} and \url{https://doi.org/10.11467/isss2003.7.1_11}.
 }}}
 
 \examples{
 doi_examples <- doi(
   # example dois are from https://www.doi.org/demos.html
-  prefix = c("10.1038", "10.1002", NA, "10.11467"),
-  suffix = c("nphys1170", "0470841559.ch1", "foobar", "isss2003.7.1_11")
+  prefix = c("10.1038", NA, "10.11467"),
+  suffix = c("nphys1170", "foobar", "isss2003.7.1_11")
 )
-# you can print bare dois
+is_doi(doi_examples)
+as_doi(c(
+   # example DOIs are from https://www.doi.org/demos.html
+   "10.1594/PANGAE.726855",
+ "10.1594/GFZ.GEOFON.gfz2009kciu"
+ ))
 doi_examples
 # there is extra pretty printing inside tibbles
 tibble::tibble(doi_examples)

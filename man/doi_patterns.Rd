@@ -2,13 +2,13 @@
 % Please edit documentation in R/doi.R
 \name{doi_patterns}
 \alias{doi_patterns}
-\alias{is_doi}
+\alias{is_doi2}
 \alias{str_extract_all_doi}
 \title{Choose a DOI validation pattern}
 \usage{
 doi_patterns(type = c("cr-modern", "cr-jws", "regexpal"))
 
-is_doi(x, ...)
+is_doi2(x, ...)
 
 str_extract_all_doi(string, ...)
 }
@@ -45,16 +45,16 @@ Choose a DOI validation pattern
 \section{Related Functions and Methods}{
 \subsection{Functions}{
 \itemize{
-\item \code{is_doi}: Validate a DOI
+\item \code{is_doi2}: Validate a DOI
 }
 \itemize{
 \item \code{str_extract_all_doi}: Extract all DOIs from a string
 }}}
 
 \examples{
-is_doi("10.5281/zenodo.3892950") # TRUE
-is_doi("http://doi.org/10.5281/zenodo.3892951") # TRUE
-is_doi("lorem ipsum") # FALSE
+is_doi2("10.5281/zenodo.3892950") # TRUE
+is_doi2("http://doi.org/10.5281/zenodo.3892951") # TRUE
+is_doi2("lorem ipsum") # FALSE
 
 }
 \seealso{

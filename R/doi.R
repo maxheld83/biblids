@@ -1,3 +1,4 @@
+# construction ====
 #' [Digital Object Identifiers (DOI)](http://doi.org)
 #' 
 #' S3 record class for DOIs.
@@ -11,8 +12,8 @@
 #' @family doi
 doi <- function(prefix = character(), suffix = character()) {
   l <- list(prefix = prefix, suffix = suffix)
-  l <- purrr::map(l, vctrs::vec_cast, to = character())
-  l <- rlang::exec(vctrs::vec_recycle_common, !!!l)
+  l <- purrr::map(l, vec_cast, to = character())
+  l <- rlang::exec(vec_recycle_common, !!!l)
   x <- rlang::exec(new_doi, !!!l)
   validate_doi(x)
 }
@@ -21,63 +22,81 @@ doi <- function(prefix = character(), suffix = character()) {
 #' @inheritParams doi
 #' @noRd
 new_doi <- function(prefix = character(), suffix = character()) {
-  vctrs::vec_assert(prefix, ptype = character())
-  vctrs::vec_assert(suffix, ptype = character())
-  vctrs::new_rcrd(list(prefix = prefix, suffix = suffix), class = "biblids_doi")
+  vec_assert(prefix, ptype = character())
+  vec_assert(suffix, ptype = character())
+  new_rcrd(list(prefix = prefix, suffix = suffix), class = "biblids_doi")
 }
 
-#' Validator worker
+#' Validator worker 
 #' @noRd
 validate_doi <- function(x) {
   x
 }
 
-#' @describeIn doi convert to character vector
+#' @describeIn doi test for `biblids_doi` class
+#' @export
+#' @examples
+#' is_doi(doi_examples)
+is_doi <- function(x) {
+  inherits(x, "biblids_doi")
+}
+
+# casting and coercion ====
+
+#' @export
+vec_ptype2.biblids_doi.biblids_doi <- function(x, y, ...) new_doi()
+
+#' @export
+vec_ptype2.biblids_doi.character <- function(x, y, ...) new_doi()
+
+#' @export
+vec_ptype2.character.biblids_doi <- function(x, y, ...) new_doi()
+
+#' @export
+vec_cast.biblids_doi.biblids_doi <- function(x, to, ...) x
+
+#' @export
+vec_cast.character.biblids_doi <- function(x, to, ...) format(x)
+
+#' @export
+vec_cast.biblids_doi.character <- function(x, to, ...) {
+  res <- stringr::str_split_fixed(x, pattern = "/", n = 2)
+  new_doi(res[, 1], res[, 2])
+}
+
+#' @describeIn doi cast DOIs
+#' @examples
+#' as_doi(c(
+#'    # example DOIs are from https://www.doi.org/demos.html
+#'    "10.1594/PANGAE.726855",
+#'  "10.1594/GFZ.GEOFON.gfz2009kciu"
+#'  ))
+#' @export
+as_doi <- function(x, ...) UseMethod("as_doi")
+
+#' @export
+as_doi.default <- function(x, ...) vec_cast(x, new_doi())
+
+# presentation methods ====
+
+#' @describeIn doi display a doi
 #' @param protocol 
 #' logical flag, whether to prepend `doi:` handle protocol, as per the official [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
-#' Recommended unless protocol is already obvious from the context, such as in a column header.
-#' @param subtle_slash
-#' logical flag, whether to use [pillar::style_subtle] slash between prefix and suffix.
-#' Only for internal use, inside tibble printing.
 #' @export
-as.character.biblids_doi <- function(x, ..., protocol = TRUE, subtle_slash = FALSE) {
+#' @examples 
+#' doi_examples
+format.biblids_doi <- function(x, ..., protocol = FALSE) {
   checkmate::assert_flag(protocol)
-  p <- vctrs::field(x, "prefix")
-  s <- vctrs::field(x, "suffix")
-  complete <- !is.na(p) & !is.na(s)
-  out <- rep(NA_character_, vctrs::vec_size(x))
-  out[complete] <- paste0(
-    if (protocol) "doi:",
-    p[complete],
-    ifelse(subtle_slash, pillar::style_subtle("/"), "/"),
-    s[complete]
-  )
+  out <- paste0(if (protocol) "doi:", field(x, "prefix"), "/", field(x, "suffix"))
+  out[is.na(x)] <- NA_character_
   out
 }
 
-#' @method is.na biblids_doi
 #' @export
-is.na.biblids_doi <- function(x, ...) {
-  is.na(vctrs::field(x, "prefix")) || is.na(vctrs::field(x, "suffix"))
-}
-
-#' @export
-#' @importFrom vctrs vec_ptype_abbr
 vec_ptype_abbr.biblids_doi <- function(x, ...) "doi"
 
 #' @export
-#' @importFrom vctrs vec_ptype_full
 vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
-
-#' @describeIn doi pretty printing in the R console.
-#' @export
-#' @examples 
-#' # you can print bare dois
-#' doi_examples
-format.biblids_doi <- function(x, ...) {
-  # vctrs print method always shows class so protocol is unecessary
-  format(as.character.biblids_doi(x, protocol = FALSE))
-}
 
 #' @describeIn doi pretty printing in [tibble::tibble()]
 #' @exportS3Method pillar::pillar_shaft
@@ -86,12 +105,14 @@ format.biblids_doi <- function(x, ...) {
 #' # there is extra pretty printing inside tibbles
 #' tibble::tibble(doi_examples)
 pillar_shaft.biblids_doi <- function(x, ...) {
-  out <- as.character.biblids_doi(x, protocol = FALSE, subtle_slash = TRUE)
+  requireNamespace2("pillar")
+  out <- format(x, protocol = FALSE)
+  out <- stringr::str_replace(out, "/", pillar::style_subtle("/"))
   pillar::new_pillar_shaft_simple(out)
 }
 
-#' @describeIn doi pretty printing in R markdown (when knitr is available);
-#' DOIs are printed with protocoll and a link to their doi.org resolution.
+#' @describeIn doi pretty printing in R markdown (when knitr is available):
+#' DOIs are hyperlined to the doi.org resolution service.
 #' 
 #' ```{r}
 #' library(knitr)
@@ -119,18 +140,16 @@ knit_print.biblids_doi <- function(x,
                                   inline = FALSE,
                                   ...) {
   requireNamespace2("knitr")
-  display <- rlang::arg_match(
-    display, 
-    values = c("crossref", "doi")
-  )
+  display <- rlang::arg_match(display, values = c("crossref", "doi"))
   link_text <- switch(display,
-    "crossref" = paste0("https://doi.org/", as.character(x, protocol = FALSE)),
-    "doi" = as.character(x, protocol = TRUE)
+    "crossref" = paste0("https://doi.org/", format(x)),
+    "doi" = format(x, protocol = TRUE)
   )
   with_url <- paste0(
     "[`", link_text, "`]", # text
-    "(https://doi.org/", as.character.biblids_doi(x, protocol = FALSE), ")"
+    "(https://doi.org/", format(x), ")"
   )
+  with_url[is.na(x)] <- "`NA`"
   if (inline) {
     requireNamespace2("glue")
     out <- glue::glue_collapse(x = with_url, sep = ", ", last = " and ")
@@ -138,6 +157,14 @@ knit_print.biblids_doi <- function(x,
     out <- paste0("- ", with_url, "\n")
   }
   knitr::asis_output(out)
+}
+
+# other methods ====
+
+#' @method is.na biblids_doi
+#' @export
+is.na.biblids_doi <- function(x, ...) {
+  is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
 }
 
 #' Choose a DOI validation pattern
@@ -174,12 +201,12 @@ doi_patterns <- function(type = c("cr-modern", "cr-jws", "regexpal")) {
 #' @inheritDotParams doi_patterns
 #'
 #' @examples
-#' is_doi("10.5281/zenodo.3892950") # TRUE
-#' is_doi("http://doi.org/10.5281/zenodo.3892951") # TRUE
-#' is_doi("lorem ipsum") # FALSE
+#' is_doi2("10.5281/zenodo.3892950") # TRUE
+#' is_doi2("http://doi.org/10.5281/zenodo.3892951") # TRUE
+#' is_doi2("lorem ipsum") # FALSE
 #'
 #' @export
-is_doi <- function(x, ...) {
+is_doi2 <- function(x, ...) {
   checkmate::assert_string(x)
   grepl(pattern = doi_patterns(...), x = x, ignore.case = TRUE)
 }
