@@ -60,7 +60,7 @@ is_doi2("lorem ipsum") # FALSE
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
-\code{\link{doi_examples}},
+\code{\link{doi_examples}()},
 \code{\link{doi}()}
 }
 \concept{doi}

@@ -7,6 +7,7 @@
 \alias{format.biblids_doi}
 \alias{pillar_shaft.biblids_doi}
 \alias{knit_print.biblids_doi}
+\alias{is.na.biblids_doi}
 \title{\href{http://doi.org}{Digital Object Identifiers (DOI)}}
 \usage{
 doi(prefix = character(), suffix = character())
@@ -25,6 +26,8 @@ as_doi(x, ...)
   inline = FALSE,
   ...
 )
+
+\method{is.na}{biblids_doi}(x, ...)
 }
 \arguments{
 \item{prefix}{the naming authority.}
@@ -59,7 +62,7 @@ S3 record class for DOIs.
 \item \code{is_doi}: test for \code{biblids_doi} class
 }
 \itemize{
-\item \code{as_doi}: cast DOIs
+\item \code{as_doi}: cast DOIs from other forms
 }}
 \subsection{Methods extending \code{biblids_doi} class (by generic):}{
 \itemize{
@@ -72,14 +75,14 @@ S3 record class for DOIs.
 \item \code{knit_print}: pretty printing in R markdown (when knitr is available):
 DOIs are hyperlined to the doi.org resolution service.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
 # defaults to crossref style (recommended)
-doi_examples
+doi_examples()[1:3]
 }\if{html}{\out{</div>}}
 \itemize{
 \item \url{https://doi.org/10.1038/nphys1170}
 \item \code{NA}
 \item \url{https://doi.org/10.11467/isss2003.7.1_11}
 }\if{html}{\out{<div class="r">}}\preformatted{# or use doi style
-knitr::knit_print(doi_examples, display = "doi")
+knitr::knit_print(doi_examples()[1:3], display = "doi")
 }\if{html}{\out{</div>}}
 \itemize{
 \item \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}
@@ -88,28 +91,32 @@ knitr::knit_print(doi_examples, display = "doi")
 }
 
 You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \code{NA} and \url{https://doi.org/10.11467/isss2003.7.1_11}.
+}
+\itemize{
+\item \code{is.na}: a DOI needs \code{prefix} \emph{and} \code{suffix}, otherwise it's \code{NA}
 }}}
 
 \examples{
-doi_examples <- doi(
+doi(
   # example dois are from https://www.doi.org/demos.html
   prefix = c("10.1038", NA, "10.11467"),
   suffix = c("nphys1170", "foobar", "isss2003.7.1_11")
 )
-is_doi(doi_examples)
+is_doi(doi_examples())
 as_doi(c(
-   # example DOIs are from https://www.doi.org/demos.html
-   "10.1594/PANGAE.726855",
- "10.1594/GFZ.GEOFON.gfz2009kciu"
- ))
-doi_examples
+  # example DOIs are from https://www.doi.org/demos.html
+  "10.1594/PANGAE.726855",
+  "10.1594/GFZ.GEOFON.gfz2009kciu"
+))
 # there is extra pretty printing inside tibbles
-tibble::tibble(doi_examples)
+tibble::tibble(doi_examples()[1:3])
+# this can be constructed but will be NA
+is.na(doi(prefix = "10.5194", suffix = NA))
 }
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
-\code{\link{doi_examples}},
+\code{\link{doi_examples}()},
 \code{\link{doi_patterns}()}
 }
 \concept{doi}

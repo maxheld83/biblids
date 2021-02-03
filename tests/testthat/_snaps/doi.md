@@ -22,7 +22,7 @@
 # dois can be coerced
 
     Code
-      c(doi_examples[1], "10.1002/0470841559.ch1")
+      c(doi_examples()[1], "10.1002/0470841559.ch1")
     Output
       <digital object identifier[2]>
       [1] 10.1038/nphys1170      10.1002/0470841559.ch1
@@ -30,7 +30,7 @@
 # dois can be cast to characters
 
     Code
-      as.character(doi_examples)
+      as.character(doi_examples()[1:3])
     Output
       [1] "10.1038/nphys1170"        NA                        
       [3] "10.11467/isss2003.7.1_11"
@@ -38,15 +38,15 @@
 # characters can be cast to dois
 
     Code
-      as_doi(c("10.1002/0470841559.ch1", "10.13003/5jchdy"))
+      source(path_ex_file("doi", "as_doi.R"))$value
     Output
       <digital object identifier[2]>
-      [1] 10.1002/0470841559.ch1 10.13003/5jchdy       
+      [1] 10.1594/PANGAE.726855          10.1594/GFZ.GEOFON.gfz2009kciu
 
 # DOIs are printed and formatted
 
     Code
-      format(doi_examples)
+      format(doi_examples()[1:3])
     Output
       [1] "10.1038/nphys1170"        NA                        
       [3] "10.11467/isss2003.7.1_11"
@@ -54,7 +54,7 @@
 ---
 
     Code
-      knitr::knit_print(doi_examples)
+      knitr::knit_print(doi_examples()[1:3])
     Output
       [1] "- [`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n"              
       [2] "- `NA`\n"                                                                                  
@@ -67,7 +67,7 @@
 ---
 
     Code
-      knitr::knit_print(doi_examples, display = "doi")
+      knitr::knit_print(doi_examples()[1:3], display = "doi")
     Output
       [1] "- [`doi:10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n"              
       [2] "- `NA`\n"                                                                      
@@ -80,7 +80,7 @@
 ---
 
     Code
-      knitr::knit_print(doi_examples, inline = TRUE)
+      knitr::knit_print(doi_examples()[1:3], inline = TRUE)
     Output
       [1] "[`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170), `NA` and [`https://doi.org/10.11467/isss2003.7.1_11`](https://doi.org/10.11467/isss2003.7.1_11)"
       attr(,"class")
@@ -91,7 +91,7 @@
 # DOIs make pretty tibble columns
 
     # A tibble: 3 x 1
-      doi_examples            
+      `doi_examples()[1:3]`   
       <doi>                   
     1 10.1038/nphys1170       
     2 NA                      

@@ -60,7 +60,7 @@ Accept, validate and return DOIs in a shiny app.
 
 \seealso{
 Other doi: 
-\code{\link{doi_examples}},
+\code{\link{doi_examples}()},
 \code{\link{doi_patterns}()},
 \code{\link{doi}()}
 }

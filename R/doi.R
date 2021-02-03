@@ -6,7 +6,7 @@
 #' @param prefix the naming authority.
 #' @param suffix the unique string chosen by the registrant
 #' 
-#' @example R/doi_examples.R
+#' @example inst/examples/doi/doi.R
 #'
 #' @export
 #' @family doi
@@ -36,7 +36,7 @@ validate_doi <- function(x) {
 #' @describeIn doi test for `biblids_doi` class
 #' @export
 #' @examples
-#' is_doi(doi_examples)
+#' is_doi(doi_examples())
 is_doi <- function(x) {
   inherits(x, "biblids_doi")
 }
@@ -64,13 +64,9 @@ vec_cast.biblids_doi.character <- function(x, to, ...) {
   new_doi(res[, 1], res[, 2])
 }
 
-#' @describeIn doi cast DOIs
-#' @examples
-#' as_doi(c(
-#'    # example DOIs are from https://www.doi.org/demos.html
-#'    "10.1594/PANGAE.726855",
-#'  "10.1594/GFZ.GEOFON.gfz2009kciu"
-#'  ))
+#' @describeIn doi cast DOIs from other forms
+#' @example inst/examples/doi/as_doi.R
+#' 
 #' @export
 as_doi <- function(x, ...) UseMethod("as_doi")
 
@@ -83,8 +79,6 @@ as_doi.default <- function(x, ...) vec_cast(x, new_doi())
 #' @param protocol 
 #' logical flag, whether to prepend `doi:` handle protocol, as per the official [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
 #' @export
-#' @examples 
-#' doi_examples
 format.biblids_doi <- function(x, ..., protocol = FALSE) {
   checkmate::assert_flag(protocol)
   out <- paste0(if (protocol) "doi:", field(x, "prefix"), "/", field(x, "suffix"))
@@ -103,7 +97,7 @@ vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
 #' @method pillar_shaft biblids_doi
 #' @examples
 #' # there is extra pretty printing inside tibbles
-#' tibble::tibble(doi_examples)
+#' tibble::tibble(doi_examples()[1:3])
 pillar_shaft.biblids_doi <- function(x, ...) {
   requireNamespace2("pillar")
   out <- format(x, protocol = FALSE)
@@ -117,12 +111,12 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 #' ```{r}
 #' library(knitr)
 #' # defaults to crossref style (recommended)
-#' doi_examples
+#' doi_examples()[1:3]
 #' # or use doi style
-#' knitr::knit_print(doi_examples, display = "doi")
+#' knitr::knit_print(doi_examples()[1:3], display = "doi")
 #' ```
 #' 
-#' You can also include DOIs inline with `r doi_examples`.
+#' You can also include DOIs inline with `r doi_examples()[1:3]`.
 #' @param display character scaling, giving how to display a DOI.
 #' Must be one of:
 #' - `"crossref"` (recommended) to apply their [display guidelines](https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/).
@@ -161,8 +155,12 @@ knit_print.biblids_doi <- function(x,
 
 # other methods ====
 
+#' @describeIn doi a DOI needs `prefix` *and* `suffix`, otherwise it's `NA`
 #' @method is.na biblids_doi
 #' @export
+#' @examples
+#' # this can be constructed but will be NA
+#' is.na(doi(prefix = "10.5194", suffix = NA))
 is.na.biblids_doi <- function(x, ...) {
   is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
 }
@@ -329,6 +327,11 @@ is_doi_on_cr <- function(x) {
 #' @export
 #' @family doi
 #' @examples
-#' doi_examples
-#' @name doi_examples
-NULL
+#' doi_examples()
+doi_examples <- function() {
+  ex_files <- c("doi.R", "as_doi.R")
+  res <- purrr::map(ex_files, function(x) {
+    source(path_ex_file("doi", x))$value
+  })
+  purrr::reduce(res, c)
+}

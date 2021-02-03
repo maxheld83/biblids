@@ -14,3 +14,9 @@ requireNamespace2 <- function(x) {
     )
   }
 }
+
+# Create path to examples
+path_ex_file <- function(...) {
+  args <- c("examples", list(...))
+  rlang::exec(system.file, !!!args, package = "biblids", mustWork = TRUE)
+}

@@ -3,11 +3,14 @@
 \name{doi_examples}
 \alias{doi_examples}
 \title{Some example dois}
+\usage{
+doi_examples()
+}
 \description{
 Some example dois
 }
 \examples{
-doi_examples
+doi_examples()
 }
 \seealso{
 Other doi: 

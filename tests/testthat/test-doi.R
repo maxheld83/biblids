@@ -4,7 +4,7 @@ test_that("doi creates empty prototype", {
 })
 
 test_that("doi helper creates doi records", {
-  testthat::expect_snapshot_output(doi_examples)
+  testthat::expect_snapshot_output(doi_examples()[1:3])
 })
 
 test_that("doi fields are cast from more constrained types", {
@@ -25,28 +25,32 @@ test_that("doi helper errors on invalid field inputs", {
 # casting and coercion ====
 
 test_that("dois can be coerced", {
-  testthat::expect_snapshot(c(doi_examples[1], "10.1002/0470841559.ch1"))
+  testthat::expect_snapshot(c(doi_examples()[1], "10.1002/0470841559.ch1"))
 })
 
 test_that("dois can be cast to characters", {
-  testthat::expect_snapshot(as.character(doi_examples))
+  testthat::expect_snapshot(as.character(doi_examples()[1:3]))
 })
 
 test_that("characters can be cast to dois", {
-  testthat::expect_snapshot(as_doi(c("10.1002/0470841559.ch1", "10.13003/5jchdy")))
+  testthat::expect_snapshot(source(path_ex_file("doi", "as_doi.R"))$value)
 })
 
 # presentation methods ====
 
 test_that("DOIs are printed and formatted", {
-  testthat::expect_snapshot(format(doi_examples))
-  testthat::expect_snapshot(knitr::knit_print(doi_examples))
-  testthat::expect_snapshot(knitr::knit_print(doi_examples, display = "doi"))
-  testthat::expect_snapshot(knitr::knit_print(doi_examples, inline = TRUE))
+  testthat::expect_snapshot(format(doi_examples()[1:3]))
+  testthat::expect_snapshot(knitr::knit_print(doi_examples()[1:3]))
+  testthat::expect_snapshot(
+    knitr::knit_print(doi_examples()[1:3], display = "doi")
+  )
+  testthat::expect_snapshot(
+    knitr::knit_print(doi_examples()[1:3], inline = TRUE)
+  )
 })
 
 test_that("DOIs make pretty tibble columns", {
-  testthat::expect_snapshot_output(tibble::tibble(doi_examples))
+  testthat::expect_snapshot_output(tibble::tibble(doi_examples()[1:3]))
 })
 
 
