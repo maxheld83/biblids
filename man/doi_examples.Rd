@@ -2,12 +2,12 @@
 % Please edit documentation in R/doi.R
 \name{doi_examples}
 \alias{doi_examples}
-\title{Some example dois}
+\title{Example DOIs}
 \usage{
 doi_examples()
 }
 \description{
-Some example dois
+Example DOIs
 }
 \examples{
 doi_examples()
@@ -15,7 +15,7 @@ doi_examples()
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
-\code{\link{doi_patterns}()},
-\code{\link{doi}()}
+\code{\link{doi}()},
+\code{\link{str_extract_all_doi}()}
 }
 \concept{doi}

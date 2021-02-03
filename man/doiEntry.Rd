@@ -5,7 +5,7 @@
 \alias{doiEntryApp}
 \alias{doiEntryUI}
 \alias{doiEntryServer}
-\title{Shiny Module for DOI input}
+\title{Enter DOIs through a Shiny Module}
 \usage{
 doiEntryApp()
 
@@ -61,7 +61,7 @@ Accept, validate and return DOIs in a shiny app.
 \seealso{
 Other doi: 
 \code{\link{doi_examples}()},
-\code{\link{doi_patterns}()},
-\code{\link{doi}()}
+\code{\link{doi}()},
+\code{\link{str_extract_all_doi}()}
 }
 \concept{doi}

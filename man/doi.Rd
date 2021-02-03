@@ -59,20 +59,20 @@ S3 record class for DOIs.
 \section{Related Functions and Methods}{
 \subsection{Functions}{
 \itemize{
-\item \code{is_doi}: test for \code{biblids_doi} class
+\item \code{is_doi}: Test for \code{biblids_doi} class
 }
 \itemize{
-\item \code{as_doi}: cast DOIs from other forms
+\item \code{as_doi}: Cast DOIs from other forms
 }}
 \subsection{Methods extending \code{biblids_doi} class (by generic):}{
 \itemize{
-\item \code{format}: display a doi
+\item \code{format}: Display a DOI
 }
 \itemize{
-\item \code{pillar_shaft}: pretty printing in \code{\link[tibble:tibble]{tibble::tibble()}}
+\item \code{pillar_shaft}: Print DOIs in \code{\link[tibble:tibble]{tibble::tibble()}}s
 }
 \itemize{
-\item \code{knit_print}: pretty printing in R markdown (when knitr is available):
+\item \code{knit_print}: Print DOIs in R markdown (when knitr is available):
 DOIs are hyperlined to the doi.org resolution service.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
 # defaults to crossref style (recommended)
 doi_examples()[1:3]
@@ -93,7 +93,7 @@ knitr::knit_print(doi_examples()[1:3], display = "doi")
 You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \code{NA} and \url{https://doi.org/10.11467/isss2003.7.1_11}.
 }
 \itemize{
-\item \code{is.na}: a DOI needs \code{prefix} \emph{and} \code{suffix}, otherwise it's \code{NA}
+\item \code{is.na}: Detect if \code{prefix} and/\emph{or} \code{suffix} is missing
 }}}
 
 \examples{
@@ -117,6 +117,6 @@ is.na(doi(prefix = "10.5194", suffix = NA))
 Other doi: 
 \code{\link{doiEntry}},
 \code{\link{doi_examples}()},
-\code{\link{doi_patterns}()}
+\code{\link{str_extract_all_doi}()}
 }
 \concept{doi}

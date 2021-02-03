@@ -73,7 +73,7 @@ is_doi_syntax <- function(x, part = c("prefix", "suffix")) {
   res
 }
 
-#' @describeIn doi test for `biblids_doi` class
+#' @describeIn doi Test for `biblids_doi` class
 #' @export
 #' @examples
 #' is_doi(doi_examples())
@@ -109,7 +109,7 @@ vec_cast.biblids_doi.character <- function(x, to, ...) {
   new_doi(res[, 1], res[, 2])
 }
 
-#' @describeIn doi cast DOIs from other forms
+#' @describeIn doi Cast DOIs from other forms
 #' @example inst/examples/doi/as_doi.R
 #' 
 #' @export
@@ -128,7 +128,7 @@ str_extract_doi <- function(string) {
 
 # presentation methods ====
 
-#' @describeIn doi display a doi
+#' @describeIn doi Display a DOI
 #' @param protocol 
 #' logical flag, whether to prepend `doi:` handle protocol, as per the official [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
 #' @export
@@ -145,7 +145,7 @@ vec_ptype_abbr.biblids_doi <- function(x, ...) "doi"
 #' @export
 vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
 
-#' @describeIn doi pretty printing in [tibble::tibble()]
+#' @describeIn doi Print DOIs in [tibble::tibble()]s
 #' @exportS3Method pillar::pillar_shaft
 #' @method pillar_shaft biblids_doi
 #' @examples
@@ -158,7 +158,7 @@ pillar_shaft.biblids_doi <- function(x, ...) {
   pillar::new_pillar_shaft_simple(out)
 }
 
-#' @describeIn doi pretty printing in R markdown (when knitr is available):
+#' @describeIn doi Print DOIs in R markdown (when knitr is available):
 #' DOIs are hyperlined to the doi.org resolution service.
 #' 
 #' ```{r}
@@ -208,7 +208,7 @@ knit_print.biblids_doi <- function(x,
 
 # other methods ====
 
-#' @describeIn doi a DOI needs `prefix` *and* `suffix`, otherwise it's `NA`
+#' @describeIn doi Detect if `prefix` and/*or* `suffix` is missing
 #' @method is.na biblids_doi
 #' @export
 #' @examples
@@ -218,18 +218,36 @@ is.na.biblids_doi <- function(x, ...) {
   is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
 }
 
-#' Choose a DOI validation pattern
+#' Extract DOIs from strings
+#' 
+#' Extracts all DOIs to be found in a character string.
+#' Useful when there are *several* DOIs in *one* string.
+#' @inheritParams stringr::str_extract_all
+#' @inheritParams doi_patterns
+#' @family doi
+#' 
+#' @export
+str_extract_all_doi <- function(string, type = "doi.org") {
+  stringr::str_extract_all(
+    string = string,
+    pattern = stringr::regex(paste0(doi_patterns(type), collapse = "/")),
+    simplify = TRUE
+  )
+}
+
+#' @describeIn str_extract_all_doi Regular expressions for DOIs
 #' 
 #' @param type
 #' a character string giving the type of validation to run.
 #' Implemented as regular expressions (see source code).
 #' Must be one these syntax specifications:
-#' - `"doi.org"` from [doi.org](https://www.doi.org/doi_handbook/2_Numbering.html#2.2), via [stack-overflow](https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page) (recommended)
+#' - `"doi.org"` from [doi.org](https://www.doi.org/doi_handbook/2_Numbering.html#2.2), via [stack-overflow](https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page) (recommended):
 #' - `"cr-modern"` from [crossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/)
+#' See examples.
 #' 
-#' @return a named character vector of `prefix` and `suffix`, each a raw string with a regular expression.
-#' 
-#' @family doi
+#' @examples
+#' doi_patterns("doi.org")
+#' doi_patterns("cr-modern")
 #' 
 #' @export
 doi_patterns <- function(type = c("doi.org", "cr-modern")) {
@@ -250,22 +268,10 @@ doi_patterns <- function(type = c("doi.org", "cr-modern")) {
   res[[type]]
 }
 
-#' @describeIn doi_patterns Extract all DOIs from a string
-#' @inheritParams stringr::str_extract_all
-#' @inheritDotParams doi_patterns
-str_extract_all_doi <- function(string, ...) {
-  requireNamespace2("stringr")
-  stringr::str_extract_all(
-    string = string,
-    pattern = stringr::regex(paste0(doi_patterns(), collapse = "/"), ignore_case = TRUE),
-    simplify = TRUE
-  )
-}
-
 
 # shiny modules ====
 
-#' Shiny Module for DOI input
+#' Enter DOIs through a Shiny Module
 #' 
 #' Accept, validate and return DOIs in a shiny app.
 #' @family doi
@@ -364,7 +370,7 @@ is_doi_on_cr <- function(x) {
   }
 }
 
-#' Some example dois
+#' Example DOIs
 #' @export
 #' @family doi
 #' @examples
