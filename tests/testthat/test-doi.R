@@ -22,6 +22,22 @@ test_that("doi helper errors on invalid field inputs", {
   testthat::expect_error(doi(prefix = 1L, suffix = 2.2))
 })
 
+# validation ====
+
+test_that("doi validates fields", {
+  # foo is a valid suffix
+  testthat::expect_visible(doi("10.1000", "foo"))
+  testthat::expect_error(doi("bar", "foo"))
+  testthat::expect_error(doi(" 10.1000", "foo"))
+  testthat::expect_error(doi("10.1000 ", "foo"))
+  testthat::expect_error(doi("a10.1000", "foo"))
+  # 10.1000 is a valid prefix
+  testthat::expect_visible(doi("10.1000", "foo"))
+  testthat::expect_error(doi("10.1000", "&"))
+  testthat::expect_error(doi("10.1000", " foo"))
+  testthat::expect_error(doi("10.1000", "foo "))
+})
+
 # casting and coercion ====
 
 test_that("dois can be coerced", {
@@ -59,16 +75,6 @@ test_that("DOIs make pretty tibble columns", {
 test_that("doi with one NA field become all NA", {
   testthat::expect_true(is.na(doi(NA, "5jchdy")))
   testthat::expect_snapshot(doi(c(NA, "10.13003"), c("5jchdy", "5jchdy")))
-})
-
-
-test_that("good crossref DOI is accepted", {
-  # from https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/
-  expect_true(is_doi2("10.13003/5jchdy"))
-})
-
-test_that("other strings are rejected", {
-  expect_false(is_doi2("lorem ipsum"))
 })
 
 test_that("DOIs are extracted", {

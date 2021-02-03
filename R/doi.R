@@ -27,10 +27,50 @@ new_doi <- function(prefix = character(), suffix = character()) {
   new_rcrd(list(prefix = prefix, suffix = suffix), class = "biblids_doi")
 }
 
+# validation ====
+
 #' Validator worker 
 #' @noRd
 validate_doi <- function(x) {
+  prefixes_good <- is_doi_syntax(x, "prefix")
+  if (!all(prefixes_good)) {
+    rlang::abort(
+      c(
+        "All values must be valid DOI syntax:",
+        x = "Bad `prefix` found.",
+        i = "Try casting with `as_doi()`."
+      )
+    )
+  }
+  suffixes_good <- is_doi_syntax(x, "suffix")
+  if (!all(suffixes_good)) {
+    rlang::abort(
+      c(
+        "All values must be valid DOI syntax:",
+        x = "Bad `suffix` found.",
+        i = "Try casting with `as_doi()`."
+      )
+    )
+  }
   x
+}
+
+#' Add delimiters to regex
+#' For when fields must *only* include matches, no whitespace etc.
+#' @noRd
+str_detect_all <- function(string, pattern) {
+  stringr::str_detect(string, paste0(r"(^)", pattern, r"($)"))
+}
+
+#' Check vector of fields for valid syntax
+#' @noRd
+is_doi_syntax <- function(x, part = c("prefix", "suffix")) {
+  # called part instead of field to aboid name clash with vctrs
+  part <- rlang::arg_match(part)
+  string <- field(x, part)
+  res <- str_detect_all(string = string, pattern = doi_patterns()[part])
+  res[is.na(string)] <- TRUE  # an NA field is still valid doi
+  res
 }
 
 #' @describeIn doi test for `biblids_doi` class
@@ -39,6 +79,11 @@ validate_doi <- function(x) {
 #' is_doi(doi_examples())
 is_doi <- function(x) {
   inherits(x, "biblids_doi")
+}
+
+is_doi_ish <- function() {
+  # placeholder
+  NULL
 }
 
 # casting and coercion ====
@@ -72,6 +117,14 @@ as_doi <- function(x, ...) UseMethod("as_doi")
 
 #' @export
 as_doi.default <- function(x, ...) vec_cast(x, new_doi())
+
+#' Extracts first DOIs from character vectors
+#' @noRd
+str_extract_doi <- function(string) {
+  doi_whole <- stringr::str_extract(
+    string = string, pattern = paste0(doi_patterns(), collapse = "/")
+  )
+}
 
 # presentation methods ====
 
@@ -171,42 +224,30 @@ is.na.biblids_doi <- function(x, ...) {
 #' a character string giving the type of validation to run.
 #' Implemented as regular expressions (see source code).
 #' Must be one these syntax specifications:
-#' - from [crossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/)
-#'   - `"cr-modern"` currently used crossref DOIs.
-#'   - `"cr-jws"` for DOIs created by John Wiley & Sons
-#' - `"regexpal"` from [regexpal](https://www.regexpal.com/96948) (undocumented, not recommended)
+#' - `"doi.org"` from [doi.org](https://www.doi.org/doi_handbook/2_Numbering.html#2.2), via [stack-overflow](https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page) (recommended)
+#' - `"cr-modern"` from [crossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/)
 #' 
-#' @return a raw string with a regular expression
+#' @return a named character vector of `prefix` and `suffix`, each a raw string with a regular expression.
 #' 
 #' @family doi
 #' 
 #' @export
-doi_patterns <- function(type = c("cr-modern", "cr-jws", "regexpal")) {
+doi_patterns <- function(type = c("doi.org", "cr-modern")) {
   checkmate::assert_character(type)
   type <- rlang::arg_match(type)
-  switch(
-    type,
-    "cr-modern" = r"(10.\d{4,9}/[-._;()/:A-Z0-9]+)",
-    "cr-jws" = r"(10.1002/[^\s]+)",
-    "regexpal" = r"(10[.][0-9]{4,}(?:[.][0-9]+)"
+  res <- list(
+    `doi.org` = c(
+      prefix = r"(10[.][0-9]{4,}(?:[.][0-9]+)*)",
+      suffix = r"((?:(?!["&\'])\S)+)"
+    ),
+    # comment to repair syntax highlighting '
+    `cr-modern` = c(
+      prefix = r"(10.\d{4,9})",
+      suffix = r"([-._;()/:A-Z0-9]+)"
+    ) 
+    # comment to repair syntax highlighting "
   )
-}
-
-#' @describeIn doi_patterns Validate a DOI
-#'
-#' @param x a character string giving a DOI
-#' 
-#' @inheritDotParams doi_patterns
-#'
-#' @examples
-#' is_doi2("10.5281/zenodo.3892950") # TRUE
-#' is_doi2("http://doi.org/10.5281/zenodo.3892951") # TRUE
-#' is_doi2("lorem ipsum") # FALSE
-#'
-#' @export
-is_doi2 <- function(x, ...) {
-  checkmate::assert_string(x)
-  grepl(pattern = doi_patterns(...), x = x, ignore.case = TRUE)
+  res[[type]]
 }
 
 #' @describeIn doi_patterns Extract all DOIs from a string
@@ -216,7 +257,7 @@ str_extract_all_doi <- function(string, ...) {
   requireNamespace2("stringr")
   stringr::str_extract_all(
     string = string,
-    pattern = stringr::regex(doi_patterns(...), ignore_case = TRUE),
+    pattern = stringr::regex(paste0(doi_patterns(), collapse = "/"), ignore_case = TRUE),
     simplify = TRUE
   )
 }

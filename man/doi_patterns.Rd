@@ -2,13 +2,10 @@
 % Please edit documentation in R/doi.R
 \name{doi_patterns}
 \alias{doi_patterns}
-\alias{is_doi2}
 \alias{str_extract_all_doi}
 \title{Choose a DOI validation pattern}
 \usage{
-doi_patterns(type = c("cr-modern", "cr-jws", "regexpal"))
-
-is_doi2(x, ...)
+doi_patterns(type = c("doi.org", "cr-modern"))
 
 str_extract_all_doi(string, ...)
 }
@@ -17,27 +14,21 @@ str_extract_all_doi(string, ...)
 Implemented as regular expressions (see source code).
 Must be one these syntax specifications:
 \itemize{
-\item from \href{https://www.crossref.org/blog/dois-and-matching-regular-expressions/}{crossref}
-\itemize{
-\item \code{"cr-modern"} currently used crossref DOIs.
-\item \code{"cr-jws"} for DOIs created by John Wiley & Sons
-}
-\item \code{"regexpal"} from \href{https://www.regexpal.com/96948}{regexpal} (undocumented, not recommended)
+\item \code{"doi.org"} from \href{https://www.doi.org/doi_handbook/2_Numbering.html#2.2}{doi.org}, via \href{https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page}{stack-overflow} (recommended)
+\item \code{"cr-modern"} from \href{https://www.crossref.org/blog/dois-and-matching-regular-expressions/}{crossref}
 }}
-
-\item{x}{a character string giving a DOI}
-
-\item{...}{
-  Arguments passed on to \code{\link[=doi_patterns]{doi_patterns}}, \code{\link[=doi_patterns]{doi_patterns}}
-  \describe{
-    \item{\code{}}{}
-  }}
 
 \item{string}{Input vector. Either a character vector, or something
 coercible to one.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=doi_patterns]{doi_patterns}}
+  \describe{
+    \item{\code{}}{}
+  }}
 }
 \value{
-a raw string with a regular expression
+a named character vector of \code{prefix} and \code{suffix}, each a raw string with a regular expression.
 }
 \description{
 Choose a DOI validation pattern
@@ -45,18 +36,9 @@ Choose a DOI validation pattern
 \section{Related Functions and Methods}{
 \subsection{Functions}{
 \itemize{
-\item \code{is_doi2}: Validate a DOI
-}
-\itemize{
 \item \code{str_extract_all_doi}: Extract all DOIs from a string
 }}}
 
-\examples{
-is_doi2("10.5281/zenodo.3892950") # TRUE
-is_doi2("http://doi.org/10.5281/zenodo.3892951") # TRUE
-is_doi2("lorem ipsum") # FALSE
-
-}
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
