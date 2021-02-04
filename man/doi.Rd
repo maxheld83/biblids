@@ -117,6 +117,6 @@ is.na(doi(prefix = "10.5194", suffix = NA))
 Other doi: 
 \code{\link{doiEntry}},
 \code{\link{doi_examples}()},
-\code{\link{str_extract_all_doi}()}
+\code{\link{regex_doi}()}
 }
 \concept{doi}

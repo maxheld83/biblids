@@ -80,8 +80,12 @@ test_that("doi with one NA field become all NA", {
 
 # extraction ====
 
-test_that("DOIs are extracted", {
-  expect_true(TRUE)
+test_that("single DOIs are extracted", {
+  expect_snapshot_value2(source(path_ex_file("doi", "str_extract_doi.R")))
+})
+
+test_that("multiple DOIs are extracted", {
+  expect_snapshot_value2(source(path_ex_file("doi", "str_extract_all_doi.R")))
 })
 
 test_that("crossref DOIs are identified", {

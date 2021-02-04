@@ -118,14 +118,6 @@ as_doi <- function(x, ...) UseMethod("as_doi")
 #' @export
 as_doi.default <- function(x, ...) vec_cast(x, new_doi())
 
-#' Extracts first DOIs from character vectors
-#' @noRd
-str_extract_doi <- function(string) {
-  doi_whole <- stringr::str_extract(
-    string = string, pattern = paste0(doi_patterns(), collapse = "/")
-  )
-}
-
 # presentation methods ====
 
 #' @describeIn doi Display a DOI
@@ -218,24 +210,23 @@ is.na.biblids_doi <- function(x, ...) {
   is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
 }
 
-#' Extract DOIs from strings
+# extraction ====
+
+#' Find DOIs with regular expressions
 #' 
-#' Extracts all DOIs to be found in a character string.
-#' Useful when there are *several* DOIs in *one* string.
-#' @inheritParams stringr::str_extract_all
-#' @inheritParams doi_patterns
+#' @inheritDotParams stringr::regex
+#'
+#' @examples
+#' regex_doi("doi.org")
+#' regex_doi("cr-modern")
+#'
 #' @family doi
-#' 
 #' @export
-str_extract_all_doi <- function(string, type = "doi.org") {
-  stringr::str_extract_all(
-    string = string,
-    pattern = stringr::regex(paste0(doi_patterns(type), collapse = "/")),
-    simplify = TRUE
-  )
+regex_doi <- function(type = c("doi.org", "cr-modern"), ...) {
+  stringr::regex(pattern = paste0(doi_patterns(type), collapse = "/"))
 }
 
-#' @describeIn str_extract_all_doi Regular expressions for DOIs
+#' @describeIn regex_doi Find DOI fields with regular expressions
 #' 
 #' @param type
 #' a character string giving the type of validation to run.
@@ -244,11 +235,7 @@ str_extract_all_doi <- function(string, type = "doi.org") {
 #' - `"doi.org"` from [doi.org](https://www.doi.org/doi_handbook/2_Numbering.html#2.2), via [stack-overflow](https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page) (recommended):
 #' - `"cr-modern"` from [crossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/)
 #' See examples.
-#' 
-#' @examples
-#' doi_patterns("doi.org")
-#' doi_patterns("cr-modern")
-#' 
+#'
 #' @export
 doi_patterns <- function(type = c("doi.org", "cr-modern")) {
   checkmate::assert_character(type)
@@ -266,6 +253,26 @@ doi_patterns <- function(type = c("doi.org", "cr-modern")) {
     # comment to repair syntax highlighting "
   )
   res[[type]]
+}
+
+#' @describeIn regex_doi Extract *first* DOIs from character strings
+#' @inheritParams stringr::str_extract
+#' @example inst/examples/doi/str_extract_doi.R
+#' @export
+str_extract_doi <- function(string) {
+  stringr::str_extract(string = string, pattern = regex_doi())
+}
+
+#' @describeIn regex_doi Extract *all* DOIs from character strings
+#' @inheritParams stringr::str_extract_all
+#' @example inst/examples/doi/str_extract_all_doi.R
+#' @export
+str_extract_all_doi <- function(string, type = "doi.org") {
+  stringr::str_extract_all(
+    string = string,
+    pattern = regex_doi(),
+    simplify = TRUE
+  )
 }
 
 
@@ -376,7 +383,10 @@ is_doi_on_cr <- function(x) {
 #' @examples
 #' doi_examples()
 doi_examples <- function() {
-  ex_files <- c("doi.R", "as_doi.R")
+  ex_files <- c(
+    "doi.R",
+    "as_doi.R"
+  )
   res <- purrr::map(ex_files, function(x) {
     source(path_ex_file("doi", x))$value
   })

@@ -62,6 +62,6 @@ Accept, validate and return DOIs in a shiny app.
 Other doi: 
 \code{\link{doi_examples}()},
 \code{\link{doi}()},
-\code{\link{str_extract_all_doi}()}
+\code{\link{regex_doi}()}
 }
 \concept{doi}

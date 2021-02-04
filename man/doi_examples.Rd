@@ -16,6 +16,6 @@ doi_examples()
 Other doi: 
 \code{\link{doiEntry}},
 \code{\link{doi}()},
-\code{\link{str_extract_all_doi}()}
+\code{\link{regex_doi}()}
 }
 \concept{doi}

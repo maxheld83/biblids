@@ -257,3 +257,59 @@
       ]
     }
 
+# single DOIs are extracted
+
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["value", "visible"]
+        }
+      },
+      "value": [
+        {
+          "type": "character",
+          "attributes": {},
+          "value": ["10.1594/PANGAEA.726855", "10.1594/GFZ.GEOFON.gfz2009kciu", "10.1594/PANGAEA.667386", "10.3207/2959859860", "10.3866/PKU.WHXB201112303", "10.3972/water973.0145.db", null]
+        },
+        {
+          "type": "logical",
+          "attributes": {},
+          "value": [true]
+        }
+      ]
+    }
+
+# multiple DOIs are extracted
+
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["value", "visible"]
+        }
+      },
+      "value": [
+        {
+          "type": "character",
+          "attributes": {
+            "dim": {
+              "type": "integer",
+              "attributes": {},
+              "value": [4, 2]
+            }
+          },
+          "value": ["10.7666/d.y351065", "10.11467/isss2003.7.1_11", "10.1430/8105", "", "", "10.7875/leading.author.2.e008", "10.1392/BC1.0", ""]
+        },
+        {
+          "type": "logical",
+          "attributes": {},
+          "value": [true]
+        }
+      ]
+    }
+
