@@ -88,6 +88,31 @@
       ]
     }
 
+# doi_ish can be detected
+
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["value", "visible"]
+        }
+      },
+      "value": [
+        {
+          "type": "logical",
+          "attributes": {},
+          "value": [false, true, true]
+        },
+        {
+          "type": "logical",
+          "attributes": {},
+          "value": [true]
+        }
+      ]
+    }
+
 # dois can be coerced
 
     {
@@ -146,12 +171,12 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["10.1594", "10.1594"]
+          "value": ["10.1594", "10.1594", "10.1000", "10.1000", null]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["PANGAE.726855", "GFZ.GEOFON.gfz2009kciu"]
+          "value": ["PANGAE.726855", "GFZ.GEOFON.gfz2009kciu", "182", "1", null]
         }
       ]
     }
@@ -300,10 +325,10 @@
             "dim": {
               "type": "integer",
               "attributes": {},
-              "value": [4, 2]
+              "value": [5, 2]
             }
           },
-          "value": ["10.7666/d.y351065", "10.11467/isss2003.7.1_11", "10.1430/8105", "", "", "10.7875/leading.author.2.e008", "10.1392/BC1.0", ""]
+          "value": ["10.7666/d.y351065", "10.11467/isss2003.7.1_11", "10.1430/8105", "10.5194/wes-2019-70", "", "", "10.7875/leading.author.2.e008", "10.1392/BC1.0", "10.5194/wes-5-819-202", ""]
         },
         {
           "type": "logical",

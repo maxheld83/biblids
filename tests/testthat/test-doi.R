@@ -43,6 +43,10 @@ test_that("doi validates fields", {
   expect_error(doi("10.1000", "foo "))
 })
 
+test_that("doi_ish can be detected", {
+  expect_snapshot_value2(source(path_ex_file("doi", "is_doi_ish.R")))
+})
+
 
 # casting and coercion ====
 test_that("dois can be coerced", {
@@ -55,6 +59,7 @@ test_that("dois can be cast to characters", {
 
 test_that("characters can be cast to dois", {
   expect_snapshot_value2(source(path_ex_file("doi", "as_doi.R"))$value)
+  expect_error(as_doi(c("10.1126/science.169.3946.635 10.6084/m9.figshare.97218")))
 })
 
 # presentation methods ====

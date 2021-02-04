@@ -74,17 +74,16 @@ is_doi_syntax <- function(x, part = c("prefix", "suffix")) {
 }
 
 #' @describeIn doi Test for `biblids_doi` class
+#' @param x a vector as created by [doi()].
 #' @export
 #' @examples
 #' is_doi(doi_examples())
-is_doi <- function(x) {
-  inherits(x, "biblids_doi")
-}
+is_doi <- function(x) inherits(x, "biblids_doi")
 
-is_doi_ish <- function() {
-  # placeholder
-  NULL
-}
+#' @describeIn doi Test whether character vector can be cast to DOI
+#' @export
+#' @example inst/examples/doi/is_doi_ish.R
+is_doi_ish <- function(x) !is.na(as_doi(x))
 
 # casting and coercion ====
 
@@ -111,12 +110,33 @@ vec_cast.biblids_doi.character <- function(x, to, ...) {
 
 #' @describeIn doi Cast DOIs from other forms
 #' @example inst/examples/doi/as_doi.R
-#' 
+#' @examples
+#' \dontrun{
+#' # there must be only one DOI per element
+#' as_doi(c("10.1126/science.169.3946.635 10.6084/m9.figshare.97218"))
+#' }
 #' @export
 as_doi <- function(x, ...) UseMethod("as_doi")
 
 #' @export
 as_doi.default <- function(x, ...) vec_cast(x, new_doi())
+
+#' @export
+as_doi.character <- function(x, ...) {
+  res <- str_extract_all_doi(x)
+  if (ncol(res) > 1) {
+    rlang::abort(
+      c(
+        "All elements must include one DOI only:",
+        x = "Multiple DOIs found in one or more elements of `x`.",
+        i = "Try extracting with `str_extract_all_doi()`."
+      )
+    )
+  }
+  res <- stringr::str_split_fixed(string = res[, 1], pattern = "/", n = 2)
+  res[which(res == "")] <- NA_character_
+  new_doi(prefix = res[, 1], suffix = res[, 2])
+}
 
 # presentation methods ====
 

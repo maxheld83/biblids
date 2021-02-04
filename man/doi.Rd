@@ -3,6 +3,7 @@
 \name{doi}
 \alias{doi}
 \alias{is_doi}
+\alias{is_doi_ish}
 \alias{as_doi}
 \alias{format.biblids_doi}
 \alias{pillar_shaft.biblids_doi}
@@ -13,6 +14,8 @@
 doi(prefix = character(), suffix = character())
 
 is_doi(x)
+
+is_doi_ish(x)
 
 as_doi(x, ...)
 
@@ -34,7 +37,7 @@ as_doi(x, ...)
 
 \item{suffix}{the unique string chosen by the registrant}
 
-\item{x}{An R object to be printed}
+\item{x}{a vector as created by \code{\link[=doi]{doi()}}.}
 
 \item{...}{Additional arguments passed to the S3 method. Currently ignored,
 except two optional arguments \code{options} and \code{inline}; see
@@ -60,6 +63,9 @@ S3 record class for DOIs.
 \subsection{Functions}{
 \itemize{
 \item \code{is_doi}: Test for \code{biblids_doi} class
+}
+\itemize{
+\item \code{is_doi_ish}: Test whether character vector can be cast to DOI
 }
 \itemize{
 \item \code{as_doi}: Cast DOIs from other forms
@@ -103,11 +109,23 @@ doi(
   suffix = c("nphys1170", "foobar", "isss2003.7.1_11")
 )
 is_doi(doi_examples())
+is_doi_ish(c(
+  "foo",  # not a DOI
+  "10.1371/journal.pone.0042793",
+  "https://doi.org/10.13039/100000001"
+))
 as_doi(c(
   # example DOIs are from https://www.doi.org/demos.html
   "10.1594/PANGAE.726855",
-  "10.1594/GFZ.GEOFON.gfz2009kciu"
+  " 10.1594/GFZ.GEOFON.gfz2009kciu ",  # leading/trailing spaces are removed
+  "https://doi.org/10.1000/182",  # URL form is parsed
+  "doi:10.1000/1", # DOI from is parsed
+  "foo bar" # yields NA
 ))
+\dontrun{
+# there must be only one DOI per element
+as_doi(c("10.1126/science.169.3946.635 10.6084/m9.figshare.97218"))
+}
 # there is extra pretty printing inside tibbles
 tibble::tibble(doi_examples()[1:3])
 # this can be constructed but will be NA
