@@ -1,5 +1,5 @@
 Package: biblids
-Title: Validating bibliometric identifiers
+Title: Working with bibliometric identifiers
 Version: 0.0.0.9000
 Depends: R (>= 4.0.0)
 Authors@R: 
@@ -17,8 +17,8 @@ Authors@R:
       )
     )
 Description: 
-    Provides lightweight validation and normalisation for bibliometric identifiers such as DOIs.
-    Optionally (with `Suggests` dependencies) includes checkmate assertions, testthat expectations and shiny input modules.
+    Provides S3 classes, predicates and methods to work with bibliometric identifiers such as DOIs.
+    Optionally (with `Suggests` dependencies) includes presentation methods and shiny input modules.
 License: MIT + file LICENSE
 Language: en
 Encoding: UTF-8
@@ -29,7 +29,6 @@ URL: https://subugoe.github.io/biblids, https://github.com/subugoe/biblids
 BugReports: https://github.com/subugoe/biblids/issues
 Imports: 
     rlang (>= 0.4.8),
-    checkmate (>= 2.0.0),
     httr (>= 1.4.2),
     vctrs (>= 0.3.6),
     purrr (>= 0.3.4),

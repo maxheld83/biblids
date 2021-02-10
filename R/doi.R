@@ -149,7 +149,7 @@ as_doi.character <- function(x, ...) {
 #' logical flag, whether to prepend `doi:` handle protocol, as per the official [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
 #' @export
 format.biblids_doi <- function(x, ..., protocol = FALSE) {
-  checkmate::assert_flag(protocol)
+  stopifnot(rlang::is_scalar_logical(protocol))
   out <- paste0(if (protocol) "doi:", field(x, "prefix"), "/", field(x, "suffix"))
   out[is.na(x)] <- NA_character_
   out
@@ -271,7 +271,6 @@ regex_doi <- function(type = c("doi.org", "cr-modern"), ...) {
 #'
 #' @export
 doi_patterns <- function(type = c("doi.org", "cr-modern")) {
-  checkmate::assert_character(type)
   type <- rlang::arg_match(type)
   res <- list(
     `doi.org` = c(

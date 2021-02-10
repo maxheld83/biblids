@@ -37,5 +37,3 @@ There additional features included for some `Suggests` packages:
 
 - **Presentation methods** to properly display bibliographic IDs inside [knitr](https://yihui.org/knitr/)/[rmarkdown](https://rmarkdown.rstudio.com) and [tibble](http://tibble.tidyverse.org).
 - **[Shiny](https://shiny.rstudio.com) input modules** to ingest and validate IDs.
-- **Expectations** for testing via [testthat](http://testthat.r-lib.org).
-- **Argument checks** via [checkmate](https://mllg.github.io/checkmate/).
