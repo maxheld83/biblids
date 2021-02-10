@@ -7,6 +7,10 @@
 #' @param suffix the unique string chosen by the registrant
 #' 
 #' @example inst/examples/doi/doi.R
+#' @examples
+#' # DOIs are case insensitive and are compared as such
+#' unique(as_doi("10.1000/foo", "10.1000/fOo"))
+#' as_doi("10.1000/BAR") == as_doi("10.1000/bar")
 #'
 #' @export
 #' @family doi
@@ -228,6 +232,15 @@ knit_print.biblids_doi <- function(x,
 #' is.na(doi(prefix = "10.5194", suffix = NA))
 is.na.biblids_doi <- function(x, ...) {
   is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
+}
+
+#' @export
+vec_proxy_equal.biblids_doi <- function(x, ...) {
+  data.frame(
+    prefix = tolower(field(x, "prefix")),
+    suffix = tolower(field(x, "suffix")),
+    stringsAsFactors = FALSE
+  )
 }
 
 # extraction ====

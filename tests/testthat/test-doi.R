@@ -83,6 +83,10 @@ test_that("doi with one NA field become all NA", {
   expect_snapshot_value2(doi(c(NA, "10.13003"), c("5jchdy", "5jchdy")))
 })
 
+test_that("DOIs are compared with case insensitivity", {
+  expect_true(as_doi("10.1000/foo") == as_doi("10.1000/fOo"))
+})
+
 # extraction ====
 
 test_that("single DOIs are extracted", {
