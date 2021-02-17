@@ -4,10 +4,10 @@
 \name{biblids-package}
 \alias{biblids}
 \alias{biblids-package}
-\title{biblids: Validating bibliometric identifiers}
+\title{biblids: Working with bibliometric identifiers}
 \description{
-Provides lightweight validation and normalisation for bibliometric identifiers such as DOIs.
-    Optionally (with `Suggests` dependencies) includes checkmate assertions, testthat expectations and shiny input modules.
+Provides S3 classes, predicates and methods to work with bibliometric identifiers such as DOIs.
+    Optionally (with `Suggests` dependencies) includes presentation methods and shiny input modules.
 }
 \seealso{
 Useful links:

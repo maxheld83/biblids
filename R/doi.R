@@ -397,6 +397,46 @@ doiEntryServer <- function(id) {
 }
 
 
+# resolution ====
+
+#' Resolve a DOI
+#'
+#' @inheritParams is_doi
+#' @family doi
+#' @name resolve_doi
+NULL
+
+#' @describeIn resolve_doi Test whether DOI can be resolved
+#' @export
+is_doi_resolveable <- function(x) {
+  x <- as_doi(x)
+  httr::status_code(get_doi_handles(x)) == 200
+}
+
+#' @describeIn resolve_doi Get DOI handles
+#' @inheritParams httr::GET
+#' @inheritDotParams httr::GET
+#' @export
+get_doi_handles <- function(x, ...) {
+  requireNamespace2("httr")
+  x <- as_doi(x)
+  httr::GET(build_url_doi_org(x), ...)
+}
+
+#' Build URL to query doi.org
+#' @inheritParams is_doi
+#' @noRd
+build_url_doi_org <- function(x) {
+  requireNamespace2("httr")
+  requireNamespace2("curl")
+  httr::modify_url(
+    url = "https://doi.org",
+    path = paste0("api/handles/", curl::curl_escape(as.character(x)))
+  )
+}
+
+# example DOIs ====
+
 #' Example DOIs
 #' @export
 #' @family doi

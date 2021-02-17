@@ -81,6 +81,7 @@ str_extract_all_doi(string = c(
 Other doi: 
 \code{\link{doiEntry}},
 \code{\link{doi_examples}()},
-\code{\link{doi}()}
+\code{\link{doi}()},
+\code{\link{resolve_doi}}
 }
 \concept{doi}

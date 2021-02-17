@@ -97,7 +97,20 @@ test_that("multiple DOIs are extracted", {
   expect_snapshot_value2(source(path_ex_file("doi", "str_extract_all_doi.R")))
 })
 
+
+# resolution ====
+
+test_that("DOI resolvability can be detected", {
+  expect_true(is_doi_resolveable(doi_examples()[1]))
+  expect_equal(is_doi_resolveable("10.1000/zap"), FALSE)
+})
+
+test_that("DOI urls are percent escaped", {
+  expect_snapshot_value(build_url_doi_org("10.1000/foo#bar"))
+})
+
 test_that("crossref DOIs are identified", {
+  skip("Not implemented")
   doi_cr <- "10.5194/wes-2019-70"
   doi_not_cr <- "10.5194/wes-5-819-202"
   doi_bad <- " create a url with spaces"

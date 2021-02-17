@@ -338,3 +338,7 @@
       ]
     }
 
+# DOI urls are percent escaped
+
+    "https://doi.org/api/handles/10.1000%2Ffoo%23bar"
+
