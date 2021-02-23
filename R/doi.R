@@ -363,16 +363,31 @@ doiEntryUI <- function(id, width = "100%", ...) {
 }
 
 #' @describeIn doiEntry Module server
+#' @param char_limit
+#' Integer scalar, giving the maximum number of characters (tested first)
 #' @export
-doiEntryServer <- function(id) {
+doiEntryServer <- function(id, char_limit = 100000L) {
   requireNamespace2("shiny")
+  requireNamespace2("glue")
+  stopifnot(rlang::is_scalar_integer(char_limit))
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
       # input validation
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("entered", shinyvalidate::sv_required())
-      iv$add_rule("entered", ~ if (nchar(.) > 10000L) "Too many DOIs.")
+      iv$add_rule(
+        "entered",
+        function(value) {
+          if (nchar(value) > char_limit) {
+            glue::glue(
+              "Cannot parse more than {char_limit} characters.",
+              "Please provide a shorter input.",
+              sep = " "
+            )
+          }
+        }
+      )
       iv$enable()
 
       # ingest

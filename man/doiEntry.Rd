@@ -11,7 +11,7 @@ doiEntryApp()
 
 doiEntryUI(id, width = "100\%", ...)
 
-doiEntryServer(id)
+doiEntryServer(id, char_limit = 100000L)
 }
 \arguments{
 \item{id}{The id string to be namespaced (optional).}
@@ -42,6 +42,8 @@ option.}
 \code{"both"}, \code{"none"}, \code{"vertical"}, and \code{"horizontal"}. The default, \code{NULL},
 will use the client browser's default setting for resizing textareas.}
   }}
+
+\item{char_limit}{Integer scalar, giving the maximum number of characters (tested first)}
 }
 \description{
 Accept, validate and return DOIs in a shiny app.
