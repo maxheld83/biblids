@@ -364,7 +364,11 @@ doiEntryUI <- function(id, width = "100%", ...) {
 
 #' @describeIn doiEntry Module server
 #' @param char_limit
-#' Integer scalar, giving the maximum number of characters (tested first)
+#' Integer scalar, giving the maximum number of characters.
+#' To protect shiny against overlong strings, you can limit the maximum
+#' length of strings allowed.
+#' This limit is still enforced server-side, not client-side,
+#' so the protection is not bullet-proof.
 #' @export
 doiEntryServer <- function(id, char_limit = 100000L) {
   requireNamespace2("shiny")
@@ -376,6 +380,8 @@ doiEntryServer <- function(id, char_limit = 100000L) {
       # input validation
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("entered", shinyvalidate::sv_required())
+      # this limit should be enforced client side as per
+      # https://github.com/rstudio/shiny/issues/3305
       iv$add_rule(
         "entered",
         function(value) {

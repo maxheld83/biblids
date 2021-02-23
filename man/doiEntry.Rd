@@ -43,7 +43,11 @@ option.}
 will use the client browser's default setting for resizing textareas.}
   }}
 
-\item{char_limit}{Integer scalar, giving the maximum number of characters (tested first)}
+\item{char_limit}{Integer scalar, giving the maximum number of characters.
+To protect shiny against overlong strings, you can limit the maximum
+length of strings allowed.
+This limit is still enforced server-side, not client-side,
+so the protection is not bullet-proof.}
 }
 \description{
 Accept, validate and return DOIs in a shiny app.
