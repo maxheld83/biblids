@@ -9,7 +9,7 @@
 #' @example inst/examples/doi/doi.R
 #' @examples
 #' # DOIs are case insensitive and are compared as such
-#' unique(as_doi("10.1000/foo", "10.1000/fOo"))
+#' unique(as_doi(c("10.1000/foo", "10.1000/fOo")))
 #' as_doi("10.1000/BAR") == as_doi("10.1000/bar")
 #'
 #' @export
@@ -120,7 +120,10 @@ vec_cast.biblids_doi.character <- function(x, to, ...) {
 #' as_doi(c("10.1126/science.169.3946.635 10.6084/m9.figshare.97218"))
 #' }
 #' @export
-as_doi <- function(x, ...) UseMethod("as_doi")
+as_doi <- function(x, ...) {
+  ellipsis::check_dots_empty()
+  UseMethod("as_doi")
+}
 
 #' @export
 as_doi.default <- function(x, ...) vec_cast(x, new_doi())

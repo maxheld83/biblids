@@ -109,7 +109,7 @@ doi(
   suffix = c("nphys1170", "foobar", "isss2003.7.1_11")
 )
 # DOIs are case insensitive and are compared as such
-unique(as_doi("10.1000/foo", "10.1000/fOo"))
+unique(as_doi(c("10.1000/foo", "10.1000/fOo")))
 as_doi("10.1000/BAR") == as_doi("10.1000/bar")
 
 is_doi(doi_examples())
