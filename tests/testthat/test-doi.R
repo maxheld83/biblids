@@ -116,7 +116,10 @@ test_that("DOI API gives warning on empty value", {
 test_that("DOI can be resolved to url", {
   expect_equal(
     source_pef("doi", "resolve_doi.R"),
-    c("http://www.nature.com/articles/nphys1170", "http://www.doi.org/index.html")
+    c(
+      "http://www.nature.com/articles/nphys1170",
+      "http://www.doi.org/index.html"
+    )
   )
   # would be good to test a doi which is has no URL which should give NA
   # but I don't have such a DOI if it exists at all
@@ -133,12 +136,9 @@ test_that("DOI indexation can be detected", {
   )
 })
 
-test_that("crossref DOIs are identified", {
-  skip("Not implemented")
-  doi_cr <- "10.5194/wes-2019-70"
-  doi_not_cr <- "10.5194/wes-5-819-202"
-  doi_bad <- " create a url with spaces"
-  expect_true(is_doi_on_cr(doi_cr))
-  expect_false(is_doi_on_cr(doi_not_cr))
-  expect_error(is_doi_on_cr(doi_bad))
+test_that("DOI RAs can be identified", {
+  expect_equal(
+    source_pef("doi", "get_doi_ra.R"),
+    c("Public", "Crossref", "DataCite")
+  )
 })

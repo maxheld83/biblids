@@ -483,40 +483,36 @@ get_doi <- function(...) verb_doi(verb = "GET", ...)
 #' VERB the doi.org handles endpoint
 #' @noRd
 verb_doi_handle <- function(x, verb, ...) {
+  verb_doi(
+    verb = verb,
+    path = paste0("api/handles/", doi2path(x)),
+    ...
+  )
+  }
+
+#' Create the path to a doi.org API from a [doi()]
+#' @noRd
+doi2path <- function(x) {
   requireNamespace2("curl")
   x <- as_doi(x)
   if (vctrs::vec_size(x) != 1) rlang::abort("Must be a doi vector of length 1.")
   if (is.na(x)) rlang::abort("Must not be NA.")
-  verb_doi(
-    verb = verb,
-    path = paste0(
-      "api/handles/",
-      curl::curl_escape(vctrs::field(x, "prefix")),
-      "/",
-      curl::curl_escape(vctrs::field(x, "suffix"))
-    ),
-    ...
+  paste0(
+    curl::curl_escape(vctrs::field(x, "prefix")),
+    "/",
+    curl::curl_escape(vctrs::field(x, "suffix"))
   )
-  }
+}
 
 #' GET the doi.org handles endpoint
 #' @noRd
 get_doi_handle <- function(x, ...) {
   requireNamespace2("jsonlite")
   resp <- verb_doi_handle(x, verb = "GET", ...)
-  # more informative error message than httr:stop_for_status
-  # status codes as per https://www.doi.org/doi_handbook/3_Resolution.html#3.8.1
-  if (httr::status_code(resp) == 404) {
-    rlang::abort("Handle not found on doi.org.")
-  }
-  # catch other errors
-  httr::stop_for_status(resp)
-  if (httr::http_type(resp) != "application/json") {
-    rlang::abort("API did not return json.")
-  }
-  res <- jsonlite::fromJSON(httr::content(resp, "text"), simplifyVector = FALSE)
+  res <- verifynparse_doi_api_resp(resp)
   if (res$responseCode == 200) {
-    # this gets the HTTP reponse code 200, so ok, but not ok
+    # this is the json response code, which indicates missing values
+    # the http resp code would actually be 200 in this case
     rlang::warn(c(
       "The handle exists on doi.org, but the values were not found, because the handle",
       "has no values or",
@@ -524,6 +520,26 @@ get_doi_handle <- function(x, ...) {
     ))
   }
   res
+  }
+
+#' Verify and parse the DOI API response for get handle and whichRA requests
+#' @noRd
+verifynparse_doi_api_resp <- function(resp) {
+  # more informative error message than httr:stop_for_status
+  # status codes as per https://www.doi.org/doi_handbook/3_Resolution.html#3.8.1
+  if (httr::status_code(resp) == 404) {
+    doi_not_found()
+  }
+  # catch other errors
+  httr::stop_for_status(resp)
+  if (httr::http_type(resp) != "application/json") {
+    rlang::abort("API did not return json.")
+  }
+  jsonlite::fromJSON(httr::content(resp, "text"), simplifyVector = FALSE)
+}
+
+doi_not_found <- function() {
+  rlang::abort("Handle not found on doi.org")
 }
 
 #' @describeIn doi_api
@@ -582,6 +598,44 @@ is_doi_found <- function(x, ...) {
   # see https://github.com/tidyverse/purrr/issues/819
   x <- as.character(x)
   purrr::map_lgl(.x = x, .f = head_doi_handle, ...)
+}
+
+#' @describeIn doi_api
+#' Get DOI Registration Agency using the doi.org
+#' [Which RA?](https://www.doi.org/factsheets/DOIProxy.html#whichra) service.
+#' @example inst/examples/doi/get_doi_ra.R
+#' @export
+get_doi_ra <- function(x, ...) {
+  # bad hack-fix because purrr treats rcrds as list
+  # see https://github.com/tidyverse/purrr/issues/819
+  x <- as.character(x)
+  purrr::map_chr(.x = x, .f = get_doi_ra1, ...)
+}
+
+#' Helper to get one DOI RA
+#'
+#' The API actually supports native vectorisation,
+#' but encoding that in a URL seems to risky and ambiguous
+#' and anyway not in line with the rest of the pkg.
+#' @noRd
+get_doi_ra1 <- function(x, ...) {
+  resp <- verb_doi(verb = "GET", path = paste0("doiRA/", doi2path(x)), ...)
+  res <- verifynparse_doi_api_resp(resp)[[1]]
+  status <- res$status
+  # unfortunately, the structure of the object changes depending on res :(
+  if (!is.null(status)) {
+    switch(status,
+      # this really should have been caught by syntax validation,
+      # but you never know ...
+      `Invalid DOI` = rlang::abort("Invalid DOI"),
+      # you'd expect that this were caught above by a 404,...
+      # but no, the which RA api gives http status 200 on non-existent DOIs
+      # the handles API does give http 404, so the behavior is different
+      `DOI does not exist` = doi_not_found(),
+      `Unknown` = return(NA_character_)
+    )
+  }
+  res$RA
 }
 
 # example DOIs ====

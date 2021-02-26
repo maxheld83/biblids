@@ -6,6 +6,7 @@
 \alias{resolve_doi}
 \alias{is_doi_resolvable}
 \alias{is_doi_found}
+\alias{get_doi_ra}
 \title{Use the doi.org API}
 \usage{
 get_doi_handles(x, query = NULL, ...)
@@ -15,6 +16,8 @@ resolve_doi(x, ...)
 is_doi_resolvable(x, ...)
 
 is_doi_found(x, ...)
+
+get_doi_ra(x, ...)
 }
 \arguments{
 \item{x}{A vector as created by, or convertable to \code{\link[=doi]{doi()}}.}
@@ -57,6 +60,10 @@ Simple wrapper around \code{\link[=resolve_doi]{resolve_doi()}}
 }
 \itemize{
 \item \code{is_doi_found}: Test whether DOI handle can be found on doi.org.
+}
+\itemize{
+\item \code{get_doi_ra}: Get DOI Registration Agency using the doi.org
+\href{https://www.doi.org/factsheets/DOIProxy.html#whichra}{Which RA?} service.
 }}}
 
 \section{Warning}{
@@ -84,6 +91,11 @@ get_doi_handles(
 resolve_doi(c("10.1038/nphys1170", "10.1000/1"))
 is_doi_resolvable(c("10.1000/1"))
 is_doi_found(c("10.1000/I_DO_NOT_EXIST", "10.1000/1"))
+get_doi_ra(c(
+  "10.1000/1", # doi.org, known as "public"
+  "10.1038/nphys1170", # crossref
+  "10.1594/GFZ.GEOFON.gfz2009kciu" # datacite
+))
 }
 \seealso{
 Other doi: 
