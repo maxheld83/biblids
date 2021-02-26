@@ -122,6 +122,10 @@ test_that("DOI can be resolved to url", {
   # but I don't have such a DOI if it exists at all
 })
 
+test_that("DOI resolvability can be detected", {
+  expect_true(is_doi_resolvable("10.1000/1"))
+})
+
 test_that("DOI indexation can be detected", {
   expect_equal(
     source_pef("doi", "is_doi_found.R"),

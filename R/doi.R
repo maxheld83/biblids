@@ -548,13 +548,21 @@ get_doi_handles <- function(x,
 
 #' @describeIn doi_api
 #' Get the resolved URL for a DOI.
-#' Returns `NA` if there is no URL value (rare).
+#' Returns `NA` if there is no URL value (rare, but theoretically possible).
 #' @example inst/examples/doi/resolve_doi.R
 #' @export
 resolve_doi <- function(x, ...) {
   res <- get_doi_handles(x, query = list(type = "URL"), ...)
   purrr::map_chr(res, purrr::pluck, "values", 1, "data", "value", .default = NA)
 }
+
+#' @describeIn doi_api
+#' Tests whether there is URL to resolve to.
+#' Simple wrapper around [resolve_doi()]
+#' @examples
+#' is_doi_resolvable(c("10.1000/1"))
+#' @export
+is_doi_resolvable <- function(x, ...) !(is.na(resolve_doi(x, ...)))
 
 #' HEAD the doi.org handles endpoint
 #' @noRd

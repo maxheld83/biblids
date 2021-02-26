@@ -4,12 +4,15 @@
 \alias{doi_api}
 \alias{get_doi_handles}
 \alias{resolve_doi}
+\alias{is_doi_resolvable}
 \alias{is_doi_found}
 \title{Use the doi.org API}
 \usage{
 get_doi_handles(x, query = NULL, ...)
 
 resolve_doi(x, ...)
+
+is_doi_resolvable(x, ...)
 
 is_doi_found(x, ...)
 }
@@ -46,7 +49,11 @@ For possible queries, see \href{https://www.doi.org/factsheets/DOIProxy.html#res
 }
 \itemize{
 \item \code{resolve_doi}: Get the resolved URL for a DOI.
-Returns \code{NA} if there is no URL value (rare).
+Returns \code{NA} if there is no URL value (rare, but theoretically possible).
+}
+\itemize{
+\item \code{is_doi_resolvable}: Tests whether there is URL to resolve to.
+Simple wrapper around \code{\link[=resolve_doi]{resolve_doi()}}
 }
 \itemize{
 \item \code{is_doi_found}: Test whether DOI handle can be found on doi.org.
@@ -75,6 +82,7 @@ get_doi_handles(
   query = list(type = "URL")
 )
 resolve_doi(c("10.1038/nphys1170", "10.1000/1"))
+is_doi_resolvable(c("10.1000/1"))
 is_doi_found(c("10.1000/I_DO_NOT_EXIST", "10.1000/1"))
 }
 \seealso{
