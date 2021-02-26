@@ -44,13 +44,18 @@ test_that("doi validates fields", {
 })
 
 test_that("doi_ish can be detected", {
-  expect_snapshot_value2(source(path_ex_file("doi", "is_doi_ish.R")))
+  expect_equal(
+    source_pef("doi", "is_doi_ish.R"),
+    c(FALSE, TRUE, TRUE)
+  )
 })
 
 
 # casting and coercion ====
 test_that("dois can be coerced", {
   expect_snapshot_value2(c(doi_examples()[1], "10.1002/0470841559.ch1"))
+  # c acts differently depending on the order unfortunately
+  expect_snapshot_value2(vctrs::vec_c("10.1002/0470841559.ch1", doi_examples()[1]))
 })
 
 test_that("dois can be cast to characters", {
@@ -58,7 +63,7 @@ test_that("dois can be cast to characters", {
 })
 
 test_that("characters can be cast to dois", {
-  expect_snapshot_value2(source(path_ex_file("doi", "as_doi.R"))$value)
+  expect_snapshot_value2(source_pef("doi", "as_doi.R"))
   expect_error(as_doi(c("10.1126/science.169.3946.635 10.6084/m9.figshare.97218")))
 })
 
@@ -90,23 +95,38 @@ test_that("DOIs are compared with case insensitivity", {
 # extraction ====
 
 test_that("single DOIs are extracted", {
-  expect_snapshot_value2(source(path_ex_file("doi", "str_extract_doi.R")))
+  expect_snapshot_value2(source_pef("doi", "str_extract_doi.R"))
 })
 
 test_that("multiple DOIs are extracted", {
-  expect_snapshot_value2(source(path_ex_file("doi", "str_extract_all_doi.R")))
+  expect_snapshot_value2(source_pef("doi", "str_extract_all_doi.R"))
 })
 
 
-# resolution ====
+# doi.org api ====
 
-test_that("DOI resolvability can be detected", {
-  expect_true(is_doi_resolveable(doi_examples()[1]))
-  expect_equal(is_doi_resolveable("10.1000/zap"), FALSE)
+test_that("DOI API works", {
+  expect_snapshot_value(source_pef("doi", "get_doi_handles.R"))
 })
 
-test_that("DOI urls are percent escaped", {
-  expect_snapshot_value(build_url_doi_org("10.1000/foo#bar"))
+test_that("DOI API gives warning on empty value", {
+  expect_warning(get_doi_handles("10.1000/1", query = list(type = "zap")))
+})
+
+test_that("DOI can be resolved to url", {
+  expect_equal(
+    source_pef("doi", "resolve_doi.R"),
+    c("http://www.nature.com/articles/nphys1170", "http://www.doi.org/index.html")
+  )
+  # would be good to test a doi which is has no URL which should give NA
+  # but I don't have such a DOI if it exists at all
+})
+
+test_that("DOI indexation can be detected", {
+  expect_equal(
+    source_pef("doi", "is_doi_found.R"),
+    c(FALSE, TRUE)
+  )
 })
 
 test_that("crossref DOIs are identified", {

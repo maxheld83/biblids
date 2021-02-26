@@ -20,3 +20,8 @@ path_ex_file <- function(...) {
   args <- c("examples", list(...))
   rlang::exec(system.file, !!!args, package = "biblids", mustWork = TRUE)
 }
+
+# Source path_ex_files
+source_pef <- function(...) {
+  source(path_ex_file(...))$value
+}

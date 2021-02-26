@@ -15,8 +15,8 @@ doi_examples()
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
+\code{\link{doi_api}},
 \code{\link{doi}()},
-\code{\link{regex_doi}()},
-\code{\link{resolve_doi}}
+\code{\link{regex_doi}()}
 }
 \concept{doi}

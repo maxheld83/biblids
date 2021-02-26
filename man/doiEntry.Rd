@@ -50,7 +50,7 @@ This limit is still enforced server-side, not client-side,
 so the protection is not bullet-proof.}
 }
 \description{
-Accept, validate and return DOIs in a shiny app.
+Input, validate and return DOIs in a shiny app.
 }
 \section{Related Functions and Methods}{
 \subsection{Functions}{
@@ -66,9 +66,9 @@ Accept, validate and return DOIs in a shiny app.
 
 \seealso{
 Other doi: 
+\code{\link{doi_api}},
 \code{\link{doi_examples}()},
 \code{\link{doi}()},
-\code{\link{regex_doi}()},
-\code{\link{resolve_doi}}
+\code{\link{regex_doi}()}
 }
 \concept{doi}

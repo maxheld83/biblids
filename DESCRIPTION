@@ -45,7 +45,8 @@ Suggests:
     knitr (>= 1.30),
     glue (>= 1.4.2),
     curl (>= 4.3),
-    httr (>= 1.4.2)
+    httr (>= 1.4.2),
+    jsonlite (>= 1.7.2)
 Remotes:
   subugoe/subugoetheme@1.1.1,
   subugoe/shinycaas@1.0.0,

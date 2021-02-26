@@ -3,8 +3,8 @@
 #' 
 #' S3 record class for DOIs.
 #' 
-#' @param prefix the naming authority.
-#' @param suffix the unique string chosen by the registrant
+#' @param prefix The naming authority.
+#' @param suffix The unique string chosen by the registrant.
 #' 
 #' @example inst/examples/doi/doi.R
 #' @examples
@@ -60,6 +60,7 @@ validate_doi <- function(x) {
 }
 
 #' Add delimiters to regex
+#'
 #' For when fields must *only* include matches, no whitespace etc.
 #' @noRd
 str_detect_all <- function(string, pattern) {
@@ -78,13 +79,13 @@ is_doi_syntax <- function(x, part = c("prefix", "suffix")) {
 }
 
 #' @describeIn doi Test for `biblids_doi` class
-#' @param x a vector as created by [doi()].
+#' @param x A vector as created by, or convertable to [doi()].
 #' @export
 #' @examples
 #' is_doi(doi_examples())
 is_doi <- function(x) inherits(x, "biblids_doi")
 
-#' @describeIn doi Test whether character vector can be cast to DOI
+#' @describeIn doi Test whether character vector could be converted to DOI
 #' @export
 #' @example inst/examples/doi/is_doi_ish.R
 is_doi_ish <- function(x) !is.na(as_doi(x))
@@ -113,6 +114,7 @@ vec_cast.biblids_doi.character <- function(x, to, ...) {
 }
 
 #' @describeIn doi Cast DOIs from other forms
+#' @inheritParams is_doi
 #' @example inst/examples/doi/as_doi.R
 #' @examples
 #' \dontrun{
@@ -143,13 +145,16 @@ as_doi.character <- function(x, ...) {
   res <- stringr::str_split_fixed(string = res[, 1], pattern = "/", n = 2)
   res[which(res == "")] <- NA_character_
   new_doi(prefix = res[, 1], suffix = res[, 2])
+  # no extra validation necessary because above extraction is already doi only
 }
 
 # presentation methods ====
 
 #' @describeIn doi Display a DOI
 #' @param protocol 
-#' logical flag, whether to prepend `doi:` handle protocol, as per the official [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
+#' Logical flag, whether to prepend `doi:` handle protocol,
+#' as per the official
+#' [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
 #' @export
 format.biblids_doi <- function(x, ..., protocol = FALSE) {
   stopifnot(rlang::is_scalar_logical(protocol))
@@ -191,18 +196,26 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 #' You can also include DOIs inline with `r doi_examples()[1:3]`.
 #' @param display character scaling, giving how to display a DOI.
 #' Must be one of:
-#' - `"crossref"` (recommended) to apply their [display guidelines](https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/).
-#'    Appears identical to the [DataCite display guidelines](https://support.datacite.org/docs/datacite-doi-display-guidelines).
-#' - `"doi"`: to apply the DOI Foundation [presentation guidelines](https://www.doi.org/doi_handbook/2_Numbering.html#2.6).
+#' - `"crossref"` (recommended)
+#'     to apply their
+#'     [display guidelines](https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/).
+#'     Appears identical to the
+#'     [DataCite display guidelines](https://support.datacite.org/docs/datacite-doi-display-guidelines).
+#' - `"doi"`:
+#'     to apply the DOI Foundation
+#'     [presentation guidelines](https://www.doi.org/doi_handbook/2_Numbering.html#2.6).
 # TODO @inheritParams inline arg from knitr, blocked by https://github.com/yihui/knitr/issues/1565
 #' @param inline 
-#' logical flag, giving whether to render DOIs as a chunk output or inline R.
+#' Logical flag, giving whether to render DOIs as a chunk output or inline R.
 #' Usually set by knitr.
 #' @exportS3Method knitr::knit_print
 #' @method knit_print biblids_doi
 #' @inheritParams knitr::knit_print
 knit_print.biblids_doi <- function(x, 
-                                  display = getOption("biblids.doi_display", default = "crossref"), 
+                                  display = getOption(
+                                    "biblids.doi_display", 
+                                    default = "crossref"
+                                  ), 
                                   inline = FALSE,
                                   ...) {
   requireNamespace2("knitr")
@@ -268,8 +281,16 @@ regex_doi <- function(type = c("doi.org", "cr-modern"), ...) {
 #' a character string giving the type of validation to run.
 #' Implemented as regular expressions (see source code).
 #' Must be one these syntax specifications:
-#' - `"doi.org"` from [doi.org](https://www.doi.org/doi_handbook/2_Numbering.html#2.2), via [stack-overflow](https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page) (recommended):
-#' - `"cr-modern"` from [crossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/)
+#' - `"doi.org"` (recommended) from
+#'     [doi.org](https://www.doi.org/doi_handbook/2_Numbering.html#2.2),
+#'     via [stack-overflow](https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page)
+#'     uses the actual spec, but can cause problems when DOIs are not separated
+#'     by whitespace or linebreaks, because many other characters
+#'     are valid DOI and will extracted.
+#' - `"cr-modern"` from
+#'     [crossref](https://www.crossref.org/blog/dois-and-matching-regular-expressions/)
+#'     is less vulnerable to over-extracting, but excludes some DOIs which,
+#'     while today uncommon are syntactically valid.
 #' See examples.
 #'
 #' @export
@@ -315,7 +336,7 @@ str_extract_all_doi <- function(string, type = "doi.org") {
 
 #' Enter DOIs through a Shiny Module
 #' 
-#' Accept, validate and return DOIs in a shiny app.
+#' Input, validate and return DOIs in a shiny app.
 #' @family doi
 #' @name doiEntry
 NULL
@@ -421,42 +442,135 @@ doiEntryServer <- function(id, char_limit = 100000L) {
 }
 
 
-# resolution ====
+# doi.org API ====
 
-#' Resolve a DOI
+#' Use the doi.org API
 #'
-#' @inheritParams is_doi
+#' Queries the
+#' [DOI resolution proxy server REST API](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
+#'
+#' @details
+#' The doi.org API only includes information on DOI resolution,
+#' not other metadata.
+#' For additional metadata, you must access *registration* agency APIs, such as
+#' crossref.
+#'
+#' If you are using this in your own package, or create a lot of traffic,
+#' please set your own [httr::user_agent()].
+#'
 #' @family doi
-#' @name resolve_doi
+#' @name doi_api
 NULL
 
-#' @describeIn resolve_doi Test whether DOI can be resolved
-#' @export
-is_doi_resolveable <- function(x) {
-  x <- as_doi(x)
-  httr::status_code(get_doi_handles(x)) == 200
-}
-
-#' @describeIn resolve_doi Get DOI handles
-#' @inheritParams httr::GET
-#' @inheritDotParams httr::GET
-#' @export
-get_doi_handles <- function(x, ...) {
-  requireNamespace2("httr")
-  x <- as_doi(x)
-  httr::GET(build_url_doi_org(x), ...)
-}
-
-#' Build URL to query doi.org
-#' @inheritParams is_doi
+#' VERB the doi.org API
 #' @noRd
-build_url_doi_org <- function(x) {
+verb_doi <- function(...) {
   requireNamespace2("httr")
-  requireNamespace2("curl")
-  httr::modify_url(
+  httr::VERB(
     url = "https://doi.org",
-    path = paste0("api/handles/", curl::curl_escape(as.character(x)))
+    httr::user_agent("http://github.com/subugoe/biblids"),
+    ...
   )
+}
+
+#' GET the doi.org API
+#' @noRd
+get_doi <- function(...) verb_doi(verb = "GET", ...)
+
+#' VERB the doi.org handles endpoint
+#' @noRd
+verb_doi_handle <- function(x, verb, ...) {
+  requireNamespace2("curl")
+  x <- as_doi(x)
+  if (vctrs::vec_size(x) != 1) rlang::abort("Must be a doi vector of length 1.")
+  if (is.na(x)) rlang::abort("Must not be NA.")
+  verb_doi(
+    verb = verb,
+    path = paste0(
+      "api/handles/",
+      curl::curl_escape(vctrs::field(x, "prefix")),
+      "/",
+      curl::curl_escape(vctrs::field(x, "suffix"))
+    ),
+    ...
+  )
+  }
+
+#' GET the doi.org handles endpoint
+#' @noRd
+get_doi_handle <- function(x, ...) {
+  requireNamespace2("jsonlite")
+  resp <- verb_doi_handle(x, verb = "GET", ...)
+  # more informative error message than httr:stop_for_status
+  # status codes as per https://www.doi.org/doi_handbook/3_Resolution.html#3.8.1
+  if (httr::status_code(resp) == 404) {
+    rlang::abort("Handle not found on doi.org.")
+  }
+  # catch other errors
+  httr::stop_for_status(resp)
+  if (httr::http_type(resp) != "application/json") {
+    rlang::abort("API did not return json.")
+  }
+  res <- jsonlite::fromJSON(httr::content(resp, "text"), simplifyVector = FALSE)
+  if (res$responseCode == 200) {
+    # this gets the HTTP reponse code 200, so ok, but not ok
+    rlang::warn(c(
+      "The handle exists on doi.org, but the values were not found, because the handle",
+      "has no values or",
+      "has no values for types and indices specified."
+    ))
+  }
+  res
+}
+
+#' @describeIn doi_api
+#' Query the handles endpoint.
+#' For possible queries, see [doi.org](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
+#'
+#' @inheritParams as_doi
+#' @param query A named list of [query parameters](https://www.doi.org/factsheets/DOIProxy.html#query-parameters).
+#' @inheritParams httr::GET
+#' @inheritDotParams httr::GET -url
+#' @example inst/examples/doi/get_doi_handles.R
+#' @export
+get_doi_handles <- function(x,
+                            query = NULL,
+                            ...) {
+  x <- as_doi(x)
+  # bad hack-fix because purrr treats rcrds as list
+  # see https://github.com/tidyverse/purrr/issues/819
+  x <- as.character(x)
+  purrr::map(.x = x, .f = get_doi_handle, query = query, ...)
+}
+
+#' @describeIn doi_api
+#' Get the resolved URL for a DOI.
+#' Returns `NA` if there is no URL value (rare).
+#' @example inst/examples/doi/resolve_doi.R
+#' @export
+resolve_doi <- function(x, ...) {
+  res <- get_doi_handles(x, query = list(type = "URL"), ...)
+  purrr::map_chr(res, purrr::pluck, "values", 1, "data", "value", .default = NA)
+}
+
+#' HEAD the doi.org handles endpoint
+#' @noRd
+head_doi_handle <- function(x, ...) {
+  resp <- verb_doi_handle(x = x, verb = "HEAD", ...)
+  if (httr::status_code(resp) == 200) return(TRUE)
+  if (httr::status_code(resp) == 404) return(FALSE)
+  httr::stop_for_status(resp)
+}
+
+#' @describeIn doi_api Test whether DOI handle can be found on doi.org.
+#' @example inst/examples/doi/is_doi_found.R
+#' @export
+is_doi_found <- function(x, ...) {
+  x <- as_doi(x)
+  # bad hack-fix because purrr treats rcrds as list
+  # see https://github.com/tidyverse/purrr/issues/819
+  x <- as.character(x)
+  purrr::map_lgl(.x = x, .f = head_doi_handle, ...)
 }
 
 # example DOIs ====

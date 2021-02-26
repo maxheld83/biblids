@@ -33,27 +33,34 @@ as_doi(x, ...)
 \method{is.na}{biblids_doi}(x, ...)
 }
 \arguments{
-\item{prefix}{the naming authority.}
+\item{prefix}{The naming authority.}
 
-\item{suffix}{the unique string chosen by the registrant}
+\item{suffix}{The unique string chosen by the registrant.}
 
-\item{x}{a vector as created by \code{\link[=doi]{doi()}}.}
+\item{x}{A vector as created by, or convertable to \code{\link[=doi]{doi()}}.}
 
 \item{...}{Additional arguments passed to the S3 method. Currently ignored,
 except two optional arguments \code{options} and \code{inline}; see
 the references below.}
 
-\item{protocol}{logical flag, whether to prepend \verb{doi:} handle protocol, as per the official \href{https://doi.org/doi_handbook/2_Numbering.html#2.6.1}{DOI Handbook}.}
+\item{protocol}{Logical flag, whether to prepend \verb{doi:} handle protocol,
+as per the official
+\href{https://doi.org/doi_handbook/2_Numbering.html#2.6.1}{DOI Handbook}.}
 
 \item{display}{character scaling, giving how to display a DOI.
 Must be one of:
 \itemize{
-\item \code{"crossref"} (recommended) to apply their \href{https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/}{display guidelines}.
-Appears identical to the \href{https://support.datacite.org/docs/datacite-doi-display-guidelines}{DataCite display guidelines}.
-\item \code{"doi"}: to apply the DOI Foundation \href{https://www.doi.org/doi_handbook/2_Numbering.html#2.6}{presentation guidelines}.
+\item \code{"crossref"} (recommended)
+to apply their
+\href{https://www.crossref.org/education/metadata/persistent-identifiers/doi-display-guidelines/}{display guidelines}.
+Appears identical to the
+\href{https://support.datacite.org/docs/datacite-doi-display-guidelines}{DataCite display guidelines}.
+\item \code{"doi"}:
+to apply the DOI Foundation
+\href{https://www.doi.org/doi_handbook/2_Numbering.html#2.6}{presentation guidelines}.
 }}
 
-\item{inline}{logical flag, giving whether to render DOIs as a chunk output or inline R.
+\item{inline}{Logical flag, giving whether to render DOIs as a chunk output or inline R.
 Usually set by knitr.}
 }
 \description{
@@ -65,7 +72,7 @@ S3 record class for DOIs.
 \item \code{is_doi}: Test for \code{biblids_doi} class
 }
 \itemize{
-\item \code{is_doi_ish}: Test whether character vector can be cast to DOI
+\item \code{is_doi_ish}: Test whether character vector could be converted to DOI
 }
 \itemize{
 \item \code{as_doi}: Cast DOIs from other forms
@@ -138,8 +145,8 @@ is.na(doi(prefix = "10.5194", suffix = NA))
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
+\code{\link{doi_api}},
 \code{\link{doi_examples}()},
-\code{\link{regex_doi}()},
-\code{\link{resolve_doi}}
+\code{\link{regex_doi}()}
 }
 \concept{doi}

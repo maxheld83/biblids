@@ -20,8 +20,16 @@ str_extract_all_doi(string, type = "doi.org")
 Implemented as regular expressions (see source code).
 Must be one these syntax specifications:
 \itemize{
-\item \code{"doi.org"} from \href{https://www.doi.org/doi_handbook/2_Numbering.html#2.2}{doi.org}, via \href{https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page}{stack-overflow} (recommended):
-\item \code{"cr-modern"} from \href{https://www.crossref.org/blog/dois-and-matching-regular-expressions/}{crossref}
+\item \code{"doi.org"} (recommended) from
+\href{https://www.doi.org/doi_handbook/2_Numbering.html#2.2}{doi.org},
+via \href{https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page}{stack-overflow}
+uses the actual spec, but can cause problems when DOIs are not separated
+by whitespace or linebreaks, because many other characters
+are valid DOI and will extracted.
+\item \code{"cr-modern"} from
+\href{https://www.crossref.org/blog/dois-and-matching-regular-expressions/}{crossref}
+is less vulnerable to over-extracting, but excludes some DOIs which,
+while today uncommon are syntactically valid.
 See examples.
 }}
 
@@ -80,8 +88,8 @@ str_extract_all_doi(string = c(
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
+\code{\link{doi_api}},
 \code{\link{doi_examples}()},
-\code{\link{doi}()},
-\code{\link{resolve_doi}}
+\code{\link{doi}()}
 }
 \concept{doi}

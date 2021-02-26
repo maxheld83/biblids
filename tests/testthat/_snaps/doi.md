@@ -88,31 +88,6 @@
       ]
     }
 
-# doi_ish can be detected
-
-    {
-      "type": "list",
-      "attributes": {
-        "names": {
-          "type": "character",
-          "attributes": {},
-          "value": ["value", "visible"]
-        }
-      },
-      "value": [
-        {
-          "type": "logical",
-          "attributes": {},
-          "value": [false, true, true]
-        },
-        {
-          "type": "logical",
-          "attributes": {},
-          "value": [true]
-        }
-      ]
-    }
-
 # dois can be coerced
 
     {
@@ -139,6 +114,36 @@
           "type": "character",
           "attributes": {},
           "value": ["nphys1170", "0470841559.ch1"]
+        }
+      ]
+    }
+
+---
+
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["prefix", "suffix"]
+        },
+        "class": {
+          "type": "character",
+          "attributes": {},
+          "value": ["biblids_doi", "vctrs_rcrd", "vctrs_vctr"]
+        }
+      },
+      "value": [
+        {
+          "type": "character",
+          "attributes": {},
+          "value": ["10.1002", "10.1038"]
+        },
+        {
+          "type": "character",
+          "attributes": {},
+          "value": ["0470841559.ch1", "nphys1170"]
         }
       ]
     }
@@ -285,60 +290,59 @@
 # single DOIs are extracted
 
     {
-      "type": "list",
-      "attributes": {
-        "names": {
-          "type": "character",
-          "attributes": {},
-          "value": ["value", "visible"]
-        }
-      },
-      "value": [
-        {
-          "type": "character",
-          "attributes": {},
-          "value": ["10.1594/PANGAEA.726855", "10.1594/GFZ.GEOFON.gfz2009kciu", "10.1594/PANGAEA.667386", "10.3207/2959859860", "10.3866/PKU.WHXB201112303", "10.3972/water973.0145.db", null]
-        },
-        {
-          "type": "logical",
-          "attributes": {},
-          "value": [true]
-        }
-      ]
+      "type": "character",
+      "attributes": {},
+      "value": ["10.1594/PANGAEA.726855", "10.1594/GFZ.GEOFON.gfz2009kciu", "10.1594/PANGAEA.667386", "10.3207/2959859860", "10.3866/PKU.WHXB201112303", "10.3972/water973.0145.db", null]
     }
 
 # multiple DOIs are extracted
 
     {
-      "type": "list",
+      "type": "character",
       "attributes": {
-        "names": {
-          "type": "character",
+        "dim": {
+          "type": "integer",
           "attributes": {},
-          "value": ["value", "visible"]
+          "value": [5, 2]
         }
       },
-      "value": [
-        {
-          "type": "character",
-          "attributes": {
-            "dim": {
-              "type": "integer",
-              "attributes": {},
-              "value": [5, 2]
-            }
-          },
-          "value": ["10.7666/d.y351065", "10.11467/isss2003.7.1_11", "10.1430/8105", "10.5194/wes-2019-70", "", "", "10.7875/leading.author.2.e008", "10.1392/BC1.0", "10.5194/wes-5-819-202", ""]
-        },
-        {
-          "type": "logical",
-          "attributes": {},
-          "value": [true]
-        }
-      ]
+      "value": ["10.7666/d.y351065", "10.11467/isss2003.7.1_11", "10.1430/8105", "10.5194/wes-2019-70", "", "", "10.7875/leading.author.2.e008", "10.1392/BC1.0", "10.5194/wes-5-819-202", ""]
     }
 
-# DOI urls are percent escaped
+# DOI API works
 
-    "https://doi.org/api/handles/10.1000%2Ffoo%23bar"
+    [
+      {
+        "responseCode": 1,
+        "handle": "10.1000/1",
+        "values": [
+          {
+            "index": 1,
+            "type": "URL",
+            "data": {
+              "format": "string",
+              "value": "http://www.doi.org/index.html"
+            },
+            "ttl": 86400,
+            "timestamp": "2014-09-26T14:40:46Z"
+          }
+        ]
+      },
+      {
+        "responseCode": 1,
+        "handle": "10.1038/nphys1170",
+        "values": [
+          {
+            "index": 1,
+            "type": "URL",
+            "data": {
+              "format": "string",
+              "value": "http://www.nature.com/articles/nphys1170"
+            },
+            "ttl": 86400,
+            "timestamp": "2017-12-29T06:49:37Z"
+          }
+        ]
+      }
+    ]
 
