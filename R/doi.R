@@ -449,14 +449,17 @@ doiEntryServer <- function(id, char_limit = 100000L) {
 #' Queries the
 #' [DOI resolution proxy server REST API](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
 #'
-#' @details
-#' The doi.org API only includes information on DOI resolution,
-#' not other metadata.
-#' For additional metadata, you must access *registration* agency APIs, such as
-#' crossref.
-#'
+#' @section Warning:
 #' If you are using this in your own package, or create a lot of traffic,
 #' please set your own [httr::user_agent()].
+#'
+#' @section Other APIs:
+#' This client only queries the doi.org API.
+#' The doi.org API only includes information on DOI resolution,
+#' not other metadata.
+#'
+#' For additional metadata, you must access *registration* agency APIs, such as
+#' crossref, wrapped in [rcrossref](https://github.com/ropensci/rcrossref).
 #'
 #' @family doi
 #' @name doi_api

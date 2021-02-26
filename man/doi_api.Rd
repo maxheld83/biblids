@@ -38,15 +38,6 @@ details.}
 Queries the
 \href{https://www.doi.org/factsheets/DOIProxy.html#rest-api}{DOI resolution proxy server REST API}.
 }
-\details{
-The doi.org API only includes information on DOI resolution,
-not other metadata.
-For additional metadata, you must access \emph{registration} agency APIs, such as
-crossref.
-
-If you are using this in your own package, or create a lot of traffic,
-please set your own \code{\link[httr:user_agent]{httr::user_agent()}}.
-}
 \section{Related Functions and Methods}{
 \subsection{Functions}{
 \itemize{
@@ -60,6 +51,22 @@ Returns \code{NA} if there is no URL value (rare).
 \itemize{
 \item \code{is_doi_found}: Test whether DOI handle can be found on doi.org.
 }}}
+
+\section{Warning}{
+
+If you are using this in your own package, or create a lot of traffic,
+please set your own \code{\link[httr:user_agent]{httr::user_agent()}}.
+}
+
+\section{Other APIs}{
+
+This client only queries the doi.org API.
+The doi.org API only includes information on DOI resolution,
+not other metadata.
+
+For additional metadata, you must access \emph{registration} agency APIs, such as
+crossref, wrapped in \href{https://github.com/ropensci/rcrossref}{rcrossref}.
+}
 
 \examples{
 # from https://www.doi.org/factsheets/DOIProxy.html
