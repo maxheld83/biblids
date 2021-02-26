@@ -1,5 +1,5 @@
 # construction ====
-#' [Digital Object Identifiers (DOI)](http://doi.org)
+#' Digital Object Identifiers
 #' 
 #' S3 record class for DOIs.
 #' 
@@ -11,6 +11,9 @@
 #' # DOIs are case insensitive and are compared as such
 #' unique(as_doi(c("10.1000/foo", "10.1000/fOo")))
 #' as_doi("10.1000/BAR") == as_doi("10.1000/bar")
+#' 
+#' # convert back to a (normalised) character
+#' as.character(as_doi("10.1000/zap"))
 #'
 #' @export
 #' @family doi
@@ -40,7 +43,7 @@ validate_doi <- function(x) {
   if (!all(prefixes_good)) {
     rlang::abort(
       c(
-        "All values must be valid DOI syntax:",
+        "All values must be valid DOI syntax.",
         x = "Bad `prefix` found.",
         i = "Try casting with `as_doi()`."
       )
@@ -50,7 +53,7 @@ validate_doi <- function(x) {
   if (!all(suffixes_good)) {
     rlang::abort(
       c(
-        "All values must be valid DOI syntax:",
+        "All values must be valid DOI syntax.",
         x = "Bad `suffix` found.",
         i = "Try casting with `as_doi()`."
       )
@@ -78,14 +81,15 @@ is_doi_syntax <- function(x, part = c("prefix", "suffix")) {
   res
 }
 
-#' @describeIn doi Test for `biblids_doi` class
-#' @param x A vector as created by, or convertable to [doi()].
+#' @describeIn doi Is this a `biblids_doi`?
 #' @export
 #' @examples
-#' is_doi(doi_examples())
+#' is_doi(as_doi("10.1000/1"))
+#' is_doi(1L)
 is_doi <- function(x) inherits(x, "biblids_doi")
 
-#' @describeIn doi Test whether character vector could be converted to DOI
+#' @describeIn doi Could this converted to a `biblids_doi`?
+#' @param x A vector created by, or convertable to [doi()].
 #' @export
 #' @example inst/examples/doi/is_doi_ish.R
 is_doi_ish <- function(x) !is.na(as_doi(x))
@@ -113,7 +117,7 @@ vec_cast.biblids_doi.character <- function(x, to, ...) {
   new_doi(res[, 1], res[, 2])
 }
 
-#' @describeIn doi Cast DOIs from other forms
+#' @describeIn doi Normalise
 #' @inheritParams is_doi
 #' @example inst/examples/doi/as_doi.R
 #' @examples
@@ -174,9 +178,9 @@ vec_ptype_full.biblids_doi <- function(x, ...) "digital object identifier"
 #' @method pillar_shaft biblids_doi
 #' @examples
 #' # there is extra pretty printing inside tibbles
-#' tibble::tibble(doi_examples()[1:3])
+#' tibble::tibble(c(doi_examples(na.rm = FALSE)[1:3]))
 pillar_shaft.biblids_doi <- function(x, ...) {
-  requireNamespace2("pillar")
+  require_namespace2("pillar")
   out <- format(x, protocol = FALSE)
   out <- stringr::str_replace(out, "/", pillar::style_subtle("/"))
   pillar::new_pillar_shaft_simple(out)
@@ -188,9 +192,9 @@ pillar_shaft.biblids_doi <- function(x, ...) {
 #' ```{r}
 #' library(knitr)
 #' # defaults to crossref style (recommended)
-#' doi_examples()[1:3]
+#' doi_examples(na.rm = FALSE)[1:3]
 #' # or use doi style
-#' knitr::knit_print(doi_examples()[1:3], display = "doi")
+#' knitr::knit_print(doi_examples(na.rm = FALSE)[1:3], display = "doi")
 #' ```
 #' 
 #' You can also include DOIs inline with `r doi_examples()[1:3]`.
@@ -218,7 +222,7 @@ knit_print.biblids_doi <- function(x,
                                   ), 
                                   inline = FALSE,
                                   ...) {
-  requireNamespace2("knitr")
+  require_namespace2("knitr")
   display <- rlang::arg_match(display, values = c("crossref", "doi"))
   link_text <- switch(display,
     "crossref" = paste0("https://doi.org/", format(x)),
@@ -230,7 +234,7 @@ knit_print.biblids_doi <- function(x,
   )
   with_url[is.na(x)] <- "`NA`"
   if (inline) {
-    requireNamespace2("glue")
+    require_namespace2("glue")
     out <- glue::glue_collapse(x = with_url, sep = ", ", last = " and ")
   } else {
     out <- paste0("- ", with_url, "\n")
@@ -245,7 +249,7 @@ knit_print.biblids_doi <- function(x,
 #' @export
 #' @examples
 #' # this can be constructed but will be NA
-#' is.na(doi(prefix = "10.5194", suffix = NA))
+#' is.na(doi(prefix = "10.1000", suffix = NA))
 is.na.biblids_doi <- function(x, ...) {
   is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
 }
@@ -344,7 +348,7 @@ NULL
 #' @describeIn doiEntry Test app
 #' @export
 doiEntryApp <- function() {
-  requireNamespace2("shiny")
+  require_namespace2("shiny")
   ui <- shiny::fluidPage(doiEntryUI(id = "test"))
   server <- function(input, output, session) {
     doiEntryServer(id = "test")
@@ -358,7 +362,7 @@ doiEntryApp <- function() {
 #' @inheritDotParams shiny::textAreaInput
 #' @export
 doiEntryUI <- function(id, width = "100%", ...) {
-  requireNamespace2("shiny")
+  require_namespace2("shiny")
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::textAreaInput(
@@ -395,8 +399,8 @@ doiEntryUI <- function(id, width = "100%", ...) {
 #' so the protection is not bullet-proof.
 #' @export
 doiEntryServer <- function(id, char_limit = 100000L) {
-  requireNamespace2("shiny")
-  requireNamespace2("glue")
+  require_namespace2("shiny")
+  require_namespace2("glue")
   stopifnot(rlang::is_scalar_integer(char_limit))
   shiny::moduleServer(
     id,
@@ -466,7 +470,7 @@ NULL
 #' VERB the doi.org API
 #' @noRd
 verb_doi <- function(...) {
-  requireNamespace2("httr")
+  require_namespace2("httr")
   httr::VERB(
     url = "https://doi.org",
     httr::user_agent("http://github.com/subugoe/biblids"),
@@ -491,7 +495,7 @@ verb_doi_handle <- function(x, verb, ...) {
 #' Create the path to a doi.org API from a [doi()]
 #' @noRd
 doi2path <- function(x) {
-  requireNamespace2("curl")
+  require_namespace2("curl")
   x <- as_doi(x)
   if (vctrs::vec_size(x) != 1) rlang::abort("Must be a doi vector of length 1.")
   if (is.na(x)) rlang::abort("Must not be NA.")
@@ -505,7 +509,7 @@ doi2path <- function(x) {
 #' GET the doi.org handles endpoint
 #' @noRd
 get_doi_handle <- function(x, ...) {
-  requireNamespace2("jsonlite")
+  require_namespace2("jsonlite")
   resp <- verb_doi_handle(x, verb = "GET", ...)
   res <- verifynparse_doi_api_resp(resp)
   if (res$responseCode == 200) {
@@ -542,10 +546,13 @@ doi_not_found <- function() {
 
 #' @describeIn doi_api
 #' Query the handles endpoint.
-#' For possible queries, see [doi.org](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
+#' For details, see the
+#' [DOI REST API documentation](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
 #'
 #' @inheritParams as_doi
-#' @param query A named list of [query parameters](https://www.doi.org/factsheets/DOIProxy.html#query-parameters).
+#' @param query
+#' A named list of
+#' [query parameters](https://www.doi.org/factsheets/DOIProxy.html#query-parameters).
 #' @inheritParams httr::GET
 #' @inheritDotParams httr::GET -url
 #' @example inst/examples/doi/get_doi_handles.R
@@ -571,10 +578,10 @@ resolve_doi <- function(x, ...) {
 }
 
 #' @describeIn doi_api
-#' Tests whether there is URL to resolve to.
+#' Tests whether there is a URL to resolve to.
 #' Simple wrapper around [resolve_doi()]
 #' @examples
-#' is_doi_resolvable(c("10.1000/1"))
+#' is_doi_resolvable(c("10.1000/1", "10.1000/2"))
 #' @export
 is_doi_resolvable <- function(x, ...) !(is.na(resolve_doi(x, ...)))
 
@@ -608,6 +615,7 @@ is_doi_found <- function(x, ...) {
 #'
 #' @details
 #' Some of these RAs have their own APIs to access additional metadata.
+#'
 #' Selected APIs with existing R wrappers include:
 #' - [Crossref](http://crossref.org),
 #'    wrapped by the [rcrossref](https://docs.ropensci.org/rcrossref/) R client,
@@ -617,9 +625,11 @@ is_doi_found <- function(x, ...) {
 #'    (partially ?) wrapped bye the
 #'    [eurlex](https://cran.r-project.org/web/packages/eurlex/index.html)
 #'    R client.
-#'
-#' Sometimes, these RAs have their own additional metadata, such as
-#' [crossref](https://www.crossref.org).
+#' 
+#' It's easy to confuse these more comprehensive wrappers
+#' geared towards particular RAs or services
+#' with those API wrappers included in biblids such as [get_doi_handles()],
+#' because *both types of API accept DOIs as inputs*.
 #'
 #' @name doi_ra
 #' @family doi
@@ -704,17 +714,27 @@ is_doi_from_ra <- function(x, ra = names(doi_ras()), ...) {
 # example DOIs ====
 
 #' Example DOIs
+#' @param na.rm
+#' Logical scalar, whether to remove `NA`s.
+#' Helpful for testing and documentation.
 #' @export
 #' @family doi
 #' @examples
 #' doi_examples()
-doi_examples <- function() {
-  ex_files <- c(
-    "doi.R",
-    "as_doi.R"
+doi_examples <- function(na.rm = TRUE) {
+  # this reduces doi examples from elsewhere in the pkg source
+  res <- c(
+    source_pef("doi", "doi.R"),
+    source_pef("doi", "as_doi.R"),
+    source_pef("doi", "str_extract_doi.R"),
+    as.vector(source_pef("doi", "str_extract_all_doi.R")),
+    as_doi(brio::read_lines(path_ex_file("doi", "get_doi_ra.R")))
   )
-  res <- purrr::map(ex_files, function(x) {
-    source(path_ex_file("doi", x))$value
-  })
-  purrr::reduce(res, c)
+  if (na.rm) {
+    # this should be na.omit https://github.com/subugoe/biblids/issues/50
+    res <- res[!is.na(res)]
+  }
+  # this should not be necessary https://github.com/subugoe/biblids/issues/60
+  res <- res[res != "/"]
+  res
 }

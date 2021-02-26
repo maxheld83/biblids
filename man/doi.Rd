@@ -9,7 +9,7 @@
 \alias{pillar_shaft.biblids_doi}
 \alias{knit_print.biblids_doi}
 \alias{is.na.biblids_doi}
-\title{\href{http://doi.org}{Digital Object Identifiers (DOI)}}
+\title{Digital Object Identifiers}
 \usage{
 doi(prefix = character(), suffix = character())
 
@@ -37,7 +37,7 @@ as_doi(x, ...)
 
 \item{suffix}{The unique string chosen by the registrant.}
 
-\item{x}{A vector as created by, or convertable to \code{\link[=doi]{doi()}}.}
+\item{x}{A vector created by, or convertable to \code{\link[=doi]{doi()}}.}
 
 \item{...}{Additional arguments passed to the S3 method. Currently ignored,
 except two optional arguments \code{options} and \code{inline}; see
@@ -69,13 +69,13 @@ S3 record class for DOIs.
 \section{Related Functions and Methods}{
 \subsection{Functions}{
 \itemize{
-\item \code{is_doi}: Test for \code{biblids_doi} class
+\item \code{is_doi}: Is this a \code{biblids_doi}?
 }
 \itemize{
-\item \code{is_doi_ish}: Test whether character vector could be converted to DOI
+\item \code{is_doi_ish}: Could this converted to a \code{biblids_doi}?
 }
 \itemize{
-\item \code{as_doi}: Cast DOIs from other forms
+\item \code{as_doi}: Normalise
 }}
 \subsection{Methods extending \code{biblids_doi} class (by generic):}{
 \itemize{
@@ -88,38 +88,42 @@ S3 record class for DOIs.
 \item \code{knit_print}: Print DOIs in R markdown (when knitr is available):
 DOIs are hyperlined to the doi.org resolution service.\if{html}{\out{<div class="r">}}\preformatted{library(knitr)
 # defaults to crossref style (recommended)
-doi_examples()[1:3]
+doi_examples(na.rm = FALSE)[1:3]
 }\if{html}{\out{</div>}}
 \itemize{
 \item \url{https://doi.org/10.1038/nphys1170}
 \item \code{NA}
-\item \url{https://doi.org/10.11467/isss2003.7.1_11}
+\item \url{https://doi.org/10.1007/978-3-642-65840-2_5}
 }\if{html}{\out{<div class="r">}}\preformatted{# or use doi style
-knitr::knit_print(doi_examples()[1:3], display = "doi")
+knitr::knit_print(doi_examples(na.rm = FALSE)[1:3], display = "doi")
 }\if{html}{\out{</div>}}
 \itemize{
 \item \href{https://doi.org/10.1038/nphys1170}{\code{doi:10.1038/nphys1170}}
 \item \code{NA}
-\item \href{https://doi.org/10.11467/isss2003.7.1_11}{\code{doi:10.11467/isss2003.7.1_11}}
+\item \href{https://doi.org/10.1007/978-3-642-65840-2_5}{\verb{doi:10.1007/978-3-642-65840-2_5}}
 }
 
-You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \code{NA} and \url{https://doi.org/10.11467/isss2003.7.1_11}.
+You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \url{https://doi.org/10.1007/978-3-642-65840-2_5} and \url{https://doi.org/10.1594/PANGAE.726855}.
 }
 \itemize{
 \item \code{is.na}: Detect if \code{prefix} and/\emph{or} \code{suffix} is missing
 }}}
 
 \examples{
+# this is the hard way to enter
 doi(
-  # example dois are from https://www.doi.org/demos.html
-  prefix = c("10.1038", NA, "10.11467"),
-  suffix = c("nphys1170", "foobar", "isss2003.7.1_11")
+  prefix = c("10.1038", "10.1000", "10.1007"),
+  suffix = c("nphys1170", NA, "978-3-642-65840-2_5")
 )
 # DOIs are case insensitive and are compared as such
 unique(as_doi(c("10.1000/foo", "10.1000/fOo")))
 as_doi("10.1000/BAR") == as_doi("10.1000/bar")
 
-is_doi(doi_examples())
+# convert back to a (normalised) character
+as.character(as_doi("10.1000/zap"))
+
+is_doi(as_doi("10.1000/1"))
+is_doi(1L)
 is_doi_ish(c(
   "foo",  # not a DOI
   "10.1371/journal.pone.0042793",
@@ -130,17 +134,17 @@ as_doi(c(
   "10.1594/PANGAE.726855",
   " 10.1594/GFZ.GEOFON.gfz2009kciu ",  # leading/trailing spaces are removed
   "https://doi.org/10.1000/182",  # URL form is parsed
-  "doi:10.1000/1", # DOI from is parsed
-  "foo bar" # yields NA
+  "doi:10.1000/7",  # DOI from is parsed
+  "foo bar"  # returns NA
 ))
 \dontrun{
 # there must be only one DOI per element
 as_doi(c("10.1126/science.169.3946.635 10.6084/m9.figshare.97218"))
 }
 # there is extra pretty printing inside tibbles
-tibble::tibble(doi_examples()[1:3])
+tibble::tibble(c(doi_examples(na.rm = FALSE)[1:3]))
 # this can be constructed but will be NA
-is.na(doi(prefix = "10.5194", suffix = NA))
+is.na(doi(prefix = "10.1000", suffix = NA))
 }
 \seealso{
 Other doi: 

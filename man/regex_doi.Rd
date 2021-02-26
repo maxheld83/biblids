@@ -70,19 +70,24 @@ regex_doi("cr-modern")
 
 str_extract_doi(string = c(
   "10.1594/PANGAEA.726855",  # nothing to do here
-  "10.1594/GFZ.GEOFON.gfz2009kciu ",  # remove space
+  "10.1119/1.16433 ",  # remove space
   " 10.1594/PANGAEA.667386", # remove space
-  "doi:10.3207/2959859860", # remove DOI
-  "http://dx.doi.org/10.3866/PKU.WHXB201112303", # parse URL
+  "doi:10.3866/PKU.WHXB201112303", # remove DOI
+  "http://dx.doi.org/10.3352/jeehp.2013.10.3", # parse URL
   "10.3972/water973.0145.db&", # remove forbidden symbol
   "foo bar" # no DOI here
 ))
 str_extract_all_doi(string = c(
-  "10.7666/d.y351065",  # nothing to do here
-  "10.11467/isss2003.7.1_11 doi:10.7875/leading.author.2.e008",  # space separated
-  "doi:10.1430/8105&doi:10.1392/BC1.0 ",  # separated by forbidden
-  "10.5194/wes-2019-70\n10.5194/wes-5-819-202",  # separated by linebreak
-  "quux" # no DOI here
+  # nothing to do here
+  "10.17487/rfc1149",
+    # space separated
+  "10.1016/j.iheduc.2003.11.004 doi:10.7875/leading.author.2.e008",
+  # separated by forbidden
+  "doi:10.6084/m9.figshare.97218&doi:10.1126/science.169.3946.635 ",
+  # separated by linebreak
+  "10.5194/wes-2019-70\n10.5194/wes-5-819-202",
+  # no DOI here
+  "quux"
 ))
 }
 \seealso{

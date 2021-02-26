@@ -1,4 +1,4 @@
-# doi helper creates DOI records
+# helper creates proper records
 
     {
       "type": "list",
@@ -18,17 +18,17 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["10.1038", null, "10.11467"]
+          "value": ["10.1038", "10.1000", "10.1007"]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["nphys1170", "foobar", "isss2003.7.1_11"]
+          "value": ["nphys1170", null, "978-3-642-65840-2_5"]
         }
       ]
     }
 
-# doi fields are cast from more constrained types
+# fields are cast from more constrained types
 
     {
       "type": "list",
@@ -48,17 +48,17 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["10.13003"]
+          "value": ["10.1000"]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["5jchdy"]
+          "value": ["norf"]
         }
       ]
     }
 
-# dois fields are recycled
+# fields are recycled
 
     {
       "type": "list",
@@ -78,17 +78,17 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["10.1371", "10.1371"]
+          "value": ["10.1000", "10.1000"]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["journal.pbio.0020449", "journal.pbio.0020449.g001"]
+          "value": ["zap", "zong"]
         }
       ]
     }
 
-# dois can be coerced
+# DOIs can be coerced
 
     {
       "type": "list",
@@ -108,12 +108,12 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["10.1038", "10.1002"]
+          "value": ["10.1000", "10.1000"]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["nphys1170", "0470841559.ch1"]
+          "value": ["foo", "zap"]
         }
       ]
     }
@@ -138,25 +138,25 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["10.1002", "10.1038"]
+          "value": ["10.1000", "10.1000"]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["0470841559.ch1", "nphys1170"]
+          "value": ["frotz", "qux"]
         }
       ]
     }
 
-# dois can be cast to characters
+# DOIs can be cast to characters
 
     {
       "type": "character",
       "attributes": {},
-      "value": ["10.1038/nphys1170", null, "10.11467/isss2003.7.1_11"]
+      "value": ["10.1000/grault", null, "10.1000/thud"]
     }
 
-# characters can be cast to dois
+# characters can be cast to DOIs
 
     {
       "type": "list",
@@ -181,15 +181,15 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["PANGAE.726855", "GFZ.GEOFON.gfz2009kciu", "182", "1", null]
+          "value": ["PANGAE.726855", "GFZ.GEOFON.gfz2009kciu", "182", "7", null]
         }
       ]
     }
 
 # DOIs are printed and formatted
 
-    [1] "10.1038/nphys1170"        NA                        
-    [3] "10.11467/isss2003.7.1_11"
+    [1] "10.1038/nphys1170"           NA                           
+    [3] "10.1007/978-3-642-65840-2_5"
 
 ---
 
@@ -207,7 +207,7 @@
           "value": [null]
         }
       },
-      "value": ["- [`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n", "- `NA`\n", "- [`https://doi.org/10.11467/isss2003.7.1_11`](https://doi.org/10.11467/isss2003.7.1_11)\n"]
+      "value": ["- [`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n", "- `NA`\n", "- [`https://doi.org/10.1007/978-3-642-65840-2_5`](https://doi.org/10.1007/978-3-642-65840-2_5)\n"]
     }
 
 ---
@@ -226,7 +226,7 @@
           "value": [null]
         }
       },
-      "value": ["- [`doi:10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n", "- `NA`\n", "- [`doi:10.11467/isss2003.7.1_11`](https://doi.org/10.11467/isss2003.7.1_11)\n"]
+      "value": ["- [`doi:10.1038/nphys1170`](https://doi.org/10.1038/nphys1170)\n", "- `NA`\n", "- [`doi:10.1007/978-3-642-65840-2_5`](https://doi.org/10.1007/978-3-642-65840-2_5)\n"]
     }
 
 ---
@@ -245,19 +245,19 @@
           "value": [null]
         }
       },
-      "value": ["[`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170), `NA` and [`https://doi.org/10.11467/isss2003.7.1_11`](https://doi.org/10.11467/isss2003.7.1_11)"]
+      "value": ["[`https://doi.org/10.1038/nphys1170`](https://doi.org/10.1038/nphys1170), `NA` and [`https://doi.org/10.1007/978-3-642-65840-2_5`](https://doi.org/10.1007/978-3-642-65840-2_5)"]
     }
 
 # DOIs make pretty tibble columns
 
     # A tibble: 3 x 1
-      `doi_examples()[1:3]`   
-      <doi>                   
-    1 10.1038/nphys1170       
-    2 NA                      
-    3 10.11467/isss2003.7.1_11
+      `doi_examples(na.rm = FALSE)[1:3]`
+      <doi>                             
+    1 10.1038/nphys1170                 
+    2 NA                                
+    3 10.1007/978-3-642-65840-2_5       
 
-# doi with one NA field become all NA
+# DOIs with one NA field become all NA
 
     {
       "type": "list",
@@ -277,12 +277,12 @@
         {
           "type": "character",
           "attributes": {},
-          "value": [null, "10.13003"]
+          "value": [null, "10.1000"]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["5jchdy", "5jchdy"]
+          "value": ["gizmo", "acme"]
         }
       ]
     }
@@ -292,7 +292,7 @@
     {
       "type": "character",
       "attributes": {},
-      "value": ["10.1594/PANGAEA.726855", "10.1594/GFZ.GEOFON.gfz2009kciu", "10.1594/PANGAEA.667386", "10.3207/2959859860", "10.3866/PKU.WHXB201112303", "10.3972/water973.0145.db", null]
+      "value": ["10.1594/PANGAEA.726855", "10.1119/1.16433", "10.1594/PANGAEA.667386", "10.3866/PKU.WHXB201112303", "10.3352/jeehp.2013.10.3", "10.3972/water973.0145.db", null]
     }
 
 # multiple DOIs are extracted
@@ -306,10 +306,10 @@
           "value": [5, 2]
         }
       },
-      "value": ["10.7666/d.y351065", "10.11467/isss2003.7.1_11", "10.1430/8105", "10.5194/wes-2019-70", "", "", "10.7875/leading.author.2.e008", "10.1392/BC1.0", "10.5194/wes-5-819-202", ""]
+      "value": ["10.17487/rfc1149", "10.1016/j.iheduc.2003.11.004", "10.6084/m9.figshare.97218", "10.5194/wes-2019-70", "", "", "10.7875/leading.author.2.e008", "10.1126/science.169.3946.635", "10.5194/wes-5-819-202", ""]
     }
 
-# DOI API works
+# doi.org handles api works
 
     [
       {

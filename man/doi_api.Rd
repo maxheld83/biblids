@@ -17,9 +17,10 @@ is_doi_resolvable(x, ...)
 is_doi_found(x, ...)
 }
 \arguments{
-\item{x}{A vector as created by, or convertable to \code{\link[=doi]{doi()}}.}
+\item{x}{A vector created by, or convertable to \code{\link[=doi]{doi()}}.}
 
-\item{query}{A named list of \href{https://www.doi.org/factsheets/DOIProxy.html#query-parameters}{query parameters}.}
+\item{query}{A named list of
+\href{https://www.doi.org/factsheets/DOIProxy.html#query-parameters}{query parameters}.}
 
 \item{...}{
   Arguments passed on to \code{\link[httr:GET]{httr::GET}}
@@ -45,14 +46,15 @@ Queries the
 \subsection{Functions}{
 \itemize{
 \item \code{get_doi_handles}: Query the handles endpoint.
-For possible queries, see \href{https://www.doi.org/factsheets/DOIProxy.html#rest-api}{doi.org}.
+For details, see the
+\href{https://www.doi.org/factsheets/DOIProxy.html#rest-api}{DOI REST API documentation}.
 }
 \itemize{
 \item \code{resolve_doi}: Get the resolved URL for a DOI.
 Returns \code{NA} if there is no URL value (rare, but theoretically possible).
 }
 \itemize{
-\item \code{is_doi_resolvable}: Tests whether there is URL to resolve to.
+\item \code{is_doi_resolvable}: Tests whether there is a URL to resolve to.
 Simple wrapper around \code{\link[=resolve_doi]{resolve_doi()}}
 }
 \itemize{
@@ -80,7 +82,7 @@ get_doi_handles(
   query = list(type = "URL")
 )
 resolve_doi(c("10.1038/nphys1170", "10.1000/1"))
-is_doi_resolvable(c("10.1000/1"))
+is_doi_resolvable(c("10.1000/1", "10.1000/2"))
 is_doi_found(c("10.1000/I_DO_NOT_EXIST", "10.1000/1"))
 }
 \seealso{

@@ -6,8 +6,10 @@
 \alias{biblids-package}
 \title{biblids: Working with bibliometric identifiers}
 \description{
-Provides S3 classes, predicates and methods to work with bibliometric identifiers such as DOIs.
-    Optionally (with `Suggests` dependencies) includes presentation methods and shiny input modules.
+Provides S3 classes, methods and predicates
+    to work with bibliometric identifiers such as DOIs.
+    Optionally (with `Suggests` dependencies) includes
+    presentation methods, shiny input modules and some API wrappers.
 }
 \seealso{
 Useful links:

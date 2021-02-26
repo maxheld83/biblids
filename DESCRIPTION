@@ -17,8 +17,10 @@ Authors@R:
       )
     )
 Description: 
-    Provides S3 classes, predicates and methods to work with bibliometric identifiers such as DOIs.
-    Optionally (with `Suggests` dependencies) includes presentation methods and shiny input modules.
+    Provides S3 classes, methods and predicates
+    to work with bibliometric identifiers such as DOIs.
+    Optionally (with `Suggests` dependencies) includes
+    presentation methods, shiny input modules and some API wrappers.
 License: MIT + file LICENSE
 Language: en
 Encoding: UTF-8
@@ -32,12 +34,13 @@ Imports:
     vctrs (>= 0.3.6),
     purrr (>= 0.3.4),
     stringr (>= 1.4.0),
-    ellipsis (>= 0.3.1)
+    ellipsis (>= 0.3.1),
+    brio (>= 1.1.1)
 Suggests: 
-    testthat,
-    covr,
+    testthat (>= 3.0.2),
+    covr (>= 3.5.1),
     subugoetheme,
-    shiny,
+    shiny (>= 1.6.0),
     shinycaas,
     shinyvalidate,
     pillar (>= 1.4.7),

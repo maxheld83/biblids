@@ -1,5 +1,5 @@
+# this is the hard way to enter
 doi(
-  # example dois are from https://www.doi.org/demos.html
-  prefix = c("10.1038", NA, "10.11467"),
-  suffix = c("nphys1170", "foobar", "isss2003.7.1_11")
+  prefix = c("10.1038", "10.1000", "10.1007"),
+  suffix = c("nphys1170", NA, "978-3-642-65840-2_5")
 )

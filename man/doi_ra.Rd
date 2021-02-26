@@ -14,7 +14,7 @@ get_doi_ra(x, ...)
 is_doi_from_ra(x, ra = names(doi_ras()), ...)
 }
 \arguments{
-\item{x}{A vector as created by, or convertable to \code{\link[=doi]{doi()}}.}
+\item{x}{A vector created by, or convertable to \code{\link[=doi]{doi()}}.}
 
 \item{...}{
   Arguments passed on to \code{\link[httr:GET]{httr::GET}}
@@ -40,6 +40,7 @@ but go through RAs.
 }
 \details{
 Some of these RAs have their own APIs to access additional metadata.
+
 Selected APIs with existing R wrappers include:
 \itemize{
 \item \href{http://crossref.org}{Crossref},
@@ -52,8 +53,10 @@ wrapped by the \href{https://docs.ropensci.org/rdatacite/}{rdatacite} R client,
 R client.
 }
 
-Sometimes, these RAs have their own additional metadata, such as
-\href{https://www.crossref.org}{crossref}.
+It's easy to confuse these more comprehensive wrappers
+geared towards particular RAs or services
+with those API wrappers included in biblids such as \code{\link[=get_doi_handles]{get_doi_handles()}},
+because \emph{both types of API accept DOIs as inputs}.
 }
 \section{Related Functions and Methods}{
 \subsection{Functions}{
@@ -82,15 +85,15 @@ doi_ras()
 get_doi_ra(c(
   "10.6220/joq.2012.19(1).01", # Airiti
   "10.13336/j.1003-6520.hve.20160308018", # CNKI
-  "10.1038/nphys1170", # Crossref, from https://www.doi.org/demos.html
-  "10.1594/PANGAEA.726855", # DataCite, from https://www.doi.org/demos.html
+  "10.1037/0003-066X.59.1.29", # Crossref
+  "10.3207/2959859860", # DataCite, from https://www.doi.org/demos.html
   "10.5240/7290-C8AD-12BA-4F93-3B07-7", # EIDR
   "10.7666/d.y351065", # ISTIC, from https://www.doi.org/demos.html
   "10.11467/isss2003.7.1_11", # JaLC, from https://www.doi.org/demos.html
   "10.3743/KOSIM.2011.28.2.117", # KISTI, from https://www.doi.or.kr
   "10.1430/8105", # mEDRA, from from https://www.doi.org/demos.html
   "10.2777/11739", # OP, from https://op.europa.eu
-  "10.1000/1" # Public, the International DOI Foundation itself
+  "10.1000/6" # Public, the International DOI Foundation itself
 ))
 is_doi_from_ra(x = c("10.1000/1", "10.1038/nphys1170"), ra = "Crossref")
 }

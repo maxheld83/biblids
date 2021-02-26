@@ -2,7 +2,7 @@
 #' Error out on unavailable optional pkgs
 #' @inheritParams requireNamespace
 #' @noRd
-requireNamespace2 <- function(x) {
+require_namespace2 <- function(x) {
   if (!requireNamespace(x, quietly = TRUE)) {
     stop(
       paste(
@@ -15,13 +15,16 @@ requireNamespace2 <- function(x) {
   }
 }
 
-# Create path to examples
+#' Create path to example
+#' Used in example tag and tests
+#' @noRd
 path_ex_file <- function(...) {
   args <- c("examples", list(...))
   rlang::exec(system.file, !!!args, package = "biblids", mustWork = TRUE)
 }
 
-# Source path_ex_files
+#' Source path_ex_files
+#' @noRd
 source_pef <- function(...) {
   source(path_ex_file(...))$value
 }

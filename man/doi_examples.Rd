@@ -4,7 +4,11 @@
 \alias{doi_examples}
 \title{Example DOIs}
 \usage{
-doi_examples()
+doi_examples(na.rm = TRUE)
+}
+\arguments{
+\item{na.rm}{Logical scalar, whether to remove \code{NA}s.
+Helpful for testing and documentation.}
 }
 \description{
 Example DOIs
