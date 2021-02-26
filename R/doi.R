@@ -561,8 +561,7 @@ get_doi_handles <- function(x,
                             query = NULL,
                             ...) {
   x <- as_doi(x)
-  # bad hack-fix because purrr treats rcrds as list
-  # see https://github.com/tidyverse/purrr/issues/819
+  # hack-fix until https://github.com/subugoe/biblids/issues/51
   x <- as.character(x)
   purrr::map(.x = x, .f = get_doi_handle, query = query, ...)
 }
@@ -599,8 +598,7 @@ head_doi_handle <- function(x, ...) {
 #' @export
 is_doi_found <- function(x, ...) {
   x <- as_doi(x)
-  # bad hack-fix because purrr treats rcrds as list
-  # see https://github.com/tidyverse/purrr/issues/819
+  # hack-fix until https://github.com/subugoe/biblids/issues/51
   x <- as.character(x)
   purrr::map_lgl(.x = x, .f = head_doi_handle, ...)
 }
@@ -669,8 +667,7 @@ doi_ras <- function() {
 #' @example inst/examples/doi/get_doi_ra.R
 #' @export
 get_doi_ra <- function(x, ...) {
-  # bad hack-fix because purrr treats rcrds as list
-  # see https://github.com/tidyverse/purrr/issues/819
+  # hack-fix until https://github.com/subugoe/biblids/issues/51
   x <- as.character(x)
   purrr::map_chr(.x = x, .f = get_doi_ra1, ...)
 }
