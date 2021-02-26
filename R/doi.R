@@ -650,7 +650,7 @@ doi_ras <- function() {
 }
 
 #' @describeIn doi_ra
-#' Get DOI Registration Agency using the doi.org
+#' Get DOI RA using the doi.org
 #' [Which RA?](https://www.doi.org/factsheets/DOIProxy.html#whichra) service.
 #' @inheritSection doi_api Warning
 #' @inheritParams as_doi
@@ -689,6 +689,16 @@ get_doi_ra1 <- function(x, ...) {
     )
   }
   res$RA
+}
+
+#' @describeIn doi_ra
+#' Test whether a DOI is registed by an RA
+#' @param ra Character scalar, must be one of `names(doi_ras())`.
+#' @example inst/examples/doi/is_doi_from_ra.R
+#' @export
+is_doi_from_ra <- function(x, ra = names(doi_ras()), ...) {
+  rlang::arg_match(ra)
+  get_doi_ra(x, ...) == ra
 }
 
 # example DOIs ====

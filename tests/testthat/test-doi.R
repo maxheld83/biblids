@@ -144,3 +144,10 @@ test_that("DOI RAs can be identified", {
     names(doi_ras())
   )
 })
+
+test_that("DOI RAs can be tested", {
+  expect_equal(
+    source_pef("doi", "is_doi_from_ra.R"),
+    c(FALSE, TRUE)
+  )
+})

@@ -4,11 +4,14 @@
 \alias{doi_ra}
 \alias{doi_ras}
 \alias{get_doi_ra}
+\alias{is_doi_from_ra}
 \title{Get the DOI Registration Agency (RA)}
 \usage{
 doi_ras()
 
 get_doi_ra(x, ...)
+
+is_doi_from_ra(x, ra = names(doi_ras()), ...)
 }
 \arguments{
 \item{x}{A vector as created by, or convertable to \code{\link[=doi]{doi()}}.}
@@ -28,6 +31,8 @@ connection time, and ensures that cookies are maintained over multiple
 requests to the same host. See \code{\link[httr:handle_pool]{handle_pool()}} for more
 details.}
   }}
+
+\item{ra}{Character scalar, must be one of \code{names(doi_ras())}.}
 }
 \description{
 Registrants do not register DOIs directly with the DOI Foundation,
@@ -59,8 +64,11 @@ Taken from \href{https://www.doi.org/RA_Coverage.html}{doi.org},
 where you can also learn more about areas of coverage.
 }
 \itemize{
-\item \code{get_doi_ra}: Get DOI Registration Agency using the doi.org
+\item \code{get_doi_ra}: Get DOI RA using the doi.org
 \href{https://www.doi.org/factsheets/DOIProxy.html#whichra}{Which RA?} service.
+}
+\itemize{
+\item \code{is_doi_from_ra}: Test whether a DOI is registed by an RA
 }}}
 
 \section{Warning}{
@@ -84,6 +92,7 @@ get_doi_ra(c(
   "10.2777/11739", # OP, from https://op.europa.eu
   "10.1000/1" # Public, the International DOI Foundation itself
 ))
+is_doi_from_ra(x = c("10.1000/1", "10.1038/nphys1170"), ra = "Crossref")
 }
 \seealso{
 Other doi: 
