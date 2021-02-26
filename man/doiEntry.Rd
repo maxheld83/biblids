@@ -68,6 +68,7 @@ Input, validate and return DOIs in a shiny app.
 Other doi: 
 \code{\link{doi_api}},
 \code{\link{doi_examples}()},
+\code{\link{doi_ra}},
 \code{\link{doi}()},
 \code{\link{regex_doi}()}
 }

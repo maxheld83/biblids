@@ -90,6 +90,7 @@ Other doi:
 \code{\link{doiEntry}},
 \code{\link{doi_api}},
 \code{\link{doi_examples}()},
+\code{\link{doi_ra}},
 \code{\link{doi}()}
 }
 \concept{doi}

@@ -103,7 +103,7 @@ test_that("multiple DOIs are extracted", {
 })
 
 
-# doi.org api ====
+# doi.org handles api ====
 
 test_that("DOI API works", {
   expect_snapshot_value(source_pef("doi", "get_doi_handles.R"))
@@ -136,9 +136,11 @@ test_that("DOI indexation can be detected", {
   )
 })
 
+# doi.org which ra api ====
+
 test_that("DOI RAs can be identified", {
   expect_equal(
     source_pef("doi", "get_doi_ra.R"),
-    c("Public", "Crossref", "DataCite")
+    names(doi_ras())
   )
 })

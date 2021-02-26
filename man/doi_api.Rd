@@ -6,8 +6,7 @@
 \alias{resolve_doi}
 \alias{is_doi_resolvable}
 \alias{is_doi_found}
-\alias{get_doi_ra}
-\title{Use the doi.org API}
+\title{Use the doi.org handles API}
 \usage{
 get_doi_handles(x, query = NULL, ...)
 
@@ -16,8 +15,6 @@ resolve_doi(x, ...)
 is_doi_resolvable(x, ...)
 
 is_doi_found(x, ...)
-
-get_doi_ra(x, ...)
 }
 \arguments{
 \item{x}{A vector as created by, or convertable to \code{\link[=doi]{doi()}}.}
@@ -60,10 +57,6 @@ Simple wrapper around \code{\link[=resolve_doi]{resolve_doi()}}
 }
 \itemize{
 \item \code{is_doi_found}: Test whether DOI handle can be found on doi.org.
-}
-\itemize{
-\item \code{get_doi_ra}: Get DOI Registration Agency using the doi.org
-\href{https://www.doi.org/factsheets/DOIProxy.html#whichra}{Which RA?} service.
 }}}
 
 \section{Warning}{
@@ -77,9 +70,7 @@ please set your own \code{\link[httr:user_agent]{httr::user_agent()}}.
 This client only queries the doi.org API.
 The doi.org API only includes information on DOI resolution,
 not other metadata.
-
-For additional metadata, you must access \emph{registration} agency APIs, such as
-crossref, wrapped in \href{https://github.com/ropensci/rcrossref}{rcrossref}.
+For other APIs, see \code{\link[=doi_ras]{doi_ras()}}
 }
 
 \examples{
@@ -91,16 +82,12 @@ get_doi_handles(
 resolve_doi(c("10.1038/nphys1170", "10.1000/1"))
 is_doi_resolvable(c("10.1000/1"))
 is_doi_found(c("10.1000/I_DO_NOT_EXIST", "10.1000/1"))
-get_doi_ra(c(
-  "10.1000/1", # doi.org, known as "public"
-  "10.1038/nphys1170", # crossref
-  "10.1594/GFZ.GEOFON.gfz2009kciu" # datacite
-))
 }
 \seealso{
 Other doi: 
 \code{\link{doiEntry}},
 \code{\link{doi_examples}()},
+\code{\link{doi_ra}},
 \code{\link{doi}()},
 \code{\link{regex_doi}()}
 }

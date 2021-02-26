@@ -442,9 +442,9 @@ doiEntryServer <- function(id, char_limit = 100000L) {
 }
 
 
-# doi.org API ====
+# doi.org handles API ====
 
-#' Use the doi.org API
+#' Use the doi.org handles API
 #'
 #' Queries the
 #' [DOI resolution proxy server REST API](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
@@ -457,9 +457,7 @@ doiEntryServer <- function(id, char_limit = 100000L) {
 #' This client only queries the doi.org API.
 #' The doi.org API only includes information on DOI resolution,
 #' not other metadata.
-#'
-#' For additional metadata, you must access *registration* agency APIs, such as
-#' crossref, wrapped in [rcrossref](https://github.com/ropensci/rcrossref).
+#' For other APIs, see [doi_ras()]
 #'
 #' @family doi
 #' @name doi_api
@@ -600,9 +598,64 @@ is_doi_found <- function(x, ...) {
   purrr::map_lgl(.x = x, .f = head_doi_handle, ...)
 }
 
-#' @describeIn doi_api
+
+# doi.org which RA API ====
+
+#' Get the DOI Registration Agency (RA)
+#'
+#' Registrants do not register DOIs directly with the DOI Foundation,
+#' but go through RAs.
+#'
+#' @details
+#' Some of these RAs have their own APIs to access additional metadata.
+#' Selected APIs with existing R wrappers include:
+#' - [Crossref](http://crossref.org),
+#'    wrapped by the [rcrossref](https://docs.ropensci.org/rcrossref/) R client,
+#' - [Datacite](https://datacite.org),
+#'    wrapped by the [rdatacite](https://docs.ropensci.org/rdatacite/) R client,
+#' - [OP](https://op.europa.eu/),
+#'    (partially ?) wrapped bye the
+#'    [eurlex](https://cran.r-project.org/web/packages/eurlex/index.html)
+#'    R client.
+#'
+#' Sometimes, these RAs have their own additional metadata, such as
+#' [crossref](https://www.crossref.org).
+#'
+#' @name doi_ra
+#' @family doi
+NULL
+
+#' @describeIn doi_ra
+#' All current DOI RAs, returned as a character string,
+#' named with its short name.
+#' Taken from [doi.org](https://www.doi.org/RA_Coverage.html),
+#' where you can also learn more about areas of coverage.
+#' @examples
+#' doi_ras()
+#' @export
+doi_ras <- function() {
+  c(
+    `Airiti` = "Airiti, Inc.",
+    `CNKI` = "China National Knowledge Infrastructure",
+    `Crossref` = "Crossref",
+    `DataCite` = "DataCite",
+    `EIDR` = "Entertainment Identifier Registry",
+    `ISTIC` = "The Institute of Scientific and Technical Information of China",
+    `JaLC` = "Japan Link Center",
+    `KISTI` = "Korea Institute of Science and Technology Information",
+    `mEDRA` = "Multilingual European DOI Registration Agency",
+    `OP` = "Publications Office of the European Union",
+    `Public` = "International DOI Foundation"
+  )
+}
+
+#' @describeIn doi_ra
 #' Get DOI Registration Agency using the doi.org
 #' [Which RA?](https://www.doi.org/factsheets/DOIProxy.html#whichra) service.
+#' @inheritSection doi_api Warning
+#' @inheritParams as_doi
+#' @inheritParams httr::GET
+#' @inheritDotParams httr::GET -url
 #' @example inst/examples/doi/get_doi_ra.R
 #' @export
 get_doi_ra <- function(x, ...) {
