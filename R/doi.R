@@ -302,7 +302,7 @@ doi_patterns <- function(type = c("doi.org", "cr-modern")) {
   type <- rlang::arg_match(type)
   res <- list(
     `doi.org` = c(
-      prefix = r"(10[.][0-9]{4,}(?:[.][0-9]+)*)",
+      prefix = r"(10[.][0-9]+(?:[.][0-9]+)*)",
       suffix = r"((?:(?!["&\'])\S)+)"
     ),
     # comment to repair syntax highlighting '

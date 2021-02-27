@@ -32,6 +32,9 @@ test_that("helper errors on invalid field inputs", {
 test_that("doi validates fields", {
   # foo is a valid suffix
   expect_visible(doi("10.1000", "foo"))
+  # registrant prefixes are usually, but need not be 4 long
+  # for more info, see https://github.com/subugoe/biblids/issues/63
+  expect_visible(doi("10.987.12345", "9990"))
   expect_error(doi("bar", "foo"))
   expect_error(doi(" 10.1000", "foo"))
   expect_error(doi("10.1000 ", "foo"))
