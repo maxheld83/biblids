@@ -103,6 +103,7 @@ test_that("single DOIs are extracted", {
 
 test_that("multiple DOIs are extracted", {
   expect_snapshot_value2(source_pef("doi", "str_extract_all_doi.R"))
+  expect_equal(as_doi('zap'), doi(NA, NA))
 })
 
 
