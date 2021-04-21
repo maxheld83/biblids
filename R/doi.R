@@ -471,7 +471,7 @@ NULL
 #' @noRd
 verb_doi <- function(...) {
   require_namespace2("httr")
-  httr::VERB(
+  httr::RETRY(
     url = "https://doi.org",
     httr::user_agent("http://github.com/subugoe/biblids"),
     ...
@@ -587,7 +587,7 @@ is_doi_resolvable <- function(x, ...) !(is.na(resolve_doi(x, ...)))
 #' HEAD the doi.org handles endpoint
 #' @noRd
 head_doi_handle <- function(x, ...) {
-  resp <- verb_doi_handle(x = x, verb = "HEAD", ...)
+  resp <- verb_doi_handle(x = x, verb = "HEAD", terminate_on = 404,...)
   if (httr::status_code(resp) == 200) return(TRUE)
   if (httr::status_code(resp) == 404) return(FALSE)
   httr::stop_for_status(resp)
