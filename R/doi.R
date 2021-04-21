@@ -328,8 +328,6 @@ str_extract_doi <- function(string) {
 #' @example inst/examples/doi/str_extract_all_doi.R
 #' @export
 str_extract_all_doi <- function(string, type = "doi.org") {
-  # can go back to stringr when that is default
-  # https://github.com/tidyverse/stringr/pull/367
   stringi::stri_extract_all(
     str = string,
     regex = regex_doi(),
