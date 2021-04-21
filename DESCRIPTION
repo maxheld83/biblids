@@ -50,7 +50,9 @@ Suggests:
     glue (>= 1.4.2),
     curl (>= 4.3),
     httr (>= 1.4.2),
-    jsonlite (>= 1.7.2)
+    jsonlite (>= 1.7.2),
+    memoise (>= 2.0.0),
+    cachem (>= 1.0.4)
 Remotes:
   subugoe/subugoetheme@1.1.1,
   subugoe/shinycaas@1.0.0,

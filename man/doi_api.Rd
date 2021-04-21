@@ -41,6 +41,10 @@ details.}
 \description{
 Queries the
 \href{https://www.doi.org/factsheets/DOIProxy.html#rest-api}{DOI resolution proxy server REST API}.
+\itemize{
+\item Retries failed requests.
+\item Caches results (when \code{\link[memoise:memoise]{memoise::memoise()}} is installed).
+}
 }
 \section{Related Functions and Methods}{
 \subsection{Functions}{

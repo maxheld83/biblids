@@ -452,6 +452,8 @@ doiEntryServer <- function(id, char_limit = 100000L) {
 #'
 #' Queries the
 #' [DOI resolution proxy server REST API](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
+#' - Retries failed requests.
+#' - Caches results (when [memoise::memoise()] is installed).
 #'
 #' @section Warning:
 #' If you are using this in your own package, or create a lot of traffic,
@@ -470,6 +472,12 @@ NULL
 #' VERB the doi.org API
 #' @noRd
 verb_doi <- function(...) {
+  retry_doi(...)
+}
+
+#' RETRY the doi.org API
+#' @noRd
+retry_doi <- function(...) {
   require_namespace2("httr")
   httr::RETRY(
     url = "https://doi.org",

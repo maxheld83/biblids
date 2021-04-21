@@ -140,6 +140,13 @@ test_that("DOI indexation can be detected", {
   )
 })
 
+test_that("DOI api is cached", {
+  random_dois <- paste0("10.1000/", sample(LETTERS, 10), sample(1:100, 10))
+  before <- system.time(is_doi_found(random_dois))["elapsed"]
+  after <- system.time(is_doi_found(random_dois))["elapsed"]
+  expect_lt(after, before / 10L)
+})
+
 # doi.org which ra api ====
 
 test_that("DOI RAs can be identified", {
