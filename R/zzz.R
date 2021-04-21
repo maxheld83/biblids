@@ -1,7 +1,7 @@
 .onLoad <- function(libname, pkgname) {
   can_cache <- requireNamespace("memoise", quietly = TRUE) &
     requireNamespace("cachem", quietly = TRUE)
-  if (can_cache) {
+  if (FALSE) {
     verb_doi <<- memoise::memoise(
       retry_doi,
       cache = getOption(
