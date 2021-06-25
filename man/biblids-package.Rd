@@ -21,11 +21,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Maximilian Held \email{info@maxheld.de} (\href{https://orcid.org/0000-0002-4703-5388}{ORCID})
+\strong{Maintainer}: Maximilian Held \email{held@sub.uni-goettingen.de} (\href{https://orcid.org/0000-0002-4703-5388}{ORCID})
 
 Other contributors:
 \itemize{
   \item Göttingen State and University Library [copyright holder, funder]
+  \item German Research Foundation [sponsor]
 }
 
 }

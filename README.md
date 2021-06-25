@@ -5,7 +5,7 @@
 [![Main](https://github.com/subugoe/biblids/workflows/.github/workflows/main.yaml/badge.svg)](https://github.com/subugoe/biblids/actions)
 [![Codecov test coverage](https://codecov.io/gh/subugoe/biblids/branch/master/graph/badge.svg)](https://codecov.io/gh/subugoe/biblids?branch=master)
 [![CRAN status](https://www.r-pkg.org/badges/version/biblids)](https://CRAN.R-project.org/package=biblids)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 In bibliometric analysis, we frequently work with specialised identifiers, such as [Digital Object Identifiers (DOIs)](https://www.doi.org) or [Research Organisation Registry IDs (RORs)](https://ror.org).

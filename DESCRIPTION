@@ -8,12 +8,16 @@ Authors@R:
         given = "Maximilian",
         family = "Held",
         role = c("aut", "cre"),
-        email = "info@maxheld.de",
+        email = "held@sub.uni-goettingen.de",
         comment = c(ORCID = "0000-0002-4703-5388")
       ),
       person(
         given = "Göttingen State and University Library",
         role = c("cph", "fnd")
+      ),
+      person(
+        given = "German Research Foundation",
+        role = c("spn")
       )
     )
 Description: 

@@ -3,6 +3,9 @@ authors:
     href: https://www.maxheld.de
   Göttingen State and University Library:
     href: https://www.sub.uni-goettingen.de/
+  German Research Foundation:
+    href: https://www.dfg.de
+    html: <img src="reference/figures/dfg_logo_schriftzug_blau_foerderung_en.jpg" height="15">
 reference:
 - title: Large Sets of PIDs
   desc: Open-ended sets of persistent identifiers
@@ -12,6 +15,10 @@ reference:
   - has_concept("doi")
 template:
   package: subugoetheme
+home:
+  links:
+  - text: Read project description
+    href: https://www.sub.uni-goettingen.de/en/projects-research/project-details/projekt/hybrid-oa-dashboards/
 navbar:
   components:
     showcase:
