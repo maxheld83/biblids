@@ -4,13 +4,12 @@
 #' @noRd
 require_namespace2 <- function(x) {
   if (!requireNamespace(x, quietly = TRUE)) {
-    stop(
+    rlang::abort(
       paste(
         x,
         "needed for this function to work.",
         "Please install it."
-      ),
-      call. = FALSE
+      )
     )
   }
 }
