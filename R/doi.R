@@ -36,7 +36,7 @@ new_doi <- function(prefix = character(), suffix = character()) {
 
 # validation ====
 
-#' Validator worker 
+#' Validator worker
 #' @noRd
 validate_doi <- function(x) {
   prefixes_good <- is_doi_syntax(x, "prefix")
@@ -155,7 +155,7 @@ as_doi.character <- function(x, ...) {
 # presentation methods ====
 
 #' @describeIn doi Display a DOI
-#' @param protocol 
+#' @param protocol
 #' Logical flag, whether to prepend `doi:` handle protocol,
 #' as per the official
 #' [DOI Handbook](https://doi.org/doi_handbook/2_Numbering.html#2.6.1).
