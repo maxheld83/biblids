@@ -59,6 +59,5 @@ Suggests:
     cachem (>= 1.0.4)
 Remotes:
   subugoe/subugoetheme@1.1.1,
-  subugoe/shinycaas@1.0.0,
-  rstudio/shinyvalidate@420aec079dbd2c0e12bf8350f4452d105a9cc45c
+  subugoe/shinycaas@1.0.0
 Config/testthat/edition: 3
