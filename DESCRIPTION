@@ -47,7 +47,7 @@ Suggests:
     subugoetheme,
     shiny (>= 1.6.0),
     shinycaas,
-    shinyvalidate,
+    shinyvalidate (>= 0.1.1),
     pillar (>= 1.4.7),
     tibble (>= 3.0.4),
     knitr (>= 1.30),
