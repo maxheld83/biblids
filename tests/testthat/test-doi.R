@@ -47,7 +47,14 @@ test_that("doi validates fields", {
 })
 
 test_that("doi_ish can be detected", {
-  expect_equal(source_pef("doi", "is_doi_ish.R"), c(FALSE, TRUE, TRUE))
+  expect_equal(is_doi_ish(c("10.1000/1", "foo")), TRUE) # foo will be NA
+  # NA will be cast to character by c()
+  expect_equal(is_doi_ish(c("10.1000/1", NA)), TRUE)
+  expect_equal(is_doi_ish(1L), FALSE)
+  # multiple DOIs cannot be cast unambiguosly
+  expect_equal(is_doi_ish(c("10.1000/1", "10.1000/2 10.1000/3")), FALSE)
+  expect_equal(is_doi_ish(NA_character_), TRUE)
+  expect_equal(is_doi_ish(NA_integer_), FALSE)
 })
 
 # casting and coercion ====

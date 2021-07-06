@@ -88,12 +88,14 @@ is_doi_syntax <- function(x, part = c("prefix", "suffix")) {
 #' is_doi(1L)
 is_doi <- function(x) inherits(x, "biblids_doi")
 
-#' @describeIn doi Could this converted to a `biblids_doi`?
+#' @describeIn doi
+#' Could this be converted to a `biblids_doi` using [as_doi()]?
 #' @param x A vector created by, or convertable to [doi()].
 #' @export
-#' @example inst/examples/doi/is_doi_ish.R
-is_doi_ish <- function(x) !is.na(as_doi(x))
-
+is_doi_ish <- function(x) {
+  res <- rlang::catch_cnd(as_doi(x), classes = "error")
+  !any(class(res) == "error")
+}
 # casting and coercion ====
 
 #' @export

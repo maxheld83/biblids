@@ -176,12 +176,12 @@
         {
           "type": "character",
           "attributes": {},
-          "value": ["10.1594", "10.1594", "10.1000", "10.1000", null]
+          "value": ["10.1594", "10.1594", "10.1000", "10.1000", null, null]
         },
         {
           "type": "character",
           "attributes": {},
-          "value": ["PANGAE.726855", "GFZ.GEOFON.gfz2009kciu", "182", "7", null]
+          "value": ["PANGAE.726855", "GFZ.GEOFON.gfz2009kciu", "182", "7", null, null]
         }
       ]
     }
