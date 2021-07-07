@@ -44,6 +44,7 @@ test_that("doi validates fields", {
   expect_error(doi("10.1000", "&"))
   expect_error(doi("10.1000", " foo"))
   expect_error(doi("10.1000", "foo "))
+  expect_error(doi("10.1000", ""))
 })
 
 test_that("doi_ish can be detected", {
@@ -62,6 +63,13 @@ test_that("DOIs can be coerced", {
   expect_snapshot_value2(c(as_doi("10.1000/foo"), "10.1000/zap"))
   # c acts differently depending on the order unfortunately
   expect_snapshot_value2(vctrs::vec_c("10.1000/frotz", as_doi("10.1000/qux")))
+})
+
+test_that("Bad DOIs will not be coerced", {
+  expect_equal(
+    c(as_doi("10.1000/foo"), ""), # should be coerced to NA
+    as_doi(c("10.1000/foo", ""))
+  )
 })
 
 test_that("DOIs can be cast to characters", {

@@ -115,8 +115,20 @@ vec_cast.character.biblids_doi <- function(x, to, ...) format(x)
 
 #' @export
 vec_cast.biblids_doi.character <- function(x, to, ...) {
-  res <- stringr::str_split_fixed(x, pattern = "/", n = 2)
-  new_doi(res[, 1], res[, 2])
+  res <- str_extract_all_doi(x)
+  if (ncol(res) > 1) {
+    rlang::abort(
+      c(
+        "All elements must include one DOI only:",
+        x = "Multiple DOIs found in one or more elements of `x`.",
+        i = "Try extracting with `str_extract_all_doi()`."
+      )
+    )
+  }
+  res <- stringr::str_split_fixed(string = res[, 1], pattern = "/", n = 2)
+  res[which(res == "")] <- NA_character_
+  new_doi(prefix = res[, 1], suffix = res[, 2])
+  # no extra validation necessary because above extraction is already doi only
 }
 
 #' @describeIn doi Normalise
@@ -135,24 +147,6 @@ as_doi <- function(x, ...) {
 
 #' @export
 as_doi.default <- function(x, ...) vec_cast(x, new_doi())
-
-#' @export
-as_doi.character <- function(x, ...) {
-  res <- str_extract_all_doi(x)
-  if (ncol(res) > 1) {
-    rlang::abort(
-      c(
-        "All elements must include one DOI only:",
-        x = "Multiple DOIs found in one or more elements of `x`.",
-        i = "Try extracting with `str_extract_all_doi()`."
-      )
-    )
-  }
-  res <- stringr::str_split_fixed(string = res[, 1], pattern = "/", n = 2)
-  res[which(res == "")] <- NA_character_
-  new_doi(prefix = res[, 1], suffix = res[, 2])
-  # no extra validation necessary because above extraction is already doi only
-}
 
 # presentation methods ====
 
@@ -741,7 +735,5 @@ doi_examples <- function(na.rm = TRUE) {
     # this should be na.omit https://github.com/subugoe/biblids/issues/50
     res <- res[!is.na(res)]
   }
-  # this should not be necessary https://github.com/subugoe/biblids/issues/60
-  res <- res[res != "/"]
   res
 }
