@@ -15,6 +15,16 @@
 #' # convert back to a (normalised) character
 #' as.character(as_doi("10.1000/zap"))
 #'
+#' @note
+#' DOIs are returned as an S3 record class constructed by [vctrs::new_rcrd()].
+#' Under the hood, these records are implemented as *lists* of fields
+#' (here: prefix, suffix).
+#' Support for such records may still be limited.
+#' For example, [purrr::map()] will erroneously loop over the fields,
+#' instead of over the DOIs (see [#51](https://github.com/subugoe/biblids/issues/51)).
+#' To avoid such problems,
+#' cast the DOI to a simple character vector using [as.character()].
+#'
 #' @export
 #' @family doi
 doi <- function(prefix = character(), suffix = character()) {

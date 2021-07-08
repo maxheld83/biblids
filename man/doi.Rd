@@ -109,6 +109,16 @@ You can also include DOIs inline with \url{https://doi.org/10.1038/nphys1170}, \
 \item \code{is.na}: Detect if \code{prefix} and/\emph{or} \code{suffix} is missing
 }}}
 
+\note{
+DOIs are returned as an S3 record class constructed by \code{\link[vctrs:new_rcrd]{vctrs::new_rcrd()}}.
+Under the hood, these records are implemented as \emph{lists} of fields
+(here: prefix, suffix).
+Support for such records may still be limited.
+For example, \code{\link[purrr:map]{purrr::map()}} will erroneously loop over the fields,
+instead of over the DOIs (see \href{https://github.com/subugoe/biblids/issues/51}{#51}).
+To avoid such problems,
+cast the DOI to a simple character vector using \code{\link[=as.character]{as.character()}}.
+}
 \examples{
 # this is the hard way to enter
 doi(
