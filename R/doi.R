@@ -504,7 +504,7 @@ verb_doi_handle <- function(x, verb, ...) {
     path = paste0("api/handles/", doi2path(x)),
     ...
   )
-  }
+}
 
 #' Create the path to a doi.org API from a [doi()]
 #' @noRd
@@ -523,7 +523,6 @@ doi2path <- function(x) {
 #' GET the doi.org handles endpoint
 #' @noRd
 get_doi_handle <- function(x, ...) {
-  require_namespace2("jsonlite")
   resp <- verb_doi_handle(x, verb = "GET", ...)
   res <- verifynparse_doi_api_resp(resp)
   if (res$responseCode == 200) {
@@ -541,6 +540,7 @@ get_doi_handle <- function(x, ...) {
 #' Verify and parse the DOI API response for get handle and whichRA requests
 #' @noRd
 verifynparse_doi_api_resp <- function(resp) {
+  require_namespace2("jsonlite")
   # more informative error message than httr:stop_for_status
   # status codes as per https://www.doi.org/doi_handbook/3_Resolution.html#3.8.1
   if (httr::status_code(resp) == 404) {
