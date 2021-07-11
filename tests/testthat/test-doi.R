@@ -124,15 +124,27 @@ test_that("multiple DOIs are extracted", {
 
 # doi.org handles api ====
 
-test_that("doi.org handles api works", {
+# integration tests
+
+test_that("doi.org handles api works (live API)", {
+  skip_if_offline()
   expect_snapshot_value(source_pef("doi", "get_doi_handles.R"))
 })
 
-test_that("doi.org handles api warns on empty value", {
+test_that("doi.org handles api errors are caught", {
+  memoise::forget(verb_doi)
+  expect_error(
+    httptest::without_internet(suppressMessages(get_doi_handles("10.1000/1")))
+  )
+})
+
+test_that("doi.org handles api warns on empty value (live API)", {
+  skip_if_offline()
   expect_warning(get_doi_handles("10.1000/1", query = list(type = "zap")))
 })
 
-test_that("DOI can be resolved to a url", {
+test_that("DOI can be resolved to a url (live API)", {
+  skip_if_offline()
   expect_equal(
     source_pef("doi", "resolve_doi.R"),
     c(
@@ -144,18 +156,21 @@ test_that("DOI can be resolved to a url", {
   # but I don't have such a DOI if it exists at all
 })
 
-test_that("DOI resolvability can be tested", {
+test_that("DOI resolvability can be tested (live API)", {
+  skip_if_offline()
   expect_true(is_doi_resolvable("10.1000/1"))
 })
 
-test_that("DOI indexation can be detected", {
+test_that("DOI indexation can be detected (live API)", {
+  skip_if_offline()
   expect_equal(
     source_pef("doi", "is_doi_found.R"),
     c(FALSE, TRUE)
   )
 })
 
-test_that("DOI api is cached", {
+test_that("DOI api is cached (live API)", {
+  skip_if_offline()
   random_dois <- paste0("10.1000/", sample(LETTERS, 10), sample(1:100, 10))
   before <- system.time(is_doi_found(random_dois))["elapsed"]
   after <- system.time(is_doi_found(random_dois))["elapsed"]
@@ -165,6 +180,7 @@ test_that("DOI api is cached", {
 # doi.org which ra api ====
 
 test_that("DOI RAs can be identified", {
+  skip_if_offline()
   expect_equal(
     source_pef("doi", "get_doi_ra.R"),
     names(doi_ras())
@@ -172,9 +188,19 @@ test_that("DOI RAs can be identified", {
 })
 
 test_that("DOI RAs can be tested", {
+  skip_if_offline()
   expect_equal(
-  source_pef("doi", "is_doi_from_ra.R"),
+    source_pef("doi", "is_doi_from_ra.R"),
     c(FALSE, TRUE)
+  )
+})
+
+test_that("DOI RAs bad responses are caught", {
+  memoise::forget(verb_doi)
+  expect_error(
+    httptest::without_internet(
+      suppressMessages(get_doi_ra("10.1000/1"))
+    )
   )
 })
 

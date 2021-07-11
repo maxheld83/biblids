@@ -309,7 +309,7 @@
       "value": ["10.17487/rfc1149", "10.1016/j.iheduc.2003.11.004", "10.6084/m9.figshare.97218", "10.5194/wes-2019-70", null, null, "10.7875/leading.author.2.e008", "10.1126/science.169.3946.635", "10.5194/wes-5-819-202", null]
     }
 
-# doi.org handles api works
+# doi.org handles api works (live API)
 
     [
       {
