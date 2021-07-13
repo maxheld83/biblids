@@ -287,6 +287,98 @@
       ]
     }
 
+# DOIs works with `na.omit` and friends
+
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["prefix", "suffix"]
+        },
+        "class": {
+          "type": "character",
+          "attributes": {},
+          "value": ["biblids_doi", "vctrs_rcrd", "vctrs_vctr"]
+        },
+        "na.action": {
+          "type": "integer",
+          "attributes": {
+            "names": {
+              "type": "character",
+              "attributes": {},
+              "value": ["2", "3"]
+            },
+            "class": {
+              "type": "character",
+              "attributes": {},
+              "value": ["omit"]
+            }
+          },
+          "value": [2, 3]
+        }
+      },
+      "value": [
+        {
+          "type": "character",
+          "attributes": {},
+          "value": ["10.1000"]
+        },
+        {
+          "type": "character",
+          "attributes": {},
+          "value": ["1"]
+        }
+      ]
+    }
+
+---
+
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["prefix", "suffix"]
+        },
+        "class": {
+          "type": "character",
+          "attributes": {},
+          "value": ["biblids_doi", "vctrs_rcrd", "vctrs_vctr"]
+        },
+        "na.action": {
+          "type": "integer",
+          "attributes": {
+            "names": {
+              "type": "character",
+              "attributes": {},
+              "value": ["2", "3"]
+            },
+            "class": {
+              "type": "character",
+              "attributes": {},
+              "value": ["exclude"]
+            }
+          },
+          "value": [2, 3]
+        }
+      },
+      "value": [
+        {
+          "type": "character",
+          "attributes": {},
+          "value": ["10.1000"]
+        },
+        {
+          "type": "character",
+          "attributes": {},
+          "value": ["1"]
+        }
+      ]
+    }
+
 # single DOIs are extracted
 
     {

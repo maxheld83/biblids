@@ -106,6 +106,22 @@ test_that("DOIs with one NA field become all NA", {
   expect_snapshot_value2(doi(c(NA, "10.1000"), c("gizmo", "acme")))
 })
 
+test_that("DOIs works with `na.omit` and friends", {
+  doi_with_nas <- doi(c("10.1000", NA, NA), c("1", "182", NA))
+  expect_error(na.fail(doi_with_nas))
+  expect_snapshot_value2(na.omit(doi_with_nas))
+  expect_equal(
+    na.action(na.omit(doi_with_nas)),
+    na.action(na.omit(vec_proxy(doi_with_nas)))
+  )
+  expect_snapshot_value2(na.exclude(doi_with_nas))
+  expect_equal(
+    na.action(na.exclude(doi_with_nas)),
+    na.action(na.exclude(vec_proxy(doi_with_nas)))
+  )
+  expect_equal(na.pass(doi_with_nas), doi_with_nas)
+})
+
 test_that("DOIs are compared with case insensitivity", {
   expect_true(as_doi("10.1000/dingBAT") == as_doi("10.1000/dingbat"))
 })

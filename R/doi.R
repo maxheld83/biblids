@@ -260,6 +260,31 @@ is.na.biblids_doi <- function(x, ...) {
   is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
 }
 
+# these may eventually be replaced by defaults in vctrs
+# see https://github.com/subugoe/biblids/issues/79
+
+#' @method na.fail biblids_doi
+#' @exportS3Method stats::na.fail
+na.fail.biblids_doi <- function(object, ...) stats::na.fail(vec_proxy(object))
+
+#' @method na.omit biblids_doi
+#' @exportS3Method stats::na.omit
+na.omit.biblids_doi <- function(object, ...) {
+  df <- stats::na.omit(vec_proxy(object))
+  out <- vec_restore(x = df, to = object, ...)
+  attr(out, "na.action") <- stats::na.action(df)
+  out
+}
+
+#' @method na.exclude biblids_doi
+#' @exportS3Method stats::na.exclude
+na.exclude.biblids_doi <- function(object, ...) {
+  df <- stats::na.exclude(vec_proxy(object))
+  out <- vec_restore(x = df, to = object, ...)
+  attr(out, "na.action") <- stats::na.action(df)
+  out
+}
+
 #' @export
 vec_proxy_equal.biblids_doi <- function(x, ...) {
   data.frame(
