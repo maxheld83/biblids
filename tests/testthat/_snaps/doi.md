@@ -88,6 +88,12 @@
       ]
     }
 
+# doi bad syntax error message is ok
+
+    All values must be valid DOI syntax.
+    x Bad `prefix` found.
+    i Try casting with `as_doi()`.
+
 # DOIs can be coerced
 
     {

@@ -50,26 +50,31 @@ new_doi <- function(prefix = character(), suffix = character()) {
 #' @noRd
 validate_doi <- function(x) {
   prefixes_good <- is_doi_syntax(x, "prefix")
-  if (!all(prefixes_good)) {
-    rlang::abort(
-      c(
-        "All values must be valid DOI syntax.",
-        x = "Bad `prefix` found.",
-        i = "Try casting with `as_doi()`."
-      )
-    )
-  }
+  if (!all(prefixes_good)) stop_doi_syntax("prefix")
   suffixes_good <- is_doi_syntax(x, "suffix")
-  if (!all(suffixes_good)) {
-    rlang::abort(
-      c(
-        "All values must be valid DOI syntax.",
-        x = "Bad `suffix` found.",
-        i = "Try casting with `as_doi()`."
-      )
-    )
-  }
+  if (!all(suffixes_good)) stop_doi_syntax("suffix")
   x
+}
+
+#' Throw error on bad DOI syntax
+#' @noRd
+stop_doi_syntax <- function(part = c("prefix", "suffix")) {
+  part <- rlang::arg_match(part)
+  rlang::abort(
+    class = "biblids_error_doi_syntax",
+    part = part
+  )
+}
+
+#' Write error message for bad DOI syntax
+#' @noRd
+#' @export
+conditionMessage.biblids_error_doi_syntax <- function(c) {
+  rlang::format_error_bullets(c(
+    "All values must be valid DOI syntax.",
+    x = glue::glue_data(c, "Bad `{part}` found."),
+    i = "Try casting with `as_doi()`."
+  ))
 }
 
 #' Add delimiters to regex
@@ -83,7 +88,7 @@ str_detect_all <- function(string, pattern) {
 #' Check vector of fields for valid syntax
 #' @noRd
 is_doi_syntax <- function(x, part = c("prefix", "suffix")) {
-  # called part instead of field to aboid name clash with vctrs
+  # called part instead of field to avoid name clash with vctrs
   part <- rlang::arg_match(part)
   string <- field(x, part)
   res <- str_detect_all(string = string, pattern = doi_patterns()[part])

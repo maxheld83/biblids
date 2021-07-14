@@ -47,6 +47,10 @@ test_that("doi validates fields", {
   expect_error(doi("10.1000", ""))
 })
 
+test_that("doi bad syntax error message is ok", {
+  expect_snapshot_error(stop_doi_syntax("prefix"))
+})
+
 test_that("doi_ish can be detected", {
   expect_equal(is_doi_ish(c("10.1000/1", "foo")), TRUE) # foo will be NA
   # NA will be cast to character by c()
