@@ -150,19 +150,28 @@ vec_cast.character.biblids_doi <- function(x, to, ...) format(x)
 #' @export
 vec_cast.biblids_doi.character <- function(x, to, ...) {
   res <- str_extract_all_doi(x)
-  if (ncol(res) > 1) {
-    rlang::abort(
-      c(
-        "All elements must include one DOI only:",
-        x = "Multiple DOIs found in one or more elements of `x`.",
-        i = "Try extracting with `str_extract_all_doi()`."
-      )
-    )
-  }
+  if (ncol(res) > 1) stop_doi_multiple()
   res <- stringr::str_split_fixed(string = res[, 1], pattern = "/", n = 2)
   res[which(res == "")] <- NA_character_
   new_doi(prefix = res[, 1], suffix = res[, 2])
   # no extra validation necessary because above extraction is already doi only
+}
+
+#' Throw error on multiple DOIs
+#' @noRd
+stop_doi_multiple <- function() {
+  rlang::abort(class = "biblids_error_doi_multiple")
+}
+
+#' Write error message for multiple DOIs
+#' @noRd
+#' @export
+conditionMessage.biblids_error_doi_multiple <- function(c) {
+  rlang::format_error_bullets(c(
+    "All elements must include one DOI only:",
+    x = "Multiple DOIs found in one or more elements of `x`.",
+    i = "Try extracting with `str_extract_all_doi()`."
+  ))
 }
 
 #' @describeIn doi Normalise
