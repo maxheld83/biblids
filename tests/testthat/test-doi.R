@@ -35,16 +35,16 @@ test_that("doi validates fields", {
   # registrant prefixes are usually, but need not be 4 long
   # for more info, see https://github.com/subugoe/biblids/issues/63
   expect_visible(doi("10.987.12345", "9990"))
-  expect_error(doi("bar", "foo"))
-  expect_error(doi(" 10.1000", "foo"))
-  expect_error(doi("10.1000 ", "foo"))
-  expect_error(doi("a10.1000", "foo"))
+  expect_error(doi("bar", "foo"), class = "biblids_error_doi_syntax")
+  expect_error(doi(" 10.1000", "foo"), class = "biblids_error_doi_syntax")
+  expect_error(doi("10.1000 ", "foo"), class = "biblids_error_doi_syntax")
+  expect_error(doi("a10.1000", "foo"), class = "biblids_error_doi_syntax")
   # 10.1000 is a valid prefix
   expect_visible(doi("10.1000", "foo"))
-  expect_error(doi("10.1000", "&"))
-  expect_error(doi("10.1000", " foo"))
-  expect_error(doi("10.1000", "foo "))
-  expect_error(doi("10.1000", ""))
+  expect_error(doi("10.1000", "&"), class = "biblids_error_doi_syntax")
+  expect_error(doi("10.1000", " foo"), class = "biblids_error_doi_syntax")
+  expect_error(doi("10.1000", "foo "), class = "biblids_error_doi_syntax")
+  expect_error(doi("10.1000", ""), class = "biblids_error_doi_syntax")
 })
 
 test_that("doi bad syntax error message is ok", {
