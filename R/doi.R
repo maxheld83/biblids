@@ -257,6 +257,8 @@ knit_print.biblids_doi <- function(x,
 #' # this can be constructed but will be NA
 #' is.na(doi(prefix = "10.1000", suffix = NA))
 is.na.biblids_doi <- function(x, ...) {
+  # there appears to be nothing to reuse here from vctrs
+  # see discussion https://github.com/subugoe/biblids/issues/49
   is.na(field(x, "prefix")) | is.na(field(x, "suffix"))
 }
 
