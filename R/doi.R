@@ -49,20 +49,21 @@ new_doi <- function(prefix = character(), suffix = character()) {
 #' Validator worker
 #' @noRd
 validate_doi <- function(x) {
-  prefixes_good <- is_doi_syntax(x, "prefix")
-  if (!all(prefixes_good)) stop_doi_syntax("prefix")
-  suffixes_good <- is_doi_syntax(x, "suffix")
-  if (!all(suffixes_good)) stop_doi_syntax("suffix")
+  prefixes_bad <- c(1L:length(x))[!is_doi_syntax(x, "prefix")]
+  suffixes_bad <- c(1L:length(x))[!is_doi_syntax(x, "suffix")]
+  if (length(c(prefixes_bad, suffixes_bad)) > 0) {
+    stop_doi_syntax(prefixes_bad = prefixes_bad, suffixes_bad = suffixes_bad)
+  }
   x
 }
 
 #' Throw error on bad DOI syntax
 #' @noRd
-stop_doi_syntax <- function(part = c("prefix", "suffix")) {
-  part <- rlang::arg_match(part)
+stop_doi_syntax <- function(prefixes_bad = integer(0), suffixes_bad = integer(0)) {
   rlang::abort(
     class = "biblids_error_doi_syntax",
-    part = part
+    prefixes_bad = prefixes_bad,
+    suffixes_bad = suffixes_bad
   )
 }
 
@@ -72,9 +73,27 @@ stop_doi_syntax <- function(part = c("prefix", "suffix")) {
 conditionMessage.biblids_error_doi_syntax <- function(c) {
   rlang::format_error_bullets(c(
     "All values must be valid DOI syntax.",
-    x = glue::glue_data(c, "Bad `{part}` found."),
+    if (length(c$prefixes_bad) > 0) {
+      c(x = list_bad_parts(part = "prefix", bad_pos = c$prefixes_bad))
+    },
+    if (length(c$suffixes_bad) > 0) {
+      c(x = list_bad_parts(part = "suffix", bad_pos = c$suffixes_bad))
+    },
     i = "Try casting with `as_doi()`."
   ))
+}
+
+#' Helper to write error message for bad DOI syntax
+#' @param part The part of the DOI that is invalid.
+#' @param bad_pos An integer vector giving the offending positions.
+#' @noRd
+list_bad_parts <- function(part = c("prefix", "suffix"), bad_pos) {
+  part <- rlang::arg_match(part)
+  vec_assert(bad_pos, ptype = integer())
+  glue::glue(
+    "Found {length(bad_pos)} bad `{part}`(es) at position(s) ",
+    glue::glue_collapse(bad_pos, sep = ", ", width = 10, last = " and ")
+  )
 }
 
 #' Add delimiters to regex

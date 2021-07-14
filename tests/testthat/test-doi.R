@@ -48,7 +48,9 @@ test_that("doi validates fields", {
 })
 
 test_that("doi bad syntax error message is ok", {
-  expect_snapshot_error(stop_doi_syntax("prefix"))
+  expect_snapshot_error(
+    doi(c("10.1000", "10.1000", "bar"), c("1", "&", " foo"))
+  )
 })
 
 test_that("doi_ish can be detected", {

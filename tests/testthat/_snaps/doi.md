@@ -91,7 +91,8 @@
 # doi bad syntax error message is ok
 
     * All values must be valid DOI syntax.
-    x Bad `prefix` found.
+    x Found 1 bad `prefix`(es) at position(s) 3
+    x Found 2 bad `suffix`(es) at position(s) 2 and 3
     i Try casting with `as_doi()`.
 
 # DOIs can be coerced
