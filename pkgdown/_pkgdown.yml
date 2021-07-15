@@ -15,6 +15,10 @@ reference:
   - has_concept("doi")
 template:
   package: subugoetheme
+  params:
+    docsearch:
+      api_key: fa0b09f9eb362ee1480a51b83a5f0ab0
+      index_name: biblids
 home:
   links:
   - text: Read project description
