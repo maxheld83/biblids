@@ -4,5 +4,7 @@
   if (can_cache) {
     verb_doi <<- memoise::memoise(retry_doi)
   }
-  options(wama.default.app = doiEntryApp())
+  if (require("shiny")) {
+    options(wama.default.app = doiEntryApp())
+  }
 }
