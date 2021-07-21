@@ -47,6 +47,7 @@ Suggests:
     covr (>= 3.5.1),
     subugoetheme,
     shiny (>= 1.6.0),
+    shinytest (>= 1.5.0),
     shinycaas,
     shinyvalidate (>= 0.1.1),
     pillar (>= 1.4.7),
