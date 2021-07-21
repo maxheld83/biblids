@@ -488,10 +488,10 @@ doiEntryServer <- function(id, char_limit = 100000L) {
           }
         }
       )
-      iv$enable()
 
       # ingest
       dois <- shiny::eventReactive(input$validate, {
+        iv$enable()
         if (iv$is_valid()) {
           unique(tolower(as.vector(str_extract_all_doi(input$entered))))
         } else {
