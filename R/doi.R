@@ -450,7 +450,7 @@ doiEntryUI <- function(id, width = "100%", ...) {
          outputId = ns("found"),
          inline = TRUE
         ),
-        " DOIS."
+        " DOIs."
       )
     )
   )
