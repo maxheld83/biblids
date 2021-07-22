@@ -434,7 +434,7 @@ doiEntryUI <- function(id, width = "100%", rows = 15L, ...) {
     shiny::textAreaInput(
       inputId = ns("entered"), 
       label = "DOIs",
-      placeholder = "Enter your DOIs here please.",
+      placeholder = "Enter your DOIs here.",
       width = width,
       rows = rows,
       ...
