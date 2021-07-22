@@ -427,16 +427,17 @@ doiEntryApp <- function() {
 #' @inheritParams shiny::textAreaInput
 #' @inheritDotParams shiny::textAreaInput
 #' @export
-doiEntryUI <- function(id, width = "100%", ...) {
+doiEntryUI <- function(id, width = "100%", rows = 15L, ...) {
   require_namespace2("shiny")
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::textAreaInput(
-      inputId = ns("entered"),
+      inputId = ns("entered"), 
       label = "DOIs",
-      placeholder = "Enter your DOIs here.",
+      placeholder = "Enter your DOIs here please.",
       width = width,
-      rows = 15L
+      rows = rows,
+      ...
     ),
     shiny::actionButton(
       inputId = ns("validate"),
