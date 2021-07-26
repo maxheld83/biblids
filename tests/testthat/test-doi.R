@@ -143,6 +143,17 @@ test_that("multiple DOIs are extracted", {
   expect_equal(as_doi('zap'), doi(NA, NA))
 })
 
+# shiny module ====
+test_that("Example DOIs can be filled in", {
+  skip("Test is broken due to likely shinytest bug")
+  # blocked by https://github.com/subugoe/biblids/issues/83
+  app <- shinytest::ShinyDriver$new(doiEntryApp())
+  app$click("test-fill_ex")
+  expect_equal(
+    app$getValue("test-entered", iotype = "input"),
+    paste(as.character(doi_examples()), collapse = " ")
+  )
+})
 
 # doi.org handles api ====
 

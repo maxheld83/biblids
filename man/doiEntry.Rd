@@ -9,9 +9,15 @@
 \usage{
 doiEntryApp()
 
-doiEntryUI(id, width = "100\%", rows = 15L, ...)
+doiEntryUI(
+  id,
+  width = "100\%",
+  rows = 15L,
+  placeholder = "Enter your DOIs here.",
+  ...
+)
 
-doiEntryServer(id, char_limit = 100000L)
+doiEntryServer(id, example_dois = doi_examples(), char_limit = 100000L)
 }
 \arguments{
 \item{id}{The id string to be namespaced (optional).}
@@ -22,6 +28,10 @@ see \code{\link[shiny:reexports]{validateCssUnit()}}.}
 \item{rows}{The value of the visible character rows of the input, e.g. \code{6}.
 If the \code{height} argument is specified, \code{height} will take precedence in the
 browser's rendering.}
+
+\item{placeholder}{A character string giving the user a hint as to what can
+be entered into the control. Internet Explorer 8 and 9 do not support this
+option.}
 
 \item{...}{
   Arguments passed on to \code{\link[shiny:textAreaInput]{shiny::textAreaInput}}
@@ -36,13 +46,15 @@ This argument will only take effect if there is not a CSS \code{width} rule
 defined for this element; such a rule could come from the \code{width} argument
 of this function or from a containing page layout such as
 \code{\link[shiny:fluidPage]{fluidPage()}}.}
-    \item{\code{placeholder}}{A character string giving the user a hint as to what can
-be entered into the control. Internet Explorer 8 and 9 do not support this
-option.}
     \item{\code{resize}}{Which directions the textarea box can be resized. Can be one of
 \code{"both"}, \code{"none"}, \code{"vertical"}, and \code{"horizontal"}. The default, \code{NULL},
 will use the client browser's default setting for resizing textareas.}
   }}
+
+\item{example_dois}{A vector created by, or convertable to \code{\link[=doi]{doi()}},
+to be used as as examples.
+To initiate the UI with the example,
+pass them to \code{\link[=doiEntryUI]{doiEntryUI()}}.}
 
 \item{char_limit}{Integer scalar, giving the maximum number of characters.
 To protect shiny against overlong strings, you can limit the maximum

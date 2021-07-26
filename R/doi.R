@@ -427,17 +427,26 @@ doiEntryApp <- function() {
 #' @inheritParams shiny::textAreaInput
 #' @inheritDotParams shiny::textAreaInput
 #' @export
-doiEntryUI <- function(id, width = "100%", rows = 15L, ...) {
+doiEntryUI <- function(id,
+                       width = "100%",
+                       rows = 15L,
+                       placeholder = "Enter your DOIs here.",
+                       ...) {
   require_namespace2("shiny")
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::textAreaInput(
-      inputId = ns("entered"), 
+      inputId = ns("entered"),
       label = "DOIs",
-      placeholder = "Enter your DOIs here.",
+      placeholder = placeholder,
       width = width,
       rows = rows,
       ...
+    ),
+    shiny::actionButton(
+      inputId = ns("fill_ex"),
+      label = "Fill in example DOIs",
+      width = width
     ),
     shiny::actionButton(
       inputId = ns("validate"),
@@ -448,8 +457,8 @@ doiEntryUI <- function(id, width = "100%", rows = 15L, ...) {
       shiny::p(
         "Found ",
         shiny::textOutput(
-         outputId = ns("found"),
-         inline = TRUE
+          outputId = ns("found"),
+          inline = TRUE
         ),
         " DOIs."
       )
@@ -458,6 +467,11 @@ doiEntryUI <- function(id, width = "100%", rows = 15L, ...) {
 }
 
 #' @describeIn doiEntry Module server
+#' @param example_dois
+#' A vector created by, or convertable to [doi()],
+#' to be used as as examples.
+#' To initiate the UI with the example,
+#' pass them to [doiEntryUI()].
 #' @param char_limit
 #' Integer scalar, giving the maximum number of characters.
 #' To protect shiny against overlong strings, you can limit the maximum
@@ -465,13 +479,25 @@ doiEntryUI <- function(id, width = "100%", rows = 15L, ...) {
 #' This limit is still enforced server-side, not client-side,
 #' so the protection is not bullet-proof.
 #' @export
-doiEntryServer <- function(id, char_limit = 100000L) {
+doiEntryServer <- function(id,
+                           example_dois = doi_examples(),
+                           char_limit = 100000L) {
   require_namespace2("shiny")
   require_namespace2("glue")
+  example_dois <- as_doi(example_dois)
   stopifnot(rlang::is_scalar_integer(char_limit))
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
+      shiny::observeEvent(
+        input$fill_ex,
+        shiny::updateTextAreaInput(
+          session = session,
+          inputId = "entered",
+          value = paste(as.character(example_dois), collapse = " ")
+        )
+      )
+
       # input validation
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("entered", shinyvalidate::sv_required())
