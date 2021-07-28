@@ -30,7 +30,7 @@ jobs:
       - name: Check
         run: |
           shinytest::installDependencies()
-          devtools::check(document = FALSE)
+          devtools::check(document = FALSE, error_on = "error")
       - name: Test Coverage
         run: covr::codecov()
       - name: Build Package Website

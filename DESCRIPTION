@@ -58,7 +58,8 @@ Suggests:
     jsonlite (>= 1.7.2),
     memoise (>= 2.0.0),
     cachem (>= 1.0.4),
-    httptest (>= 4.0.0)
+    httptest (>= 4.0.0),
+    shinyjs (>= 2.0.0)
 Remotes:
   subugoe/subugoetheme@1.1.1,
   subugoe/shinycaas@1.0.0

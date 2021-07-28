@@ -429,38 +429,52 @@ doiEntryApp <- function() {
 #' @export
 doiEntryUI <- function(id,
                        width = "100%",
-                       rows = 15L,
+                       height = "400px",
                        placeholder = "Enter your DOIs here.",
                        ...) {
   require_namespace2("shiny")
+  require_namespace2("shinyjs")
   ns <- shiny::NS(id)
   shiny::tagList(
+    shinyjs::useShinyjs(),
     shiny::textAreaInput(
       inputId = ns("entered"),
-      label = "DOIs",
+      label = "Entered DOIs",
       placeholder = placeholder,
       width = width,
-      rows = rows,
+      height = height,
+      resize = "vertical",
       ...
     ),
-    shiny::actionButton(
-      inputId = ns("fill_ex"),
-      label = "Fill in example DOIs",
-      width = width
-    ),
-    shiny::actionButton(
-      inputId = ns("validate"),
-      label = "Validate your DOIs",
-      width = width
+    shiny::div(
+      shiny::h5(
+        "Found ",
+        shiny::textOutput(outputId = ns("found"), inline = TRUE),
+        " DOIs"
+      ),
+      shiny::div(view_doi_matchesOutput(outputId = ns("matched")))
     ),
     shiny::div(
-      shiny::p(
-        "Found ",
-        shiny::textOutput(
-          outputId = ns("found"),
-          inline = TRUE
-        ),
-        " DOIs."
+      class = "btn-toolbar",
+      shiny::actionButton(
+        class = "btn-group",
+        inputId = ns("fill_ex"),
+        label = "Fill in example",
+        icon = shiny::icon("paste")
+      ),
+      shiny::actionButton(
+        class = "btn-group active",
+        inputId = ns("edit"),
+        label = "Edit",
+        icon = shiny::icon("pencil", lib = "glyphicon"),
+        disabled = TRUE
+      ),
+      shiny::actionButton(
+        class = "btn-group btn-primary",
+        inputId = ns("submit"),
+        label = "Submit",
+        icon = shiny::icon("save", lib = "glyphicon"),
+        disabled = TRUE
       )
     )
   )
@@ -481,60 +495,148 @@ doiEntryUI <- function(id,
 #' @export
 doiEntryServer <- function(id,
                            example_dois = doi_examples(),
-                           char_limit = 100000L) {
+                           char_limit = 100L) {
   require_namespace2("shiny")
+  require_namespace2("shinyjs")
   require_namespace2("glue")
-  example_dois <- as_doi(example_dois)
   stopifnot(rlang::is_scalar_integer(char_limit))
+  example_dois <- paste(
+    as.character(as_doi(example_dois)),
+    collapse = " "
+  )
+
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
-      shiny::observeEvent(
-        input$fill_ex,
+      # edit and submit UX logic
+      shiny::observeEvent(input$submit, {
+        shinyjs::toggleClass("submit", "active")
+        shinyjs::toggleState("submit")
+        toggle_editable()
+      })
+      shiny::observeEvent(input$edit, {
+        toggle_editable()
+      })
+      shiny::observe({
+        shiny::req(iv$is_valid())
+        shinyjs::toggleState("submit", input$entered != "")
+      })
+
+      # paste example doi
+      shiny::observeEvent(input$fill_ex, {
         shiny::updateTextAreaInput(
           session = session,
           inputId = "entered",
-          value = paste(as.character(example_dois), collapse = " ")
+          value = example_dois
         )
-      )
+      })
 
       # input validation
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("entered", shinyvalidate::sv_required())
-      # this limit should be enforced client side as per
-      # https://github.com/rstudio/shiny/issues/3305
-      iv$add_rule(
-        "entered",
-        function(value) {
-          if (nchar(value) > char_limit) {
-            glue::glue(
-              "Cannot parse more than {char_limit} characters.",
-              "Please provide a shorter input.",
-              sep = " "
-            )
-          }
-        }
+      iv$add_rule("entered", not_longer_than, char_limit = char_limit)
+      iv$add_rule("entered", one_doi)
+      iv$enable()
+
+      # highlight matched DOIs
+      output$matched <- renderView_doi_matches(
+        view_doi_matches(input$entered)
       )
 
       # ingest
-      dois <- shiny::eventReactive(input$validate, {
-        iv$enable()
-        if (iv$is_valid()) {
-          unique(tolower(as.vector(str_extract_all_doi(input$entered))))
-        } else {
-          shiny::showNotification(
-            "Please fix the errors in the form before continuing",
-            type = "warning"
-          )
-          NULL
-        }
+      dois <- shiny::eventReactive(input$entered, {
+        shiny::req(iv$is_valid())
+        # TODO do not filter out duplicates
+        # https://github.com/subugoe/biblids/issues/85
+        unique(tolower(as.vector(str_extract_all_doi(input$entered))))
       })
 
+      # show number of found DOIs
       output$found <- shiny::renderText({
         length(dois())
       })
       dois
     }
+  )
+}
+
+#' Toggle DOI entry editable state
+#' Starts in state from app start, with editable active
+#' @noRd
+toggle_editable <- function() {
+  shinyjs::toggleState("entered")
+  shinyjs::toggleState("fill_ex")
+  shinyjs::toggleState("edit")
+  shinyjs::toggleClass("edit", "active")
+}
+
+#' Validate entered string against character limit
+#' @noRd
+not_longer_than <- function(value, char_limit) {
+  # this limit should be enforced client side as per
+  # https://github.com/rstudio/shiny/issues/3305
+  if (nchar(value) > char_limit) {
+    glue::glue_collapse(
+      glue::glue_safe(
+        "Cannot parse more than {char_limit} characters.",
+        "Please provide a shorter input."
+      ),
+      sep = " "
+    )
+  }
+}
+
+#' Ensure there's at least one good DOI
+#' @noRd
+one_doi <- function(value) {
+  # would also be nice to enforce this client-side
+  # https://github.com/subugoe/biblids/issues/12
+  if (!any(stringr::str_detect(value, regex_doi()))) {
+    "There must be at least one valid DOI."
+  }
+}
+
+#' View HTML rendering of matched DOIs
+#' htmlwidget to show how DOIs are matched in strings.
+#' @inheritParams stringr::str_view_all
+#' @family doi
+#' @noRd
+view_doi_matches <- function(string) {
+  stringr::str_view_all(
+    string = string,
+    pattern = regex_doi(),
+  )
+}
+
+#' @describeIn view_doi_matches
+#' Shiny output widget to show matched DOIs
+#' @inheritParams htmlwidgets::shinyWidgetOutput
+#' @noRd
+view_doi_matchesOutput <- function(outputId, width = "100%", height = "auto") {
+  require_namespace2("htmlwidgets")
+  htmlwidgets::shinyWidgetOutput(
+    outputId = outputId,
+    name = "str_view",
+    width = width,
+    height = height,
+    package = "stringr"
+  )
+}
+
+#' @describeIn view_doi_matches
+#' Shiny render function to show matched DOIs
+#' @inheritParams htmlwidgets::shinyRenderWidget
+#' @noRd
+renderView_doi_matches <- function(expr, env = parent.frame(), quoted = FALSE) {
+  require_namespace2("htmlwidgets")
+  if (!quoted) {
+    expr <- substitute(expr)
+  } # force quoted
+  htmlwidgets::shinyRenderWidget(
+    expr = expr,
+    outputFunction = view_doi_matchesOutput,
+    env = env,
+    quoted = TRUE
   )
 }
 

@@ -155,6 +155,11 @@ test_that("Example DOIs can be filled in", {
   )
 })
 
+test_that("DOI matches can be viewed", {
+  res <- view_doi_matches("lorem ipsum 10.1000/foo dolor ist ")
+  expect_true("htmlwidget" %in% class(res))
+})
+
 # doi.org handles api ====
 
 # integration tests
