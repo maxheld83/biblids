@@ -492,6 +492,8 @@ doiEntryUI <- function(id,
 #' length of strings allowed.
 #' This limit is still enforced server-side, not client-side,
 #' so the protection is not bullet-proof.
+#' @return
+#' An object of class `biblids_doi` as returend by [doi()].
 #' @export
 doiEntryServer <- function(id,
                            example_dois = doi_examples(),
@@ -546,14 +548,12 @@ doiEntryServer <- function(id,
       # ingest
       dois <- shiny::eventReactive(input$entered, {
         shiny::req(iv$is_valid())
-        # TODO do not filter out duplicates
-        # https://github.com/subugoe/biblids/issues/85
-        unique(tolower(as.vector(str_extract_all_doi(input$entered))))
+        as_doi(as.vector(str_extract_all_doi(input$entered)))
       })
 
       # show number of found DOIs
       output$found <- shiny::renderText({
-        length(dois())
+        length(as.character(dois()))
       })
       dois
     }

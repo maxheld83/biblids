@@ -62,6 +62,9 @@ length of strings allowed.
 This limit is still enforced server-side, not client-side,
 so the protection is not bullet-proof.}
 }
+\value{
+An object of class \code{biblids_doi} as returend by \code{\link[=doi]{doi()}}.
+}
 \description{
 Input, validate and return DOIs in a shiny app.
 }
