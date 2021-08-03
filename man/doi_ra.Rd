@@ -103,6 +103,7 @@ Other doi:
 \code{\link{doi_api}},
 \code{\link{doi_examples}()},
 \code{\link{doi}()},
-\code{\link{regex_doi}()}
+\code{\link{regex_doi}()},
+\code{\link{view_doi_matches}()}
 }
 \concept{doi}

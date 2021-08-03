@@ -59,7 +59,8 @@ Suggests:
     memoise (>= 2.0.0),
     cachem (>= 1.0.4),
     httptest (>= 4.0.0),
-    shinyjs (>= 2.0.0)
+    shinyjs (>= 2.0.0),
+    htmlwidgets (>= 1.5.3)
 Remotes:
   subugoe/subugoetheme@1.1.1,
   subugoe/shinycaas@1.0.0

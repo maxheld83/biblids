@@ -598,9 +598,17 @@ one_doi <- function(value) {
 
 #' View HTML rendering of matched DOIs
 #' htmlwidget to show how DOIs are matched in strings.
+#'
+#' @details
+#' Highlighting DOIs matching the regular expression
+#' can help users troubleshoot their input,
+#' for example inside shiny apps.
+#'
 #' @inheritParams stringr::str_view_all
+#' @examples
+#' view_doi_matches("lorem ipsum 10.1000/foo dolor ist 10.1000/bar")
 #' @family doi
-#' @noRd
+#' @export
 view_doi_matches <- function(string) {
   stringr::str_view_all(
     string = string,
@@ -611,7 +619,7 @@ view_doi_matches <- function(string) {
 #' @describeIn view_doi_matches
 #' Shiny output widget to show matched DOIs
 #' @inheritParams htmlwidgets::shinyWidgetOutput
-#' @noRd
+#' @export
 view_doi_matchesOutput <- function(outputId, width = "100%", height = "auto") {
   require_namespace2("htmlwidgets")
   htmlwidgets::shinyWidgetOutput(
@@ -626,7 +634,7 @@ view_doi_matchesOutput <- function(outputId, width = "100%", height = "auto") {
 #' @describeIn view_doi_matches
 #' Shiny render function to show matched DOIs
 #' @inheritParams htmlwidgets::shinyRenderWidget
-#' @noRd
+#' @export
 renderView_doi_matches <- function(expr, env = parent.frame(), quoted = FALSE) {
   require_namespace2("htmlwidgets")
   if (!quoted) {

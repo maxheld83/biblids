@@ -10,6 +10,7 @@
 
 In bibliometric analysis, we frequently work with specialised identifiers, such as [Digital Object Identifiers (DOIs)](https://www.doi.org) or [Research Organisation Registry IDs (RORs)](https://ror.org).
 The goal of biblids is to help you work with these identifiers.
+
 ## Vctrs S3 Classes
 
 Biblids implements bibliometric identifiers as S3 classes based on the [vctrs](https://vctrs.r-lib.org) package.

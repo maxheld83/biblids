@@ -83,6 +83,7 @@ Other doi:
 \code{\link{doi_examples}()},
 \code{\link{doi_ra}},
 \code{\link{doi}()},
-\code{\link{regex_doi}()}
+\code{\link{regex_doi}()},
+\code{\link{view_doi_matches}()}
 }
 \concept{doi}
