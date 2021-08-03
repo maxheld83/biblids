@@ -939,8 +939,7 @@ doi_examples <- function(na.rm = TRUE) {
     as_doi(brio::read_lines(path_ex_file("doi", "get_doi_ra.R")))
   )
   if (na.rm) {
-    # this should be na.omit https://github.com/subugoe/biblids/issues/50
-    res <- res[!is.na(res)]
+    res <- stats::na.omit(res)
   }
   res
 }
