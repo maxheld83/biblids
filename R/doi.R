@@ -512,8 +512,7 @@ doiEntryServer <- function(id,
     module = function(input, output, session) {
       # edit and submit UX logic
       shiny::observeEvent(input$submit, {
-        shinyjs::toggleClass("submit", "active")
-        shinyjs::toggleState("submit")
+        toggle_submittable()
         toggle_editable()
       })
       shiny::observeEvent(input$edit, {
@@ -521,7 +520,7 @@ doiEntryServer <- function(id,
       })
       shiny::observe({
         shiny::req(iv$is_valid())
-        shinyjs::toggleState("submit", input$entered != "")
+        toggle_submittable()
       })
 
       # paste example doi
@@ -568,6 +567,14 @@ toggle_editable <- function() {
   shinyjs::toggleState("fill_ex")
   shinyjs::toggleState("edit")
   shinyjs::toggleClass("edit", "active")
+}
+
+#' Toggle DOI entry submitable state
+#' Starts in state from app start, with submitable inactive
+#' @noRd
+toggle_submittable <- function() {
+  shinyjs::toggleClass("submit", "active")
+  shinyjs::toggleState("submit")
 }
 
 #' Validate entered string against character limit

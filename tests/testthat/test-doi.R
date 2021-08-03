@@ -144,6 +144,16 @@ test_that("multiple DOIs are extracted", {
 })
 
 # shiny module ====
+
+# test interaction (mostly JS but also validation)
+test_that("App starts editable and not submitable", {
+  app <- shinytest::ShinyDriver$new(doiEntryApp())
+  expect_true(app$findElement("#test-entered")$isEnabled())
+  expect_true(app$findElement("#test-fill_ex")$isEnabled())
+  expect_false(app$findElement("#test-edit")$isEnabled())
+  expect_false(app$findElement("#test-submit")$isEnabled())
+})
+
 test_that("Example DOIs can be filled in", {
   skip("Test is broken due to likely shinytest bug")
   # blocked by https://github.com/subugoe/biblids/issues/83
@@ -155,9 +165,34 @@ test_that("Example DOIs can be filled in", {
   )
 })
 
+test_that("Good DOIs can be submitted and edited", {
+  app <- shinytest::ShinyDriver$new(doiEntryApp())
+  app$setInputs(`test-entered` = "lorem ipsum 10.1000/foo dolor ist")
+  expect_true(app$findElement("#test-submit")$isEnabled())
+  app$click("test-submit")
+  expect_true(app$findElement("#test-edit")$isEnabled())
+})
+
+test_that("Bad DOIs cannot be submitted", {
+  app <- shinytest::ShinyDriver$new(doiEntryApp())
+  app$setInputs(`test-entered` = "lorem")
+  expect_false(app$findElement("#test-submit")$isEnabled())
+})
+
 test_that("DOI matches can be viewed", {
   res <- view_doi_matches("lorem ipsum 10.1000/foo dolor ist ")
   expect_true("htmlwidget" %in% class(res))
+})
+
+# test submission (reactivity)
+
+test_that("DOI input returns reactive DOIs", {
+  suppressMessages(shiny::testServer(doiEntryServer, {
+    res <- session$getReturned()
+    two_dois <- "lorem ipsum 10.1000/foo dolor ist 10.1000/1"
+    session$setInputs(entered = two_dois)
+    expect_equal(res(), as_doi(as.vector(str_extract_all_doi(two_dois))))
+  }))
 })
 
 # doi.org handles api ====
