@@ -515,7 +515,6 @@ doiEntryServer <- function(id,
       iv$add_rule("entered", shinyvalidate::sv_required())
       iv$add_rule("entered", not_longer_than, char_limit = char_limit)
       iv$add_rule("entered", one_doi)
-      iv$enable()
 
       # highlight matched DOIs
       output$matched <- renderView_doi_matches(
@@ -523,15 +522,20 @@ doiEntryServer <- function(id,
       )
 
       # edit and submit UX logic
-      shiny::observeEvent(input$entered, {
-        if (iv$is_valid()) {
-          shinyjs::enable("submit")
-          shinyjs::addClass("submit", "active")
-        } else {
-          shinyjs::disable("submit")
-          shinyjs::removeClass("submit", "active")
-        }
-      })
+      shiny::observeEvent(
+        input$entered,
+        {
+          iv$enable()
+          if (iv$is_valid()) {
+            shinyjs::enable("submit")
+            shinyjs::addClass("submit", "active")
+          } else {
+            shinyjs::disable("submit")
+            shinyjs::removeClass("submit", "active")
+          }
+        },
+        ignoreInit = TRUE
+    )
       shiny::observeEvent(input$submit, {
         shinyjs::disable("submit")
         shinyjs::removeClass("submit", "active")
