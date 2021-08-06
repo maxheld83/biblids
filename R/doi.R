@@ -449,7 +449,11 @@ doiEntryUI <- function(id,
     shiny::div(
       shiny::h5(
         "Found ",
-        shiny::textOutput(outputId = ns("found"), inline = TRUE),
+        shiny::textOutput(
+          outputId = ns("found"),
+          container = shiny::tags$u, 
+          inline = TRUE
+        ),
         " DOIs"
       ),
       shiny::div(view_doi_matchesOutput(outputId = ns("matched")))
