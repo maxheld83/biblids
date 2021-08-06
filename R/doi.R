@@ -547,6 +547,7 @@ doiEntryServer <- function(id,
 
       # paste example doi
       shiny::observeEvent(input$fill_ex, {
+        shiny::freezeReactiveValue(input, "entered")
         shiny::updateTextAreaInput(
           session = session,
           inputId = "entered",
