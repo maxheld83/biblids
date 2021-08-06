@@ -510,28 +510,6 @@ doiEntryServer <- function(id,
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
-      # edit and submit UX logic
-      shiny::observeEvent(input$submit, {
-        toggle_submittable()
-        toggle_editable()
-      })
-      shiny::observeEvent(input$edit, {
-        toggle_editable()
-      })
-      shiny::observe({
-        shiny::req(iv$is_valid())
-        toggle_submittable()
-      })
-
-      # paste example doi
-      shiny::observeEvent(input$fill_ex, {
-        shiny::updateTextAreaInput(
-          session = session,
-          inputId = "entered",
-          value = example_dois
-        )
-      })
-
       # input validation
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("entered", shinyvalidate::sv_required())
@@ -543,6 +521,34 @@ doiEntryServer <- function(id,
       output$matched <- renderView_doi_matches(
         view_doi_matches(input$entered)
       )
+
+      # edit and submit UX logic
+      shiny::observeEvent(input$entered, {
+        if (iv$is_valid()) {
+          shinyjs::enable("submit")
+          shinyjs::addClass("submit", "active")
+        } else {
+          shinyjs::disable("submit")
+          shinyjs::removeClass("submit", "active")
+        }
+      })
+      shiny::observeEvent(input$submit, {
+        shinyjs::disable("submit")
+        shinyjs::removeClass("submit", "active")
+        toggle_editable()
+      })
+      shiny::observeEvent(input$edit, {
+        toggle_editable()
+      })
+
+      # paste example doi
+      shiny::observeEvent(input$fill_ex, {
+        shiny::updateTextAreaInput(
+          session = session,
+          inputId = "entered",
+          value = example_dois
+        )
+      })
 
       # ingest
       dois <- shiny::eventReactive(input$entered, {
@@ -567,14 +573,6 @@ toggle_editable <- function() {
   shinyjs::toggleState("fill_ex")
   shinyjs::toggleState("edit")
   shinyjs::toggleClass("edit", "active")
-}
-
-#' Toggle DOI entry submitable state
-#' Starts in state from app start, with submitable inactive
-#' @noRd
-toggle_submittable <- function() {
-  shinyjs::toggleClass("submit", "active")
-  shinyjs::toggleState("submit")
 }
 
 #' Validate entered string against character limit

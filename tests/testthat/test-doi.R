@@ -169,6 +169,10 @@ test_that("Good DOIs can be submitted and edited", {
   app <- shinytest::ShinyDriver$new(doiEntryApp())
   app$setInputs(`test-entered` = "lorem ipsum 10.1000/foo dolor ist")
   expect_true(app$findElement("#test-submit")$isEnabled())
+  # second edit should also make submitable
+  # protection against reversion on #87
+  app$setInputs(`test-entered` = "lorem ipsum 10.1000/foo dolor sit amet")
+  expect_true(app$findElement("#test-submit")$isEnabled())
   app$click("test-submit")
   expect_true(app$findElement("#test-edit")$isEnabled())
 })
