@@ -2,12 +2,15 @@
 % Please edit documentation in R/doi.R
 \name{view_doi_matches}
 \alias{view_doi_matches}
+\alias{view_doi_matches_perline}
 \alias{view_doi_matchesOutput}
 \alias{renderView_doi_matches}
 \title{View HTML rendering of matched DOIs
 htmlwidget to show how DOIs are matched in strings.}
 \usage{
 view_doi_matches(string)
+
+view_doi_matches_perline(string)
 
 view_doi_matchesOutput(outputId, width = "100\%", height = "auto")
 
@@ -46,6 +49,10 @@ for example inside shiny apps.
 }
 \section{Related Functions and Methods}{
 \subsection{Functions}{
+\itemize{
+\item \code{view_doi_matches_perline}: Accepts only a scalar string, but retains linebreaks.
+Helpful for showing matches from input widgets.
+}
 \itemize{
 \item \code{view_doi_matchesOutput}: Shiny output widget to show matched DOIs
 }

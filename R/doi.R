@@ -518,7 +518,7 @@ doiEntryServer <- function(id,
 
       # highlight matched DOIs
       output$matched <- renderView_doi_matches(
-        view_doi_matches(input$entered)
+        view_doi_matches_perline(input$entered)
       )
 
       # edit and submit UX logic
@@ -623,6 +623,16 @@ view_doi_matches <- function(string) {
     string = string,
     pattern = regex_doi(),
   )
+}
+
+#' @describeIn view_doi_matches
+#' Accepts only a scalar string, but retains linebreaks.
+#' Helpful for showing matches from input widgets.
+#' @export
+view_doi_matches_perline <- function(string) {
+  stopifnot(rlang::is_scalar_character(string))
+  string <- stringr::str_split(string, "\n")[[1]]
+  view_doi_matches(string)
 }
 
 #' @describeIn view_doi_matches
