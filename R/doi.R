@@ -417,8 +417,18 @@ doiEntryApp <- function() {
   require_namespace2("shiny")
   require_namespace2("shiny.i18n")
   i18n <- shiny.i18n::Translator$new(translation_json_path = translations())
-  ui <- shiny::fluidPage(doiEntryUI(id = "test"))
+  ui <- shiny::fluidPage(
+    shiny.i18n::usei18n(i18n),
+    shiny::selectInput(
+      inputId = "lang",
+      label = i18n$t("Language"),
+      choices = i18n$get_languages(),
+      selected = "en"
+    ),
+    doiEntryUI(id = "test", i18n = i18n)
+  )
   server <- function(input, output, session) {
+    shiny::observe(shiny.i18n::update_lang(session, input$lang))
     doiEntryServer(id = "test")
   }
   shiny::shinyApp(ui, server)
@@ -448,7 +458,8 @@ doiEntryUI <- function(id,
     shiny::textAreaInput(
       inputId = ns("entered"),
       label = i18n$t("Entered DOIs"),
-      placeholder = i18n$t("Enter your DOIs here."),
+      # this gets translated server side, b/c it's not HTML
+      placeholder = "Enter your DOIs here.",
       width = width,
       height = height,
       resize = "vertical",

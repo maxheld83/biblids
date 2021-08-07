@@ -5,6 +5,10 @@
   ],
   "translation": [
     {
+      "en": "Language",
+      "de": "Sprache"
+    },
+    {
       "en": "Enter your DOIs here.",
       "de": "Bitte geben Sie hier ihre DOIs ein."
     },
