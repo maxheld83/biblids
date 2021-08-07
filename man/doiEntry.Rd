@@ -5,32 +5,30 @@
 \alias{doiEntryApp}
 \alias{doiEntryUI}
 \alias{doiEntryServer}
+\alias{translations}
 \title{Enter DOIs through a Shiny Module}
 \usage{
 doiEntryApp()
 
-doiEntryUI(
-  id,
-  width = "100\%",
-  height = "400px",
-  placeholder = "Enter your DOIs here.",
-  ...
-)
+doiEntryUI(id, i18n = dummy_i18n, width = "100\%", height = "400px", ...)
 
 doiEntryServer(id, example_dois = doi_examples(), char_limit = 100L)
+
+translations()
 }
 \arguments{
 \item{id}{The id string to be namespaced (optional).}
+
+\item{i18n}{A \code{shiny.i18n::Translator} object, or a dummy (default).
+Strings inside the module are marked as translatable,
+but providing and managing the shiny.i18n translator object
+is the responsibility of the module caller.}
 
 \item{width}{The width of the input, e.g. \code{'400px'}, or \code{'100\%'};
 see \code{\link[shiny:reexports]{validateCssUnit()}}.}
 
 \item{height}{The height of the input, e.g. \code{'400px'}, or \code{'100\%'}; see
 \code{\link[shiny:reexports]{validateCssUnit()}}.}
-
-\item{placeholder}{A character string giving the user a hint as to what can
-be entered into the control. Internet Explorer 8 and 9 do not support this
-option.}
 
 \item{...}{
   Arguments passed on to \code{\link[shiny:textAreaInput]{shiny::textAreaInput}}
@@ -46,6 +44,9 @@ of this function or from a containing page layout such as
     \item{\code{rows}}{The value of the visible character rows of the input, e.g. \code{6}.
 If the \code{height} argument is specified, \code{height} will take precedence in the
 browser's rendering.}
+    \item{\code{placeholder}}{A character string giving the user a hint as to what can
+be entered into the control. Internet Explorer 8 and 9 do not support this
+option.}
     \item{\code{resize}}{Which directions the textarea box can be resized. Can be one of
 \code{"both"}, \code{"none"}, \code{"vertical"}, and \code{"horizontal"}. The default, \code{NULL},
 will use the client browser's default setting for resizing textareas.}
@@ -78,8 +79,16 @@ Input, validate and return DOIs in a shiny app.
 }
 \itemize{
 \item \code{doiEntryServer}: Module server
+}
+\itemize{
+\item \code{translations}: UI Path to shiny.i18n translations file
+The package includes some translations for the UI.
+You can use those, or provide your own.
 }}}
 
+\examples{
+cat(brio::read_file(translations()))
+}
 \seealso{
 Other doi: 
 \code{\link{doi_api}},

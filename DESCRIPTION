@@ -61,7 +61,8 @@ Suggests:
     httptest (>= 4.0.0),
     shinyjs (>= 2.0.0),
     htmlwidgets (>= 1.5.3),
-    globals (>= 0.14.0)
+    globals (>= 0.14.0),
+    shiny.i18n (>= 0.2.0)
 Remotes:
   subugoe/subugoetheme@1.1.1,
   subugoe/shinycaas@1.0.0

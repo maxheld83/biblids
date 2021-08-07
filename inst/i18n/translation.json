@@ -1,0 +1,16 @@
+{
+  "languages": [
+    "en",
+    "de"
+  ],
+  "translation": [
+    {
+      "en": "Enter your DOIs here.",
+      "de": "Bitte geben Sie hier ihre DOIs ein."
+    },
+    {
+      "en": "Entered DOIs",
+      "de": "Eingegebene DOIs"
+    }
+  ]
+}

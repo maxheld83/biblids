@@ -1,17 +1,17 @@
 # construction ====
 #' Digital Object Identifiers
-#' 
+#'
 #' S3 record class for DOIs.
-#' 
+#'
 #' @param prefix The naming authority.
 #' @param suffix The unique string chosen by the registrant.
-#' 
+#'
 #' @example inst/examples/doi/doi.R
 #' @examples
 #' # DOIs are case insensitive and are compared as such
 #' unique(as_doi(c("10.1000/foo", "10.1000/fOo")))
 #' as_doi("10.1000/BAR") == as_doi("10.1000/bar")
-#' 
+#'
 #' # convert back to a (normalised) character
 #' as.character(as_doi("10.1000/zap"))
 #'
@@ -415,6 +415,8 @@ NULL
 #' @export
 doiEntryApp <- function() {
   require_namespace2("shiny")
+  require_namespace2("shiny.i18n")
+  i18n <- shiny.i18n::Translator$new(translation_json_path = translations())
   ui <- shiny::fluidPage(doiEntryUI(id = "test"))
   server <- function(input, output, session) {
     doiEntryServer(id = "test")
@@ -423,14 +425,20 @@ doiEntryApp <- function() {
 }
 
 #' @describeIn doiEntry Module UI
+#' @param i18n
+#' A `shiny.i18n::Translator` object, or a dummy (default).
+#' Strings inside the module are marked as translatable,
+#' but providing and managing the shiny.i18n translator object
+#' is the responsibility of the module caller.
+#'
 #' @inheritParams shiny::NS
 #' @inheritParams shiny::textAreaInput
 #' @inheritDotParams shiny::textAreaInput
 #' @export
 doiEntryUI <- function(id,
+                       i18n = dummy_i18n,
                        width = "100%",
                        height = "400px",
-                       placeholder = "Enter your DOIs here.",
                        ...) {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
@@ -439,8 +447,8 @@ doiEntryUI <- function(id,
     shinyjs::useShinyjs(),
     shiny::textAreaInput(
       inputId = ns("entered"),
-      label = "Entered DOIs",
-      placeholder = placeholder,
+      label = i18n$t("Entered DOIs"),
+      placeholder = i18n$t("Enter your DOIs here."),
       width = width,
       height = height,
       resize = "vertical",
@@ -539,7 +547,7 @@ doiEntryServer <- function(id,
           }
         },
         ignoreInit = TRUE
-    )
+      )
       shiny::observeEvent(input$submit, {
         shinyjs::disable("submit")
         shinyjs::removeClass("submit", "active")
@@ -573,6 +581,23 @@ doiEntryServer <- function(id,
     }
   )
 }
+
+#' @describeIn doiEntry UI Path to shiny.i18n translations file
+#' The package includes some translations for the UI.
+#' You can use those, or provide your own.
+#' @examples
+#' cat(brio::read_file(translations()))
+#' @export
+translations <- function() {
+  system.file(package = "biblids", "i18n", "translation.json")
+}
+
+#' Dummy i18n translator object
+#' To avoid taking a dependency on shiny.i18n,
+#' when preparing a shiny app for translation,
+#' the dummy here created can be used.
+#' @noRd
+dummy_i18n <- list(t = function(keyword) keyword, translate = t)
 
 #' Toggle DOI entry editable state
 #' Starts in state from app start, with editable active
