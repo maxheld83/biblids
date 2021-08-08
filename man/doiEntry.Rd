@@ -12,7 +12,12 @@ doiEntryApp()
 
 doiEntryUI(id, i18n = dummy_i18n, width = "100\%", height = "400px", ...)
 
-doiEntryServer(id, example_dois = doi_examples(), char_limit = 100L)
+doiEntryServer(
+  id,
+  example_dois = doi_examples(),
+  char_limit = 100L,
+  i18n_server = NULL
+)
 
 translations()
 }
@@ -20,7 +25,7 @@ translations()
 \item{id}{The id string to be namespaced (optional).}
 
 \item{i18n}{A \code{shiny.i18n::Translator} object, or a dummy (default).
-Strings inside the module are marked as translatable,
+Strings inside the module UI are marked as translateable,
 but providing and managing the shiny.i18n translator object
 is the responsibility of the module caller.}
 
@@ -62,6 +67,12 @@ To protect shiny against overlong strings, you can limit the maximum
 length of strings allowed.
 This limit is still enforced server-side, not client-side,
 so the protection is not bullet-proof.}
+
+\item{i18n_server}{A reactive of a \code{shiny.i18n::Translator} object, or \code{NULL} (default).
+Used to update some UI which need to be updated server-side.
+To build your own translations,
+see \code{\link[=translations]{translations()}} for a list of addressable strings.
+Updating the reactive is the responsibility of the module caller.}
 }
 \value{
 An object of class \code{biblids_doi} as returend by \code{\link[=doi]{doi()}}.

@@ -428,8 +428,14 @@ doiEntryApp <- function() {
     doiEntryUI(id = "test", i18n = i18n)
   )
   server <- function(input, output, session) {
+    # update lang client side
     shiny::observe(shiny.i18n::update_lang(session, input$lang))
-    doiEntryServer(id = "test")
+    # update lang server side (this is a reactive)
+    i18n_server <- shiny::reactive({
+      i18n$set_translation_language(input$lang)
+      i18n
+    })
+    doiEntryServer(id = "test", i18n_server = i18n_server)
   }
   shiny::shinyApp(ui, server)
 }
@@ -437,7 +443,7 @@ doiEntryApp <- function() {
 #' @describeIn doiEntry Module UI
 #' @param i18n
 #' A `shiny.i18n::Translator` object, or a dummy (default).
-#' Strings inside the module are marked as translatable,
+#' Strings inside the module UI are marked as translateable,
 #' but providing and managing the shiny.i18n translator object
 #' is the responsibility of the module caller.
 #'
@@ -515,12 +521,19 @@ doiEntryUI <- function(id,
 #' length of strings allowed.
 #' This limit is still enforced server-side, not client-side,
 #' so the protection is not bullet-proof.
+#' @param i18n_server
+#' A reactive of a `shiny.i18n::Translator` object, or `NULL` (default).
+#' Used to update some UI which need to be updated server-side.
+#' To build your own translations,
+#' see [translations()] for a list of addressable strings.
+#' Updating the reactive is the responsibility of the module caller.
 #' @return
 #' An object of class `biblids_doi` as returend by [doi()].
 #' @export
 doiEntryServer <- function(id,
                            example_dois = doi_examples(),
-                           char_limit = 100L) {
+                           char_limit = 100L,
+                           i18n_server = NULL) {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
   require_namespace2("glue")
@@ -543,6 +556,21 @@ doiEntryServer <- function(id,
       output$matched <- renderView_doi_matches(
         view_doi_matches_perline(input$entered)
       )
+
+      if (!is.null(i18n_server)) {
+        require_namespace2("shiny.i18n")
+        shiny::observe({
+          stopifnot("Translator" %in% class(i18n_server()))
+          shiny::updateTextAreaInput(
+            session = session,
+            inputId = "entered",
+            placeholder = i18n_server()$translate(
+              "Enter your DOIs here.",
+              session = shiny::getDefaultReactiveDomain()
+            )
+          )
+        })
+      }
 
       # edit and submit UX logic
       shiny::observeEvent(
