@@ -166,6 +166,7 @@ test_that("Example DOIs can be filled in", {
 })
 
 test_that("Good DOIs can be submitted and edited", {
+  skip("Test is broken as per #101")
   app <- shinytest::ShinyDriver$new(doiEntryApp())
   app$setInputs(`test-entered` = "lorem ipsum 10.1000/foo dolor ist")
   expect_true(app$findElement("#test-submit")$isEnabled())
@@ -178,6 +179,7 @@ test_that("Good DOIs can be submitted and edited", {
 })
 
 test_that("Bad DOIs cannot be submitted", {
+  skip("Test is broken as per #101")
   app <- shinytest::ShinyDriver$new(doiEntryApp())
   app$setInputs(`test-entered` = "lorem")
   expect_false(app$findElement("#test-submit")$isEnabled())

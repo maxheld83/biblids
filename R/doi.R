@@ -431,6 +431,9 @@ doiEntryApp <- function() {
     # update lang client side
     shiny::observe(shiny.i18n::update_lang(session, input$lang))
     # update lang server side (this is a reactive)
+    # remove below repetition, see
+    # https://github.com/subugoe/biblids/issues/100
+    i18n <- shiny.i18n::Translator$new(translation_json_path = translations())
     i18n_server <- shiny::reactive({
       i18n$set_translation_language(input$lang)
       i18n
