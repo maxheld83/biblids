@@ -476,13 +476,13 @@ doiEntryUI <- function(id,
     ),
     shiny::div(
       shiny::h5(
-        "Found ",
+        i18n$t("Found "),
         shiny::textOutput(
           outputId = ns("found"),
           container = shiny::tags$u, 
           inline = TRUE
         ),
-        " DOIs"
+        i18n$t(" DOIs")
       ),
       shiny::div(view_doi_matchesOutput(outputId = ns("matched")))
     ),
@@ -491,20 +491,20 @@ doiEntryUI <- function(id,
       shiny::actionButton(
         class = "btn-group",
         inputId = ns("fill_ex"),
-        label = "Fill in example",
+        label = i18n$t("Fill in example"),
         icon = shiny::icon("paste")
       ),
       shiny::actionButton(
         class = "btn-group active",
         inputId = ns("edit"),
-        label = "Edit",
+        label = i18n$t("Edit"),
         icon = shiny::icon("pencil", lib = "glyphicon"),
         disabled = TRUE
       ),
       shiny::actionButton(
         class = "btn-group btn-primary",
         inputId = ns("submit"),
-        label = "Submit",
+        label = i18n$t("Submit"),
         icon = shiny::icon("save", lib = "glyphicon"),
         disabled = TRUE
       )

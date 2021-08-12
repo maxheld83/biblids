@@ -15,6 +15,26 @@
     {
       "en": "Entered DOIs",
       "de": "Eingegebene DOIs"
+    },
+    {
+      "en": "Found ",
+      "de": ""
+    },
+    {
+      "en": " DOIs",
+      "de": " Gefundene DOIs"
+    },
+    {
+      "en": "Fill in example",
+      "de": "Beispiel einfügen"
+    },
+    {
+      "en": "Edit",
+      "de": "Bearbeiten"
+    },
+    {
+      "en": "Submit",
+      "de": "Absenden"
     }
   ]
 }
