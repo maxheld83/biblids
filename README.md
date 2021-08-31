@@ -35,7 +35,18 @@ For smaller sets (such as RORs), the package ships with datasets including prese
 ## Optional Extensions
 
 Biblids is designed to be lightweight and comes with minimal `Imports` dependencies.
+To install the package with minimal dependencies run:
+
+```r
+remotes::install_github("subugoe/biblids")
+```
+
 Additional features are enabled when you have `Suggests` packages installed.
+Install these extended dependencies by running:
+
+```r
+remotes::install_github("subugoe/biblids", dependencies = TRUE)
+```
 
 ### Presentation Methods
 
