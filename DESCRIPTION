@@ -67,3 +67,4 @@ Remotes:
   subugoe/subugoetheme@1.1.1,
   subugoe/shinycaas@1.0.0
 Config/testthat/edition: 3
+Config/wama/defaultShinyApp: doiEntryApp()
