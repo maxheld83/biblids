@@ -540,7 +540,10 @@ doiEntryServer <- function(id,
   require_namespace2("shiny")
   require_namespace2("shinyjs")
   require_namespace2("glue")
+  stopifnot(!shiny::is.reactive(char_limit))
   stopifnot(rlang::is_scalar_integer(char_limit))
+  stopifnot(!shiny::is.reactive(example_dois))
+  stopifnot(is.null(i18n_server) || shiny::is.reactive(i18n_server))
   example_dois <- paste(
     as.character(as_doi(example_dois)),
     collapse = " "
@@ -564,6 +567,8 @@ doiEntryServer <- function(id,
         require_namespace2("shiny.i18n")
         shiny::observe({
           stopifnot("Translator" %in% class(i18n_server()))
+          # this needs special server side updating b/c
+          # placeholder cannot be wrapped in t() in UI.
           shiny::updateTextAreaInput(
             session = session,
             inputId = "entered",
