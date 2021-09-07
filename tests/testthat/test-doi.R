@@ -155,10 +155,9 @@ test_that("App starts editable and not submitable", {
 })
 
 test_that("Example DOIs can be filled in", {
-  skip("Test is broken due to likely shinytest bug")
-  # blocked by https://github.com/subugoe/biblids/issues/83
   app <- shinytest::ShinyDriver$new(doiEntryApp())
   app$click("test-fill_ex")
+  app$waitForValue("test-entered")
   expect_equal(
     app$getValue("test-entered", iotype = "input"),
     paste(as.character(doi_examples()), collapse = " ")
