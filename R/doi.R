@@ -667,7 +667,8 @@ find_translator <- function(filename) {
 }
 
 #' Check whether translator is legit
-#' @noRd
+#' @export
+#' @keywords internal
 stopifnot_i18n <- function(translator = NULL) {
   if (!is.null(translator)) {
     stopifnot(!shiny::is.reactive(translator))
