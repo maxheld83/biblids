@@ -429,8 +429,8 @@ doiEntryApp <- function() {
   )
   server <- function(input, output, session) {
     # update lang client side
-    shiny::observe(shiny.i18n::update_lang(session, input$lang))
     lang <- shiny::reactive(input$lang)
+    shiny::observe(shiny.i18n::update_lang(session, lang))
     doiEntryServer(id = "test", translator = doi_entry_translator(), lang = lang)
   }
   shiny::shinyApp(ui, server)
@@ -552,13 +552,6 @@ doiEntryServer <- function(id,
     collapse = " "
   )
 
-  if (!is.null(translator)) {
-    # now it is made reactive with the language input
-    translatorWithLang <- shiny::reactive({
-      translator$set_translation_language(lang())
-      translator
-    })
-  }
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
@@ -573,14 +566,19 @@ doiEntryServer <- function(id,
         view_doi_matches_perline(input$entered)
       )
 
+      # trigger translations if necessary
       if (!is.null(translator)) {
-        shiny::observe({
+        shiny::observeEvent(lang(), {
+          # client side
+          shiny.i18n::update_lang(session, lang())
+          # server side
           # this needs special server side updating b/c
           # placeholder cannot be wrapped in t() in UI.
+          translator$set_translation_language(lang())
           shiny::updateTextAreaInput(
             session = session,
             inputId = "entered",
-            placeholder = translatorWithLang()$translate(
+            placeholder = translator$translate(
               "Enter your DOIs here.",
               session = shiny::getDefaultReactiveDomain()
             )
