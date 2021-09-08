@@ -416,6 +416,7 @@ NULL
 doiEntryApp <- function() {
   require_namespace2("shiny")
   require_namespace2("shiny.i18n")
+  app_translator <- app_translator()
   ui <- shiny::fluidPage(
     shiny.i18n::usei18n(app_translator),
     shiny::selectInput(
@@ -424,7 +425,7 @@ doiEntryApp <- function() {
       choices = app_translator$get_languages(),
       selected = "en"
     ),
-    doiEntryUI(id = "test", translator = doi_entry_translator)
+    doiEntryUI(id = "test", translator = doi_entry_translator())
   )
   server <- function(input, output, session) {
     # update lang client side
@@ -437,11 +438,11 @@ doiEntryApp <- function() {
 #' @describeIn doiEntry Module UI
 #' @param translator
 #' A [shiny.i18n::Translator] object or `NULL` for english-only defaults.
-#' Use [biblids::doi_entry_translator] for translations included with the package.
+#' Use [biblids::doi_entry_translator()] for translations included with the package.
 #' Strings inside the module UI are marked as translateable,
 #' and you create your own `translator` using [shiny.i18n::Translator].
 #' To find the keys you need to include in your own translations,
-#' look at `biblids::doi_entry_translator$translations()`.
+#' look at `biblids::doi_entry_translator()$translations()`.
 #' This is cannot be a reactive, it is set only at shiny startup.
 #' To update the language reactively, see `lang`.
 #' @inheritParams shiny::NS
@@ -626,26 +627,32 @@ doiEntryServer <- function(id,
 }
 
 #' @describeIn doiEntry Translator
-#' Translations shipping with the package.
+#' Translations shipping with the package,
+#' including `r doi_entry_translator()$get_languages()`.
 #' @return a [shiny.i18n::Translator] object.
 #' @export
-doi_entry_translator <- shiny.i18n::Translator$new(
-  translation_json_path = system.file(
-    package = "biblids",
-    "i18n",
-    "doi_entry.json"
-  )
-)
+doi_entry_translator <- function() {
+  find_translator("doi_entry.json")
+}
 
 #' Translator for the showcase app.
 #' @noRd
-app_translator <- shiny.i18n::Translator$new(
-  translation_json_path = system.file(
-    package = "biblids",
-    "i18n",
-    "app.json"
+app_translator <- function() {
+  find_translator("app.json")
+}
+
+#' Find the translator
+#' @noRd
+find_translator <- function(filename) {
+  require_namespace2("shiny.i18n")
+  shiny.i18n::Translator$new(
+    translation_json_path = system.file(
+      package = "biblids",
+      "i18n",
+      filename
+    )
   )
-)
+}
 
 #' Check whether translator is legit
 #' @noRd
