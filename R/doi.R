@@ -481,7 +481,7 @@ doiEntryUI <- function(id,
         translator$t("Found "),
         shiny::textOutput(
           outputId = ns("found"),
-          container = shiny::tags$u, 
+          container = shiny::tags$u,
           inline = TRUE
         ),
         translator$t(" DOIs")
@@ -528,7 +528,7 @@ doiEntryUI <- function(id,
 #' so the protection is not bullet-proof.
 #' @param lang a reactive variable, returning a character scalar.
 #' Must be one of the languages in `translator`.
-#' Defaults to `NULL`,
+#' Defaults to `shiny::reactive("en")`,
 #' in which case no server side translation
 #' is triggered.
 #' @return
@@ -538,15 +538,16 @@ doiEntryServer <- function(id,
                            example_dois = doi_examples(),
                            char_limit = 100L,
                            translator = NULL,
-                           lang = NULL) {
+                           lang = shiny::reactive("en")) {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
   require_namespace2("glue")
+  require_namespace2("shiny.i18n")
   stopifnot(!shiny::is.reactive(example_dois))
   stopifnot(!shiny::is.reactive(char_limit))
   stopifnot(rlang::is_scalar_integer(char_limit))
   stopifnot_i18n(translator)
-  stopifnot(is.null(lang) || shiny::is.reactive(lang))
+  stopifnot(shiny::is.reactive(lang))
   example_dois <- paste(
     as.character(as_doi(example_dois)),
     collapse = " "
@@ -555,37 +556,49 @@ doiEntryServer <- function(id,
   shiny::moduleServer(
     id,
     module = function(input, output, session) {
-      # input validation
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("entered", shinyvalidate::sv_required())
-      iv$add_rule("entered", not_longer_than, char_limit = char_limit)
-      iv$add_rule("entered", one_doi)
-
-      # highlight matched DOIs
-      output$matched <- renderView_doi_matches(
-        view_doi_matches_perline(input$entered)
-      )
-
       # trigger translations if necessary
-      if (!is.null(translator)) {
+      if (is.null(translator)) {
+        # dummy translator to simplify below code
+        translWithLang <- shiny::reactive(list(translate = function(x) x))
+      } else {
+        translWithLang <- shiny::reactive({
+          translator$set_translation_language(lang())
+          translator
+        })
         shiny::observeEvent(lang(), {
           # client side
           shiny.i18n::update_lang(session, lang())
           # server side
           # this needs special server side updating b/c
           # placeholder cannot be wrapped in t() in UI.
-          translator$set_translation_language(lang())
           shiny::updateTextAreaInput(
             session = session,
             inputId = "entered",
-            placeholder = translator$translate(
-              "Enter your DOIs here.",
-              session = shiny::getDefaultReactiveDomain()
-            )
+            placeholder = translWithLang()$translate("Enter your DOIs here.")
           )
         })
       }
 
+      # input validation
+      iv <- shinyvalidate::InputValidator$new()
+      shiny::observe({
+        iv$add_rule(
+          "entered",
+          shinyvalidate::sv_required(translWithLang()$translate("Required"))
+        )
+        iv$add_rule(
+          "entered",
+          not_longer_than,
+          char_limit = char_limit,
+          translator = translWithLang()
+        )
+        iv$add_rule("entered", one_doi, translator = translWithLang())
+      })
+
+      # highlight matched DOIs
+      output$matched <- renderView_doi_matches(
+        view_doi_matches_perline(input$entered)
+      )
       # edit and submit UX logic
       shiny::observeEvent(
         input$entered,
@@ -697,14 +710,18 @@ toggle_editable <- function() {
 
 #' Validate entered string against character limit
 #' @noRd
-not_longer_than <- function(value, char_limit) {
+not_longer_than <- function(value,
+                            char_limit, 
+                            translator = doi_entry_translator()) {
   # this limit should be enforced client side as per
   # https://github.com/rstudio/shiny/issues/3305
   if (nchar(value) > char_limit) {
     glue::glue_collapse(
       glue::glue_safe(
-        "Cannot parse more than {char_limit} characters.",
-        "Please provide a shorter input."
+        translator$translate(
+          "Cannot parse more than {char_limit} characters."
+        ),
+        translator$translate("Please provide a shorter input.")
       ),
       sep = " "
     )
@@ -713,11 +730,11 @@ not_longer_than <- function(value, char_limit) {
 
 #' Ensure there's at least one good DOI
 #' @noRd
-one_doi <- function(value) {
+one_doi <- function(value, translator = doi_entry_translator()) {
   # would also be nice to enforce this client-side
   # https://github.com/subugoe/biblids/issues/12
   if (!any(stringr::str_detect(value, regex_doi()))) {
-    "There must be at least one valid DOI."
+    translator$translate("Please provide at least one valid DOI.")
   }
 }
 

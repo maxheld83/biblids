@@ -17,6 +17,22 @@
       "de": "Eingegebene DOIs"
     },
     {
+      "en": "Required",
+      "de": "Erforderlich"
+    },
+    {
+      "en": "Please provide at least one valid DOI.",
+      "de": "Bitte fügen Sie mindestens einen validen DOI ein."
+    },
+    {
+      "en": "Cannot parse more than {char_limit} characters.",
+      "de": "Mehr als {char_limit} Zeichen können nicht verarbeitet werden."
+    },
+    {
+      "en": "Please provide a shorter input.",
+      "de": "Bitte kürzen Sie Ihre Eingabe."
+    },
+    {
       "en": "Found ",
       "de": ""
     },

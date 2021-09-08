@@ -17,7 +17,7 @@ doiEntryServer(
   example_dois = doi_examples(),
   char_limit = 100L,
   translator = NULL,
-  lang = NULL
+  lang = shiny::reactive("en")
 )
 
 doi_entry_translator()
@@ -73,7 +73,7 @@ so the protection is not bullet-proof.}
 
 \item{lang}{a reactive variable, returning a character scalar.
 Must be one of the languages in \code{translator}.
-Defaults to \code{NULL},
+Defaults to \code{shiny::reactive("en")},
 in which case no server side translation
 is triggered.}
 }
