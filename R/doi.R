@@ -430,7 +430,8 @@ doiEntryApp <- function() {
   server <- function(input, output, session) {
     # update lang client side
     shiny::observe(shiny.i18n::update_lang(session, input$lang))
-    doiEntryServer(id = "test", translator = NULL)
+    lang <- shiny::reactive(input$lang)
+    doiEntryServer(id = "test", translator = doi_entry_translator(), lang = lang)
   }
   shiny::shinyApp(ui, server)
 }
@@ -527,13 +528,19 @@ doiEntryUI <- function(id,
 #' length of strings allowed.
 #' This limit is still enforced server-side, not client-side,
 #' so the protection is not bullet-proof.
+#' @param lang a reactive variable, returning a character scalar.
+#' Must be one of the languages in `translator`.
+#' Defaults to `NULL`,
+#' in which case no server side translation
+#' is triggered.
 #' @return
 #' An object of class `biblids_doi` as returned by [doi()].
 #' @export
 doiEntryServer <- function(id,
                            example_dois = doi_examples(),
                            char_limit = 100L,
-                           translator = NULL) {
+                           translator = NULL,
+                           lang = NULL) {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
   require_namespace2("glue")
@@ -541,6 +548,7 @@ doiEntryServer <- function(id,
   stopifnot(!shiny::is.reactive(char_limit))
   stopifnot(rlang::is_scalar_integer(char_limit))
   stopifnot_i18n(translator)
+  stopifnot(is.null(lang) || shiny::is.reactive(lang))
   example_dois <- paste(
     as.character(as_doi(example_dois)),
     collapse = " "
@@ -562,14 +570,17 @@ doiEntryServer <- function(id,
 
       if (!is.null(translator)) {
         # now it is made reactive with the language input
-        translator <- shiny::reactive(translator)
+        translatorWithLang <- shiny::reactive({
+          translator$set_translation_language(lang())
+          translator
+        })
         shiny::observe({
           # this needs special server side updating b/c
           # placeholder cannot be wrapped in t() in UI.
           shiny::updateTextAreaInput(
             session = session,
             inputId = "entered",
-            placeholder = translator()$translate(
+            placeholder = translatorWithLang()$translate(
               "Enter your DOIs here.",
               session = shiny::getDefaultReactiveDomain()
             )

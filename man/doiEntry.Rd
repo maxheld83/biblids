@@ -16,7 +16,8 @@ doiEntryServer(
   id,
   example_dois = doi_examples(),
   char_limit = 100L,
-  translator = NULL
+  translator = NULL,
+  lang = NULL
 )
 
 doi_entry_translator()
@@ -71,6 +72,12 @@ To protect shiny against overlong strings, you can limit the maximum
 length of strings allowed.
 This limit is still enforced server-side, not client-side,
 so the protection is not bullet-proof.}
+
+\item{lang}{a reactive variable, returning a character scalar.
+Must be one of the languages in \code{translator}.
+Defaults to \code{NULL},
+in which case no server side translation
+is triggered.}
 }
 \value{
 An object of class \code{biblids_doi} as returned by \code{\link[=doi]{doi()}}.
