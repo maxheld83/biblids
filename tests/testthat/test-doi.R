@@ -198,6 +198,12 @@ test_that("DOI input returns reactive DOIs", {
   }))
 })
 
+# test translation
+test_that("Translator object can be checked", {
+  expect_equal(stopifnot_i18n(doi_entry_translator), doi_entry_translator)
+  expect_error(stopifnot_i18n("no_a_translator"))
+})
+
 # doi.org handles api ====
 
 # integration tests

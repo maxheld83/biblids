@@ -416,57 +416,59 @@ NULL
 doiEntryApp <- function() {
   require_namespace2("shiny")
   require_namespace2("shiny.i18n")
-  i18n <- shiny.i18n::Translator$new(translation_json_path = translations())
   ui <- shiny::fluidPage(
-    shiny.i18n::usei18n(i18n),
+    shiny.i18n::usei18n(app_translator),
     shiny::selectInput(
       inputId = "lang",
-      label = i18n$t("Language"),
-      choices = i18n$get_languages(),
+      label = app_translator$t("Language"),
+      choices = app_translator$get_languages(),
       selected = "en"
     ),
-    doiEntryUI(id = "test", i18n = i18n)
+    doiEntryUI(id = "test", translator = doi_entry_translator)
   )
   server <- function(input, output, session) {
     # update lang client side
     shiny::observe(shiny.i18n::update_lang(session, input$lang))
-    # update lang server side (this is a reactive)
-    # remove below repetition, see
-    # https://github.com/subugoe/biblids/issues/100
-    i18n <- shiny.i18n::Translator$new(translation_json_path = translations())
-    i18n_server <- shiny::reactive({
-      i18n$set_translation_language(input$lang)
-      i18n
-    })
-    doiEntryServer(id = "test", i18n_server = i18n_server)
+    doiEntryServer(id = "test", translator = NULL)
   }
   shiny::shinyApp(ui, server)
 }
 
 #' @describeIn doiEntry Module UI
-#' @param i18n
-#' A `shiny.i18n::Translator` object, or a dummy (default).
+#' @param translator
+#' A [shiny.i18n::Translator] object or `NULL` for english-only defaults.
+#' Use [biblids::doi_entry_translator] for translations included with the package.
 #' Strings inside the module UI are marked as translateable,
-#' but providing and managing the shiny.i18n translator object
-#' is the responsibility of the module caller.
-#'
+#' and you create your own `translator` using [shiny.i18n::Translator].
+#' To find the keys you need to include in your own translations,
+#' look at `biblids::doi_entry_translator$translations()`.
+#' This is cannot be a reactive, it is set only at shiny startup.
+#' To update the language reactively, see `lang`.
 #' @inheritParams shiny::NS
 #' @inheritParams shiny::textAreaInput
 #' @inheritDotParams shiny::textAreaInput
 #' @export
 doiEntryUI <- function(id,
-                       i18n = dummy_i18n,
+                       translator = NULL,
                        width = "100%",
                        height = "400px",
                        ...) {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
+  if (is.null(translator)) {
+    translator <- dummy_i18n
+    i18n_js_insert <- NULL
+  } else {
+    stopifnot_i18n(translator)
+    i18n_js_insert <- shiny.i18n::usei18n(translator)
+  }
   ns <- shiny::NS(id)
   shiny::tagList(
     shinyjs::useShinyjs(),
+    i18n_js_insert,
     shiny::textAreaInput(
       inputId = ns("entered"),
-      label = i18n$t("Entered DOIs"),
+      label = translator$t("Entered DOIs"),
       # this gets translated server side, b/c it's not HTML
       placeholder = "Enter your DOIs here.",
       width = width,
@@ -476,13 +478,13 @@ doiEntryUI <- function(id,
     ),
     shiny::div(
       shiny::h5(
-        i18n$t("Found "),
+        translator$t("Found "),
         shiny::textOutput(
           outputId = ns("found"),
           container = shiny::tags$u, 
           inline = TRUE
         ),
-        i18n$t(" DOIs")
+        translator$t(" DOIs")
       ),
       shiny::div(view_doi_matchesOutput(outputId = ns("matched")))
     ),
@@ -491,20 +493,20 @@ doiEntryUI <- function(id,
       shiny::actionButton(
         class = "btn-group",
         inputId = ns("fill_ex"),
-        label = i18n$t("Fill in example"),
+        label = translator$t("Fill in example"),
         icon = shiny::icon("paste")
       ),
       shiny::actionButton(
         class = "btn-group active",
         inputId = ns("edit"),
-        label = i18n$t("Edit"),
+        label = translator$t("Edit"),
         icon = shiny::icon("pencil", lib = "glyphicon"),
         disabled = TRUE
       ),
       shiny::actionButton(
         class = "btn-group btn-primary",
         inputId = ns("submit"),
-        label = i18n$t("Submit"),
+        label = translator$t("Submit"),
         icon = shiny::icon("save", lib = "glyphicon"),
         disabled = TRUE
       )
@@ -524,26 +526,20 @@ doiEntryUI <- function(id,
 #' length of strings allowed.
 #' This limit is still enforced server-side, not client-side,
 #' so the protection is not bullet-proof.
-#' @param i18n_server
-#' A reactive of a `shiny.i18n::Translator` object, or `NULL` (default).
-#' Used to update some UI which need to be updated server-side.
-#' To build your own translations,
-#' see [translations()] for a list of addressable strings.
-#' Updating the reactive is the responsibility of the module caller.
 #' @return
-#' An object of class `biblids_doi` as returend by [doi()].
+#' An object of class `biblids_doi` as returned by [doi()].
 #' @export
 doiEntryServer <- function(id,
                            example_dois = doi_examples(),
                            char_limit = 100L,
-                           i18n_server = NULL) {
+                           translator = NULL) {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
   require_namespace2("glue")
+  stopifnot(!shiny::is.reactive(example_dois))
   stopifnot(!shiny::is.reactive(char_limit))
   stopifnot(rlang::is_scalar_integer(char_limit))
-  stopifnot(!shiny::is.reactive(example_dois))
-  stopifnot(is.null(i18n_server) || shiny::is.reactive(i18n_server))
+  stopifnot_i18n(translator)
   example_dois <- paste(
     as.character(as_doi(example_dois)),
     collapse = " "
@@ -563,16 +559,16 @@ doiEntryServer <- function(id,
         view_doi_matches_perline(input$entered)
       )
 
-      if (!is.null(i18n_server)) {
-        require_namespace2("shiny.i18n")
+      if (!is.null(translator)) {
+        # now it is made reactive with the language input
+        translator <- shiny::reactive(translator)
         shiny::observe({
-          stopifnot("Translator" %in% class(i18n_server()))
           # this needs special server side updating b/c
           # placeholder cannot be wrapped in t() in UI.
           shiny::updateTextAreaInput(
             session = session,
             inputId = "entered",
-            placeholder = i18n_server()$translate(
+            placeholder = translator()$translate(
               "Enter your DOIs here.",
               session = shiny::getDefaultReactiveDomain()
             )
@@ -629,14 +625,38 @@ doiEntryServer <- function(id,
   )
 }
 
-#' @describeIn doiEntry UI Path to shiny.i18n translations file
-#' The package includes some translations for the UI.
-#' You can use those, or provide your own.
-#' @examples
-#' cat(brio::read_file(translations()))
+#' @describeIn doiEntry Translator
+#' Translations shipping with the package,
+#' including `r doi_entry_translator$get_languages()`
+#' @return a [shiny.i18n::Translator] object.
 #' @export
-translations <- function() {
-  system.file(package = "biblids", "i18n", "translation.json")
+doi_entry_translator <- shiny.i18n::Translator$new(
+  translation_json_path = system.file(
+    package = "biblids",
+    "i18n",
+    "doi_entry.json"
+  )
+)
+
+#' Translator for the showcase app.
+#' @noRd
+app_translator <- shiny.i18n::Translator$new(
+  translation_json_path = system.file(
+    package = "biblids",
+    "i18n",
+    "app.json"
+  )
+)
+
+#' Check whether translator is legit
+#' @noRd
+stopifnot_i18n <- function(translator = NULL) {
+  if (!is.null(translator)) {
+    stopifnot(!shiny::is.reactive(translator))
+    stopifnot(inherits(translator, "Translator"))
+    require_namespace2("shiny.i18n")
+  }
+  invisible(translator)
 }
 
 #' Dummy i18n translator object
