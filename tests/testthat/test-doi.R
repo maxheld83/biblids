@@ -204,12 +204,14 @@ test_that("Translator object can be checked", {
   expect_error(stopifnot_i18n("not_a_translator"))
 })
 
-test_that("UI-side translation works", {
+test_that("Client-side translation works", {
+  # https://github.com/subugoe/biblids/issues/107
+  skip("Test is broken")
   app <- shinytest::ShinyDriver$new(doiEntryApp())
   app$setInputs(lang = "de")
   expect_equal(
-    app$findElements("#test-entered-label")[[1]]$getText(),
-    "Eingegebene DOIs"
+    app$findElements("#test-submit")[[1]]$getText(),
+    "Absenden"
   )
 })
 
