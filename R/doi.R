@@ -439,13 +439,11 @@ doiEntryApp <- function() {
 #' @describeIn doiEntry Module UI
 #' @param translator
 #' A [shiny.i18n::Translator] object or `NULL` for english-only defaults.
-#' Use [biblids::doi_entry_translator()] for translations included with the package.
-#' Strings inside the module UI are marked as translateable,
-#' and you create your own `translator` using [shiny.i18n::Translator].
-#' To find the keys you need to include in your own translations,
-#' look at `biblids::doi_entry_translator()$translations()`.
-#' This is cannot be a reactive, it is set only at shiny startup.
-#' To update the language reactively, see `lang`.
+#' Strings inside the module UI are marked as translateable.
+#' You can pass a translator object included in the package,
+#' or can create your own `translator` using [shiny.i18n::Translator].
+#' This must not be a reactive, it is only set at shiny startup.
+#' To update the language reactively *during* a shiny session, see `lang`.
 #' @inheritParams shiny::NS
 #' @inheritParams shiny::textAreaInput
 #' @inheritDotParams shiny::textAreaInput
@@ -640,6 +638,9 @@ doiEntryServer <- function(id,
 #' @describeIn doiEntry Translator
 #' Translations shipping with the package,
 #' including `r doi_entry_translator()$get_languages()`.
+#'
+#' To find the keys you need to include in your own translations,
+#' look at `biblids::doi_entry_translator()$translations()`.
 #' @return a [shiny.i18n::Translator] object.
 #' @export
 doi_entry_translator <- function() {

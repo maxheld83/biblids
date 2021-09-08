@@ -26,13 +26,11 @@ doi_entry_translator()
 \item{id}{The id string to be namespaced (optional).}
 
 \item{translator}{A \link[shiny.i18n:Translator]{shiny.i18n::Translator} object or \code{NULL} for english-only defaults.
-Use \code{\link[=doi_entry_translator]{doi_entry_translator()}} for translations included with the package.
-Strings inside the module UI are marked as translateable,
-and you create your own \code{translator} using \link[shiny.i18n:Translator]{shiny.i18n::Translator}.
-To find the keys you need to include in your own translations,
-look at \code{biblids::doi_entry_translator()$translations()}.
-This is cannot be a reactive, it is set only at shiny startup.
-To update the language reactively, see \code{lang}.}
+Strings inside the module UI are marked as translateable.
+You can pass a translator object included in the package,
+or can create your own \code{translator} using \link[shiny.i18n:Translator]{shiny.i18n::Translator}.
+This must not be a reactive, it is only set at shiny startup.
+To update the language reactively \emph{during} a shiny session, see \code{lang}.}
 
 \item{width}{The width of the input, e.g. \code{'400px'}, or \code{'100\%'};
 see \code{\link[shiny:reexports]{validateCssUnit()}}.}
@@ -102,6 +100,9 @@ Input, validate and return DOIs in a shiny app.
 \item \code{doi_entry_translator}: Translator
 Translations shipping with the package,
 including en, de.
+
+To find the keys you need to include in your own translations,
+look at \code{biblids::doi_entry_translator()$translations()}.
 }}}
 
 \seealso{
