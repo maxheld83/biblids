@@ -626,8 +626,7 @@ doiEntryServer <- function(id,
 }
 
 #' @describeIn doiEntry Translator
-#' Translations shipping with the package,
-#' including `r doi_entry_translator$get_languages()`
+#' Translations shipping with the package.
 #' @return a [shiny.i18n::Translator] object.
 #' @export
 doi_entry_translator <- shiny.i18n::Translator$new(
