@@ -204,6 +204,24 @@ test_that("Translator object can be checked", {
   expect_error(stopifnot_i18n("not_a_translator"))
 })
 
+test_that("UI-side translation works", {
+  app <- shinytest::ShinyDriver$new(doiEntryApp())
+  app$setInputs(lang = "de")
+  expect_equal(
+    app$findElements("#test-entered-label")[[1]]$getText(),
+    "Eingegebene DOIs"
+  )
+})
+
+test_that("Server-side translation works", {
+  app <- shinytest::ShinyDriver$new(doiEntryApp())
+  app$setInputs(lang = "de")
+  expect_equal(
+    app$findElements("#test-entered")[[1]]$getAttribute("placeholder"),
+    "Bitte geben Sie hier ihre DOIs ein."
+  )
+})
+
 # doi.org handles api ====
 
 # integration tests
