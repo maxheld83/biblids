@@ -636,12 +636,12 @@ doiEntryServer <- function(id,
       # ingest
       dois <- shiny::eventReactive(input$entered, {
         shiny::req(iv$is_valid())
-        as_doi(as.vector(str_extract_all_doi(input$entered)))
+        stats::na.omit(as_doi(as.vector(str_extract_all_doi(input$entered))))
       })
 
       # show number of found DOIs
       output$found <- shiny::renderText({
-        length(as.character(dois()))
+        length(dois())
       })
       dois
     }
