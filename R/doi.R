@@ -634,7 +634,7 @@ doiEntryServer <- function(id,
       })
 
       # ingest
-      dois <- shiny::eventReactive(input$entered, {
+      dois <- shiny::eventReactive(input$submit, {
         shiny::req(iv$is_valid())
         stats::na.omit(as_doi(as.vector(str_extract_all_doi(input$entered))))
       })

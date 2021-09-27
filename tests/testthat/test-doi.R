@@ -194,6 +194,8 @@ test_that("DOI input returns reactive DOIs", {
     res <- session$getReturned()
     two_dois <- "lorem ipsum 10.1000/foo dolor ist 10.1000/1"
     session$setInputs(entered = two_dois)
+    # click method seems unavailable in testServer
+    session$setInputs(submit = 2L)
     expect_equal(res(), as_doi(as.vector(str_extract_all_doi(two_dois))))
   }))
 })
