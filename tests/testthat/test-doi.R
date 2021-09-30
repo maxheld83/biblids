@@ -197,6 +197,9 @@ test_that("DOI input returns reactive DOIs", {
     # click method seems unavailable in testServer
     session$setInputs(submit = 2L)
     expect_equal(res(), as_doi(as.vector(str_extract_all_doi(two_dois))))
+    # edit resets returned value
+    session$setInputs(edit = 4L)
+    expect_equal(res(), NULL)
   }))
 })
 
