@@ -565,7 +565,7 @@ doiEntryServer <- function(id,
           translator$set_translation_language(lang())
           translator
         })
-        shiny::observeEvent(lang(), {
+        shiny::observe({
           # client side
           shiny.i18n::update_lang(session, lang())
           # server side
@@ -581,6 +581,7 @@ doiEntryServer <- function(id,
 
       # input validation
       iv <- shinyvalidate::InputValidator$new()
+      # this needs to be run in an reactive context to translate
       shiny::observe({
         iv$add_rule(
           "entered",
@@ -616,12 +617,8 @@ doiEntryServer <- function(id,
         },
         ignoreInit = TRUE
       )
-      shiny::observeEvent(input$submit, {
-        toggle_editable()
-      })
-      shiny::observeEvent(input$edit, {
-        toggle_editable()
-      })
+      shiny::observeEvent(input$submit, toggle_editable())
+      shiny::observeEvent(input$edit, toggle_editable())
 
       # paste example doi
       shiny::observeEvent(input$fill_ex, {
@@ -643,9 +640,7 @@ doiEntryServer <- function(id,
       })
 
       # show number of found DOIs
-      output$found <- shiny::renderText({
-        length(dois_entered())
-      })
+      output$found <- shiny::renderText(length(dois_entered()))
 
       # return
       dois_returned <- shiny::reactiveVal(NULL)
