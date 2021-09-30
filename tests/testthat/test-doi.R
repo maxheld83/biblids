@@ -167,6 +167,9 @@ test_that("Example DOIs can be filled in", {
 test_that("Good DOIs can be submitted and edited", {
   app <- shinytest::ShinyDriver$new(doiEntryApp())
   app$setInputs(`test-entered` = "lorem ipsum 10.1000/foo dolor ist")
+  # have to wait for debounced text input field
+  # wait methods for app$ don't seem to work
+  Sys.sleep(1)
   expect_true(app$findElement("#test-submit")$isEnabled())
   # second edit should also make submitable
   # protection against reversion on #87

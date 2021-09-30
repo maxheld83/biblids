@@ -531,6 +531,7 @@ doiEntryUI <- function(id,
 #' Defaults to `shiny::reactive("en")`,
 #' in which case no server side translation
 #' is triggered.
+#' @inheritParams shiny::debounce
 #' @return
 #' An object of class `biblids_doi` as returned by [doi()].
 #' @export
@@ -538,7 +539,8 @@ doiEntryServer <- function(id,
                            example_dois = doi_examples(),
                            char_limit = 900L,
                            translator = NULL,
-                           lang = shiny::reactive("en")) {
+                           lang = shiny::reactive("en"),
+                           millis = 500L) {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
   require_namespace2("glue")
@@ -596,15 +598,21 @@ doiEntryServer <- function(id,
         iv$add_rule("entered", one_doi, translator = translWithLang())
       })
 
+      # we don't want to trigger the reactive graph on every keystroke
+      entered_db <- shiny::debounce(
+        r = shiny::reactive(input$entered),
+        millis = millis
+      )
+
       # highlight matched DOIs
       # this must include non-DOI characters for orientation
       output$matched <- renderView_doi_matches(
-        view_doi_matches_perline(input$entered)
+        view_doi_matches_perline(entered_db())
       )
 
       # edit and submit UX logic
       shiny::observeEvent(
-        input$entered,
+        entered_db(),
         {
           iv$enable()
           if (iv$is_valid()) {
@@ -631,9 +639,9 @@ doiEntryServer <- function(id,
       })
 
       # ingest (this happens before submit is pressed)
-      dois_entered <- shiny::eventReactive(input$entered, {
+      dois_entered <- shiny::reactive({
         if (iv$is_valid()) {
-          stats::na.omit(as_doi(as.vector(str_extract_all_doi(input$entered))))
+          stats::na.omit(as_doi(as.vector(str_extract_all_doi(entered_db()))))
         } else {
           NULL
         }

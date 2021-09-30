@@ -17,7 +17,8 @@ doiEntryServer(
   example_dois = doi_examples(),
   char_limit = 900L,
   translator = NULL,
-  lang = shiny::reactive("en")
+  lang = shiny::reactive("en"),
+  millis = 500L
 )
 
 doi_entry_translator()
@@ -76,6 +77,10 @@ Must be one of the languages in \code{translator}.
 Defaults to \code{shiny::reactive("en")},
 in which case no server side translation
 is triggered.}
+
+\item{millis}{The debounce/throttle time window. You may optionally pass a
+no-arg function or reactive expression instead, e.g. to let the end-user
+control the time window.}
 }
 \value{
 An object of class \code{biblids_doi} as returned by \code{\link[=doi]{doi()}}.
