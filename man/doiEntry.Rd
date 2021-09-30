@@ -15,7 +15,7 @@ doiEntryUI(id, translator = NULL, width = "100\%", height = "400px", ...)
 doiEntryServer(
   id,
   example_dois = doi_examples(),
-  char_limit = 100L,
+  char_limit = 900L,
   translator = NULL,
   lang = shiny::reactive("en")
 )

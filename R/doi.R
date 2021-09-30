@@ -536,7 +536,7 @@ doiEntryUI <- function(id,
 #' @export
 doiEntryServer <- function(id,
                            example_dois = doi_examples(),
-                           char_limit = 100L,
+                           char_limit = 900L,
                            translator = NULL,
                            lang = shiny::reactive("en")) {
   require_namespace2("shiny")
@@ -596,9 +596,11 @@ doiEntryServer <- function(id,
       })
 
       # highlight matched DOIs
+      # this must include non-DOI characters for orientation
       output$matched <- renderView_doi_matches(
         view_doi_matches_perline(input$entered)
       )
+
       # edit and submit UX logic
       shiny::observeEvent(
         input$entered,
@@ -615,8 +617,6 @@ doiEntryServer <- function(id,
         ignoreInit = TRUE
       )
       shiny::observeEvent(input$submit, {
-        shinyjs::disable("submit")
-        shinyjs::removeClass("submit", "active")
         toggle_editable()
       })
       shiny::observeEvent(input$edit, {
@@ -633,17 +633,25 @@ doiEntryServer <- function(id,
         )
       })
 
-      # ingest
-      dois <- shiny::eventReactive(input$submit, {
-        shiny::req(iv$is_valid())
-        stats::na.omit(as_doi(as.vector(str_extract_all_doi(input$entered))))
+      # ingest (this happens before submit is pressed)
+      dois_entered <- shiny::eventReactive(input$entered, {
+        if (iv$is_valid()) {
+          stats::na.omit(as_doi(as.vector(str_extract_all_doi(input$entered))))
+        } else {
+          NULL
+        }
       })
 
       # show number of found DOIs
       output$found <- shiny::renderText({
-        length(dois())
+        length(dois_entered())
       })
-      dois
+
+      # return
+      dois_returned <- shiny::reactiveVal(NULL)
+      shiny::observeEvent(input$submit, dois_returned(dois_entered()))
+      shiny::observeEvent(input$edit, dois_returned(NULL))
+      dois_returned
     }
   )
 }
@@ -706,6 +714,8 @@ toggle_editable <- function() {
   shinyjs::toggleState("fill_ex")
   shinyjs::toggleState("edit")
   shinyjs::toggleClass("edit", "active")
+  shinyjs::toggleState("submit")
+  shinyjs::toggleClass("submit", "active")
 }
 
 #' Validate entered string against character limit
