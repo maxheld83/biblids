@@ -12,7 +12,7 @@ view_doi_matches(string)
 
 view_doi_matches_perline(string)
 
-view_doi_matchesOutput(outputId, width = "100\%", height = "auto")
+view_doi_matchesOutput(outputId, width = "100\%", height = "100\%")
 
 renderView_doi_matches(expr, env = parent.frame(), quoted = FALSE)
 }

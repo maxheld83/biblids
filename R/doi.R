@@ -446,13 +446,11 @@ doiEntryApp <- function() {
 #' To update the language reactively *during* a shiny session, see `lang`.
 #' @inheritParams shiny::NS
 #' @inheritParams shiny::textAreaInput
-#' @inheritDotParams shiny::textAreaInput
 #' @export
 doiEntryUI <- function(id,
                        translator = NULL,
                        width = "100%",
-                       height = "400px",
-                       ...) {
+                       height = "200px") {
   require_namespace2("shiny")
   require_namespace2("shinyjs")
   if (is.null(translator)) {
@@ -466,52 +464,54 @@ doiEntryUI <- function(id,
   shiny::tagList(
     shinyjs::useShinyjs(),
     i18n_js_insert,
-    shiny::textAreaInput(
-      inputId = ns("entered"),
-      label = translator$t("Entered DOIs"),
-      # this gets translated server side, b/c it's not HTML
-      placeholder = "Enter your DOIs here.",
-      width = width,
-      height = height,
-      resize = "vertical",
-      ...
-    ),
-    shiny::div(
-      shiny::h5(
-        translator$t("Found "),
-        shiny::textOutput(
-          outputId = ns("found"),
-          container = shiny::tags$u,
-          inline = TRUE
+    shiny::tags$form(
+      shiny::fluidRow(
+        shiny::column(6, shiny::textAreaInput(
+          inputId = ns("entered"),
+          label = translator$t("Entered DOIs"),
+          # this gets translated server side, b/c it's not HTML
+          placeholder = "Enter your DOIs here.",
+          height = height,
+          width = width,
+          resize = "none"
+        )),
+        shiny::column(6,
+          shiny::tags$label(
+            translator$t("Found "),
+            shiny::textOutput(
+              outputId = ns("found"),
+              container = shiny::tags$u,
+              inline = TRUE
+            ),
+            translator$t(" DOIs")
+          ),
+          shiny::div(
+            view_doi_matchesOutput(outputId = ns("matched"), height = height),
+            style = "height:100%; overflow:scroll;"
+          )
+        )
+      ),
+      shiny::actionButton(
+          inputId = ns("fill_ex"),
+          label = translator$t("Fill in example"),
+          icon = shiny::icon("paste")
         ),
-        translator$t(" DOIs")
-      ),
-      shiny::div(view_doi_matchesOutput(outputId = ns("matched")))
-    ),
-    shiny::div(
-      class = "btn-toolbar",
-      shiny::actionButton(
-        class = "btn-group",
-        inputId = ns("fill_ex"),
-        label = translator$t("Fill in example"),
-        icon = shiny::icon("paste")
-      ),
-      shiny::actionButton(
-        class = "btn-group active",
-        inputId = ns("edit"),
-        label = translator$t("Edit"),
-        icon = shiny::icon("pencil", lib = "glyphicon"),
-        disabled = TRUE
-      ),
-      shiny::actionButton(
-        class = "btn-group btn-primary",
-        inputId = ns("submit"),
-        label = translator$t("Submit"),
-        icon = shiny::icon("save", lib = "glyphicon"),
-        disabled = TRUE
+        shiny::actionButton(
+          inputId = ns("edit"),
+          label = translator$t("Edit"),
+          icon = shiny::icon("pencil", lib = "glyphicon"),
+          disabled = TRUE
+        ),
+        shiny::actionButton(
+          class = "btn-primary",
+          inputId = ns("submit"),
+          label = translator$t("Submit"),
+          icon = shiny::icon("save", lib = "glyphicon"),
+          disabled = TRUE,
+          type = "submit"
+        )
       )
     )
-  )
 }
 
 #' @describeIn doiEntry Module server
@@ -785,7 +785,7 @@ view_doi_matches_perline <- function(string) {
 #' Shiny output widget to show matched DOIs
 #' @inheritParams htmlwidgets::shinyWidgetOutput
 #' @export
-view_doi_matchesOutput <- function(outputId, width = "100%", height = "auto") {
+view_doi_matchesOutput <- function(outputId, width = "100%", height = "100%") {
   require_namespace2("htmlwidgets")
   htmlwidgets::shinyWidgetOutput(
     outputId = outputId,
