@@ -926,6 +926,16 @@ doi_not_found <- function() {
 #' For details, see the
 #' [DOI REST API documentation](https://www.doi.org/factsheets/DOIProxy.html#rest-api).
 #'
+#' @section Progress bar:
+#' Emits a [progressr::progressor()] progress bar.
+#' To enable in your session run:
+#' 
+#' ```r
+#' progressr::handlers(global = TRUE)
+#' ```
+#' 
+#' See [progressr documentation](https://progressr.futureverse.org) for details.
+#' 
 #' @inheritParams as_doi
 #' @param query
 #' A named list of
@@ -940,7 +950,14 @@ get_doi_handles <- function(x,
   x <- as_doi(x)
   # hack-fix until https://github.com/subugoe/biblids/issues/51
   x <- as.character(x)
-  purrr::map(.x = x, .f = get_doi_handle, query = query, ...)
+  # TODO remove once pbars are in purrr 
+  # https://github.com/tidyverse/purrr/issues/149
+  pb <- progressr::progressor(along = x)
+  purrr::map(
+    .x = x,
+    .f = function(x) {pb(); get_doi_handle(x, query = query, ...)}, 
+    ...
+  )
 }
 
 #' @describeIn doi_api
@@ -977,7 +994,14 @@ is_doi_found <- function(x, ...) {
   x <- as_doi(x)
   # hack-fix until https://github.com/subugoe/biblids/issues/51
   x <- as.character(x)
-  purrr::map_lgl(.x = x, .f = head_doi_handle, ...)
+  # TODO remove once pbars are in purrr 
+  # https://github.com/tidyverse/purrr/issues/149
+  pb <- progressr::progressor(along = x)
+  purrr::map_lgl(
+    .x = x,
+    .f = function(x, ...) {pb(); head_doi_handle(x, ...)},
+    ...
+  ) 
 }
 
 
@@ -1038,6 +1062,7 @@ doi_ras <- function() {
 #' Get DOI RA using the doi.org
 #' [Which RA?](https://www.doi.org/factsheets/DOIProxy.html#whichra) service.
 #' @inheritSection doi_api Warning
+#' @inheritSection doi_api Progress bar
 #' @inheritParams as_doi
 #' @inheritParams httr::GET
 #' @inheritDotParams httr::GET -url
@@ -1046,7 +1071,14 @@ doi_ras <- function() {
 get_doi_ra <- function(x, ...) {
   # hack-fix until https://github.com/subugoe/biblids/issues/51
   x <- as.character(x)
-  purrr::map_chr(.x = x, .f = get_doi_ra1, ...)
+  # TODO remove once pbars are in purrr 
+  # https://github.com/tidyverse/purrr/issues/149
+  pb <- progressr::progressor(along = x)
+  purrr::map_chr(
+    .x = x,
+    .f = function(x, ...) {pb(); get_doi_ra1(x, ...)},
+    ...
+  ) 
 }
 
 #' Helper to get one DOI RA

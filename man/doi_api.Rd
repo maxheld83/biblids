@@ -79,6 +79,15 @@ not other metadata.
 For other APIs, see \code{\link[=doi_ras]{doi_ras()}}
 }
 
+\section{Progress bar}{
+
+Emits a \code{\link[progressr:progressor]{progressr::progressor()}} progress bar.
+To enable in your session run:\if{html}{\out{<div class="r">}}\preformatted{progressr::handlers(global = TRUE)
+}\if{html}{\out{</div>}}
+
+See \href{https://progressr.futureverse.org}{progressr documentation} for details.
+}
+
 \examples{
 # from https://www.doi.org/factsheets/DOIProxy.html
 get_doi_handles(

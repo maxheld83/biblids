@@ -80,6 +80,15 @@ If you are using this in your own package, or create a lot of traffic,
 please set your own \code{\link[httr:user_agent]{httr::user_agent()}}.
 }
 
+\section{Progress bar}{
+
+Emits a \code{\link[progressr:progressor]{progressr::progressor()}} progress bar.
+To enable in your session run:\if{html}{\out{<div class="r">}}\preformatted{progressr::handlers(global = TRUE)
+}\if{html}{\out{</div>}}
+
+See \href{https://progressr.futureverse.org}{progressr documentation} for details.
+}
+
 \examples{
 doi_ras()
 get_doi_ra(c(

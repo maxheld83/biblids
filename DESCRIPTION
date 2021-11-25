@@ -41,7 +41,8 @@ Imports:
     ellipsis (>= 0.3.1),
     brio (>= 1.1.1),
     stringi (>= 1.5.3),
-    glue (>= 1.4.2)
+    glue (>= 1.4.2),
+    progressr (>= 0.9.0)
 Suggests: 
     testthat (>= 3.0.2),
     covr (>= 3.5.1),
