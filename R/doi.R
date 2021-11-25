@@ -475,7 +475,8 @@ doiEntryUI <- function(id,
           width = width,
           resize = "none"
         )),
-        shiny::column(6,
+        shiny::column(
+          6,
           shiny::tags$label(
             translator$t("Found "),
             shiny::textOutput(
@@ -492,26 +493,26 @@ doiEntryUI <- function(id,
         )
       ),
       shiny::actionButton(
-          inputId = ns("fill_ex"),
-          label = translator$t("Fill in example"),
-          icon = shiny::icon("paste")
-        ),
-        shiny::actionButton(
-          inputId = ns("edit"),
-          label = translator$t("Edit"),
-          icon = shiny::icon("pencil", lib = "glyphicon"),
-          disabled = TRUE
-        ),
-        shiny::actionButton(
-          class = "btn-primary",
-          inputId = ns("submit"),
-          label = translator$t("Submit"),
-          icon = shiny::icon("save", lib = "glyphicon"),
-          disabled = TRUE,
-          type = "submit"
-        )
+        inputId = ns("fill_ex"),
+        label = translator$t("Fill in example"),
+        icon = shiny::icon("paste")
+      ),
+      shiny::actionButton(
+        inputId = ns("edit"),
+        label = translator$t("Edit"),
+        icon = shiny::icon("pencil", lib = "glyphicon"),
+        disabled = TRUE
+      ),
+      shiny::actionButton(
+        class = "btn-primary",
+        inputId = ns("submit"),
+        label = translator$t("Submit"),
+        icon = shiny::icon("save", lib = "glyphicon"),
+        disabled = TRUE,
+        type = "submit"
       )
     )
+  )
 }
 
 #' @describeIn doiEntry Module server
