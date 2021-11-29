@@ -952,7 +952,11 @@ get_doi_handles <- function(x,
   x <- as.character(x)
   # TODO remove once pbars are in purrr 
   # https://github.com/tidyverse/purrr/issues/149
-  pb <- progressr::progressor(along = x)
+  pb <- progressr::progressor(
+    along = x,
+    message = "Querying DOI.org resolution ...",
+    label = "get_doi_handles"
+  )
   purrr::map(
     .x = x,
     .f = function(x) {pb(); get_doi_handle(x, query = query, ...)}, 
@@ -996,7 +1000,11 @@ is_doi_found <- function(x, ...) {
   x <- as.character(x)
   # TODO remove once pbars are in purrr 
   # https://github.com/tidyverse/purrr/issues/149
-  pb <- progressr::progressor(along = x)
+  pb <- progressr::progressor(
+    along = x,
+    message = "Querying DOI.org HEAD ...",
+    label = "is_doi_found"
+  )
   purrr::map_lgl(
     .x = x,
     .f = function(x, ...) {pb(); head_doi_handle(x, ...)},
@@ -1073,7 +1081,11 @@ get_doi_ra <- function(x, ...) {
   x <- as.character(x)
   # TODO remove once pbars are in purrr 
   # https://github.com/tidyverse/purrr/issues/149
-  pb <- progressr::progressor(along = x)
+  pb <- progressr::progressor(
+    along = x,
+    message = "Querying DOI.org which RA service ...",
+    label = "get_doi_ra"
+  )
   purrr::map_chr(
     .x = x,
     .f = function(x, ...) {pb(); get_doi_ra1(x, ...)},
